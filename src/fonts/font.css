@@ -1,0 +1,35 @@
+@font-face {
+  /* 사용할 폰트의 이름 */
+  font-family: "SUIT";
+  font-display: fallback;
+
+  /* 
+  src: 사용할 폰트의 위치 및 형식 
+     Safari, Android, iOS => ttf
+     Modern Browsers => woff
+     IE6-IE8 => eot
+  */
+  src: url("./SUIT-Regular.ttf") format("truetype"),
+      url("./SUIT-Bold.ttf") format("truetype"),
+      url("./SUIT-Heavy.ttf") format("truetype"),
+      url("./SUIT-Light.ttf") format("truetype"),
+      url("./SUIT-Medium.ttf") format("truetype"),
+      url("./SUIT-SemiBold.ttf") format("truetype"),
+      url("./SUIT-Thin.ttf") format("truetype"),
+      url("./SUIT-Regular.woff2") format("woff2"),
+      url("./SUIT-Bold.woff2") format("woff2"),
+      url("./SUIT-Heavy.woff2") format("woff2"),
+      url("./SUIT-Light.woff2") format("woff2"),
+      url("./SUIT-Medium.woff2") format("woff2"),
+      url("./SUIT-SemiBold.woff2") format("woff2"),
+      url("./SUIT-Thin.woff2") format("woff2"),
+      url("./SUIT-Regular.eot?iefix") format("embedded-opentype"),
+      url("./SUIT-Bold.eot?iefix") format("embedded-opentype"),
+      url("./SUIT-Heavy.eot?iefix") format("embedded-opentype"),
+      url("./SUIT-Light.eot?iefix") format("embedded-opentype"),
+      url("./SUIT-Medium.eot?iefix") format("embedded-opentype"),
+      url("./SUIT-SemiBold.eot?iefix") format("embedded-opentype"),
+      url("./SUIT-Thin.eot?iefix") format("embedded-opentype");
+  font-weight: 400;
+  font-style: normal;
+}
