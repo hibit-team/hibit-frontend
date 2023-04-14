@@ -15,7 +15,6 @@ const Footer = () => {
   if (isMobile) {
     return (
       <s.MobileWrapper>
-
       </s.MobileWrapper>
     )
   }
