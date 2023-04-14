@@ -17,6 +17,4 @@ function App() {
 
 export default App;
 
-const Container = styled.div`
-  width: 100vw;
-`;
+const Container = styled.div``;

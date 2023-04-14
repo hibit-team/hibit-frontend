@@ -5,7 +5,7 @@ import LayoutTemplate from '../../components/LayoutTemplate';
 const MainPage = () => {
   return (
     <LayoutTemplate>
-      
+      <s.Wrapper />
     </LayoutTemplate>
   )
 }
