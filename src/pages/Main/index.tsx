@@ -9,7 +9,7 @@ const MainPage = () => {
     <LayoutTemplate>
       <s.Wrapper>
         {/* <GoogleLoginButton /> */}
-        <KaKaoLogin />
+        {/* <KaKaoLogin /> */}
       </s.Wrapper>
     </LayoutTemplate>
   )
