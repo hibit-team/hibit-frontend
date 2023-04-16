@@ -7,7 +7,7 @@ const MainPage = () => {
   return (
     <LayoutTemplate>
       <s.Wrapper>
-        <GoogleLoginButton />
+        {/* <GoogleLoginButton /> */}
       </s.Wrapper>
     </LayoutTemplate>
   )
