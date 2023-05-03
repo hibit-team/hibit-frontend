@@ -4,38 +4,35 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 export const SliderContainer = styled(Slider)`
-  width: 960px;
-  height: 660px;
+  width: 820px;
+  height: 900px;
 `;
 
 export const SlideImgWrapper = styled.div`
-  width: 420px;
-  heigth: 420px;
+  margin-left:0.8rem;
+  margin-top:2rem;
+  width: 380px;
+  heigth: 602px;
   display: flex;
   flex-direction: column;
-  margin: 1.5rem;
   border-radius: 1rem;
-  scale: 0.8;
   &:hover {
-    transition: scale 0.25s ease 0s;
-    scale: 0.83;
+    transition: transform 0.3s ease 0s;
+    transform: translate(0,-20px);
   }
 `;
 export const SlideImg = styled.div`
-  width: 420px;
-  height: 420px;
+  width: 380px;
+  height: 602px;
 `;
-export const SlideBottom = styled.div`
-  box-sizing: border-box;
-  margin-top: -1.75rem;
-  padding: 2rem;
-  width: 420px;
-  height: 210px;
-  background-color: #c9c9c9;
-  display: flex;
-  flex-direction: column;
-  border-radius: 1rem;
-`;
+// export const SlideBottom = styled.div`
+//   box-sizing: border-box;
+//   margin-top: -1.75rem;
 
-//이미지의 구멍뚤린 부분
-// export const SlideImgArtPoint = styled.div``;
+//   width: 430px;
+//   height: 150px;
+//   background-color: #c9c9c9;
+//   display: flex;
+//   flex-direction: column;
+//   border-radius: 1rem;
+// `;
