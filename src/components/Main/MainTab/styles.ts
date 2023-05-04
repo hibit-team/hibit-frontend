@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 export const TabContainer = styled.div` 
   padding-top: 125px;
   font-size: 28px;
-  width:800px;
+  width:880px;
   height:90px;
   font-weight: 700;
   display: flex;
@@ -38,7 +38,7 @@ opacity:0.8;
 export const TabContainer_2 = styled.div` 
   padding-top: 125px;
   font-size: 28px;
-  width:800px;
+  width:880px;
   height:90px;
   color:#5E1EC7;
   font-weight: 700;
