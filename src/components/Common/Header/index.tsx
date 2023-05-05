@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { IHeaderCategory } from '../../interfaces/IHeaderCategories';
+import { IHeaderCategory } from '../../../interfaces/IHeaderCategories';
 import { useNavigate, useLocation } from "react-router-dom";
 import * as s from "./styles";
-import HibitLogo from "../../images/components/HibitLogo.svg";
-import AlarmIcon from "../../images/components/AlarmIcon.svg";
-import useIsMobile from '../../hooks/useIsMobile';
+import HibitLogo from "../../../images/components/HibitLogo.svg";
+import AlarmIcon from "../../../images/components/AlarmIcon.svg";
+import useIsMobile from '../../../hooks/useIsMobile';
 
 const CATEGORIES: IHeaderCategory[] = [
   { title: "서비스 소개", link: "/intro" },
