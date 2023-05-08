@@ -25,9 +25,11 @@ const TabImgs = () => {
         <s.SlideBottom css={{padding: '2rem'}}>
           <h1 css={s.textCss1}>설명 문구</h1>
           <h1 css={s.textCss2}>이번 주에 출발하는 전시회</h1>
-          <h1 css={s.textCss3}>매칭 바로가기</h1>
-          {/* <img css={s.textCss4} src={Arrow} alt="arrow-img"></img> */}
-          <s.ArrowImg src={Arrow} alt="arrow-img" />
+          <s.textCssContainer3>
+            <h1 css={s.textCss3}>매칭 바로가기</h1>
+            {/* <img src={Arrow} alt="arrow-img" /> */}
+            <s.ArrowImg src={Arrow} alt="arrow-img" />
+          </s.textCssContainer3>
         </s.SlideBottom>
       </s.SlideImgWrapper>
 
@@ -38,9 +40,11 @@ const TabImgs = () => {
         <s.SlideBottom css={{padding: '2rem'}}>
           <h1 css={s.textCss1}>설명 문구</h1>
           <h1 css={s.textCss2}>이번 주에 출발하는 전시회</h1>
-          <h1 css={s.textCss3}>매칭 바로가기</h1>
-          {/* <img css={s.textCss4} src={Arrow} alt="arrow-img"></img> */}
-          <s.ArrowImg src={Arrow} alt="arrow-img" />
+          <s.textCssContainer3>
+            <h1 css={s.textCss3}>매칭 바로가기</h1>
+            {/* <img src={Arrow} alt="arrow-img" /> */}
+            <s.ArrowImg src={Arrow} alt="arrow-img" />
+          </s.textCssContainer3>
         </s.SlideBottom>
       </s.SlideImgWrapper>
 
@@ -51,9 +55,11 @@ const TabImgs = () => {
         <s.SlideBottom css={{padding: '2rem'}}>
           <h1 css={s.textCss1}>설명 문구</h1>
           <h1 css={s.textCss2}>이번 주에 출발하는 전시회</h1>
-          <h1 css={s.textCss3}>매칭 바로가기</h1>
-          {/* <img src={Arrow} alt="arrow-img" /> */}
-          <s.ArrowImg src={Arrow} alt="arrow-img" />
+          <s.textCssContainer3>
+            <h1 css={s.textCss3}>매칭 바로가기</h1>
+            {/* <img src={Arrow} alt="arrow-img" /> */}
+            <s.ArrowImg src={Arrow} alt="arrow-img" />
+          </s.textCssContainer3>
         </s.SlideBottom>
       </s.SlideImgWrapper>
     </s.SliderContainer>
