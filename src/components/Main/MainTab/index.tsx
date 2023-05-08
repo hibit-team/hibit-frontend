@@ -1,4 +1,5 @@
 
+import MatchIntros from '../MatchIntros';
 import TabImgs from '../TabImgs';
 import * as s from './styles';
 import {useState} from 'react';
@@ -27,6 +28,7 @@ const MainTab = () => {
             <s.LeftTab_2 onClick={tabClickChange}>매칭 바로가기</s.LeftTab_2>
             <s.RightTab_2>매칭 자세히보기</s.RightTab_2>
           </s.Tabs>
+          <MatchIntros />
         </s.TabContainer_2>
       )}
     </s.Wrapper>
