@@ -18,4 +18,12 @@ width:100%;
 height:67px;
 padding: 20px 24px;
 border-top: 2px solid #EEEEEE;
+
+@media (hover: hover) { 
+  &:hover {
+    color: #5E1EC7;
+    background:#F6F7F9;
+    font-weight: 900;
+  }
+
 `
