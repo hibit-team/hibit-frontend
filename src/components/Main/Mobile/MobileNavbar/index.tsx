@@ -1,8 +1,8 @@
-import * as s from './styles';
 
+import * as s from './styles';
 const MobileNavbar =()=>{
-  const isLogged = true;//상태관리 필요
-    if(isLogged) {
+  // 로그인 상태관리값으로 조건부 렌더링
+    if(true) {
       return(
         <s.MobileNavbarWrapper>
         <s.MobileNavDiv>서비스 소개</s.MobileNavDiv>
