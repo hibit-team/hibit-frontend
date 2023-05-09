@@ -13,6 +13,7 @@ import MobileSlider from '../../components/Main/Mobile/MobileSlider';
 import MobileNavbar from '../../components/Main/Mobile/MobileNavbar';
 
 const MainPage = () => {
+
   if(useIsMobile()){
     return(<>
     <MoHeaderComponent></MoHeaderComponent>
