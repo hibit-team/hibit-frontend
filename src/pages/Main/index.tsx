@@ -10,13 +10,15 @@ import useIsMobile from '../../hooks/useIsMobile';
 import MoHeaderComponent from '../../components/Main/Mobile/MobileHeader';
 import MobileTab from '../../components/Main/Mobile/MobileTab';
 import MobileSlider from '../../components/Main/Mobile/MobileSlider';
-const MainPage = () => {
+import MobileNavbar from '../../components/Main/Mobile/MobileNavbar';
 
+const MainPage = () => {
   if(useIsMobile()){
     return(<>
     <MoHeaderComponent></MoHeaderComponent>
     <MobileTab></MobileTab>
     <MobileSlider></MobileSlider>
+    <MobileNavbar></MobileNavbar>
     </>)
   }
   return (<LayoutTemplate>

@@ -49,7 +49,7 @@ const MobileSlider = () => {
 
       <s.SlideImgWrapper>
         <s.SlideImg>
-          <img src={PurpleBg} alt="background-image" />
+          <img src={PurpleBg} alt="background-img" />
         </s.SlideImg>
         <s.SlideBottom css={{padding: '2rem'}}>
         <h1 css={s.textCss1}>설명 문구</h1>
