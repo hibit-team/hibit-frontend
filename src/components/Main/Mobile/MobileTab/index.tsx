@@ -7,6 +7,7 @@ import {useState} from 'react';
 const MobileTab = () => {
   const [isMoTabLeft,setIsMoTabLeft] = useState<boolean>(true);
   const tabClickChange = ()=>{setIsMoTabLeft(!isMoTabLeft)};
+
   return(
   <>
   {isMoTabLeft ? 

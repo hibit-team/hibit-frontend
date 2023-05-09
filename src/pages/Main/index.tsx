@@ -11,19 +11,22 @@ import MoHeaderComponent from '../../components/Main/Mobile/MobileHeader';
 import MobileTab from '../../components/Main/Mobile/MobileTab';
 import MobileSlider from '../../components/Main/Mobile/MobileSlider';
 const MainPage = () => {
-  return (
-    useIsMobile() ?  <><MoHeaderComponent></MoHeaderComponent>
+
+  if(useIsMobile()){
+    return(<>
+    <MoHeaderComponent></MoHeaderComponent>
     <MobileTab></MobileTab>
     <MobileSlider></MobileSlider>
-    </> : 
-    <LayoutTemplate>
-      <MainTab></MainTab>
-      <TabImgs></TabImgs>
-      <s.Wrapper>
-        {/* <GoogleLoginButton /> */}
-        {/* <KaKaoLogin /> */}
-      </s.Wrapper>
-    </LayoutTemplate>
+    </>)
+  }
+  return (<LayoutTemplate>
+    <MainTab></MainTab>
+    <TabImgs></TabImgs>
+    <s.Wrapper>
+      {/* <GoogleLoginButton /> */}
+      {/* <KaKaoLogin /> */}
+    </s.Wrapper>
+  </LayoutTemplate>
   )
 }
 
