@@ -44,6 +44,7 @@ const MatchIntros = () => {
         <s.IntroText1>{text4}</s.IntroText1>
         <s.IntroText2>{text5}</s.IntroText2>
         <ReviewSlider />
+        <s.MatchingBtn>매칭 바로가기</s.MatchingBtn>
       </s.BottomContainer>
     </s.Warpper>
   );

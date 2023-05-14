@@ -4,12 +4,15 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 export const SliderContainer = styled(Slider)`
+  display: flex;
+  height: 380px;
   .slick-slide {
 	  padding-right: 47px;
   };
 `;
 
 export const ReviewWrapper = styled.div`
+  display: flex;
   flex-direction: column;
   width: 276px;
   height: 276px;

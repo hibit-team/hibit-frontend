@@ -66,7 +66,31 @@ export const BottomContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 880px;
-  height: 630px;
   margin-top: 100px;
 `;
 
+export const MatchingBtn = styled.button`
+  display: flex;
+  position: relative;
+  top: 0px;
+  left: 500px;
+  justify-content: center;
+  align-items: center;
+  width: 292px;
+  height: 80px;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  font-size: 28px;
+  font-weight: 500;
+  color: #804DD3;
+  border-radius: 100px;
+  border: 1px solid #804DD3;
+  background-color: white;
+
+  &:hover {
+    background-color: #5E1EC7;
+    border: 1px solid #804DD3;
+    color: white;
+    font-weight: 800;
+  }
+`;
