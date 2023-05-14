@@ -1,5 +1,6 @@
 import * as s from './styles';
 import PhoneImg from "../../../images/components/PhoneImg.png";
+import ReviewSlider from '../ReviewSlider';
 
 const MatchIntros = () => {
   const text1 = "예술적 관심사를 공유하고 싶은";
@@ -8,7 +9,11 @@ const MatchIntros = () => {
   const text3_2 = "친구를 만나고 싶었던 당신에게"
   const text3_3 = "매칭을 통해 나와 취향을 공유 할 수 있는"
   const text3_4 = "를 찾아드릴게요!";
-  const text3_5 = "'전시회 메이트'"
+  const text3_5 = "'전시회 메이트'";
+
+  const text4 = "유저가 말해주는 믿을 수 있는";
+  const text5 = "매칭 이용 후기";
+
   return (
     <s.Warpper>
       <s.TopContainer>
@@ -36,7 +41,9 @@ const MatchIntros = () => {
       </s.MidContainer>
 
       <s.BottomContainer>
-
+        <s.IntroText1>{text4}</s.IntroText1>
+        <s.IntroText2>{text5}</s.IntroText2>
+        <ReviewSlider />
       </s.BottomContainer>
     </s.Warpper>
   );

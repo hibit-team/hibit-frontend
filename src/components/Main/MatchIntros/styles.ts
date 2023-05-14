@@ -50,7 +50,6 @@ export const TextDetailStrong = styled.h4`
 export const RightImgContainer = styled.div`
   display: flex;
   position: relative;
-  /* margin-left: 160px; */
 `;
 
 export const PhoneImg = styled.img`
@@ -64,5 +63,10 @@ export const MidContainer = styled.div`
 `;
 
 export const BottomContainer = styled.div`
-
+  display: flex;
+  flex-direction: column;
+  width: 880px;
+  height: 630px;
+  margin-top: 100px;
 `;
+
