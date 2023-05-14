@@ -1,10 +1,7 @@
 import React from 'react';
 import * as s from "./styles";
-import LayoutTemplate from '../../components/LayoutTemplate';
-import GoogleLoginButton from '../../components/GoogleLoginButton';
-import KaKaoLogin from '../../components/KaKaoLogin';
+import LayoutTemplate from '../../components/Common/LayoutTemplate';
 import MainTab from '../../components/Main/MainTab';
-import TabImgs from '../../components/Main/TabImgs';
 import useIsMobile from '../../hooks/useIsMobile';
 // useIsMobile훅 import - Mo(MainTab+Slide)
 import MoHeaderComponent from '../../components/Main/Mobile/MobileHeader';
@@ -13,6 +10,8 @@ import MobileSlider from '../../components/Main/Mobile/MobileSlider';
 import MobileNavbar from '../../components/Main/Mobile/MobileNavbar';
 import { useRecoilState } from 'recoil';
 import { toggleNavState } from '../../recoil/atom/ToggleNavState';
+import GoogleLoginButton from '../../components/Login/GoogleLoginButton';
+import KaKaoLogin from '../../components/Login/KaKaoLogin';
 const MainPage = () => {
   const [toggleState,setToggleState] = useRecoilState<boolean>(toggleNavState);
   const onToggle: Function = ()=>{
@@ -33,14 +32,14 @@ const MainPage = () => {
     <MobileSlider></MobileSlider>
     </>)
   }
-  return (<LayoutTemplate>
-    <MainTab></MainTab>
-    <TabImgs></TabImgs>
-    <s.Wrapper>
-      {/* <GoogleLoginButton /> */}
-      {/* <KaKaoLogin /> */}
-    </s.Wrapper>
-  </LayoutTemplate>
+  return (
+    <LayoutTemplate>
+      <MainTab></MainTab>
+      <s.Wrapper>
+        {/* <GoogleLoginButton /> */}
+        {/* <KaKaoLogin /> */}
+      </s.Wrapper>
+    </LayoutTemplate>
   )
 }
 
