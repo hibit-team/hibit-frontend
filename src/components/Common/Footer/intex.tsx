@@ -1,8 +1,8 @@
 import React from "react";
 import * as s from "./styles";
-import useIsMobile from "../../hooks/useIsMobile";
-import HibitLogoGray from "../../images/components/HibitLogoGray.svg";
-import MoveTopIcon from "../../images/components/MoveTopIcon.svg"
+import useIsMobile from "../../../hooks/useIsMobile";
+import HibitLogoGray from "../../../images/components/HibitLogoGray.svg";
+import MoveTopIcon from "../../../images/components/MoveTopIcon.svg"
 
 const Footer = () => {
   const isMobile = useIsMobile();
