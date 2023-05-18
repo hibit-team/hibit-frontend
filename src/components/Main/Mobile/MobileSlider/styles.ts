@@ -7,6 +7,7 @@ export const SliderContainer = styled(Slider)`
   width: 326px;
   height: 458px;
   margin:auto;
+  margin-top:8px;
 `;
 
 export const SlideImgWrapper = styled.div`
