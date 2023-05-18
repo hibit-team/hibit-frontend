@@ -17,7 +17,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [selectedCategory, setSelectedCategory] = useState<string>("메인");
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState<boolean>(true);
   const [isAlarm, setIsAlarm] = useState<boolean>(true);
   const [alarmCount, setAlarmCount] = useState<number>(3);
 
