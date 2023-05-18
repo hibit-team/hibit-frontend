@@ -3,10 +3,6 @@ import React from 'react';
 import Modal from 'react-modal';
 import { css } from '@emotion/react';
 import * as s from './styles';
-// Modal 컴포넌트의 스타일
-// const modalStyles = css`
-//   /* 스타일 정의 */
-// `;
 
 // Modal 컴포넌트의 Props 타입
 interface ModalProps extends ReactModal.Props {
@@ -15,7 +11,7 @@ interface ModalProps extends ReactModal.Props {
 
 // Modal 컴포넌트
 const CustomModal: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
-  return (<div css={css`display:flex; justify-content: center;`}>
+  return (
   <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
@@ -28,27 +24,37 @@ const CustomModal: React.FC<ModalProps> = ({ isOpen, onRequestClose }) => {
           bottom: 0,
           backgroundColor: 'rgba(0, 0, 0, 0.25)',
           zIndex: 10,
+
         },
         content: {
           display:'flex',
-          width:'329px',
+          width:'333px',
           height:'460px',
           justifyContent:'center',
-          top: '94px',
+          top: '117px',
+          left:0,
+          right: 8,
+          bottom:0,
           zIndex: 10,
-          margin: '23px auto',
           borderRadius:'1rem',
+          padding:'0',
+          margin:'0 auto'
         },
       }}
     >
       <s.AlarmModalWrapper>
-        <div>알림</div>
+        <s.AlarmTopBar>
+        <div css={css`width:100%;`}>알림</div>
+        <div css={css`width:1rem;height:15px;
+        &:after {content: "\\00d7"; font-size:15pt;}`}></div>
+        </s.AlarmTopBar>
+        <div>매칭</div>
+        <div>공지사항</div>
         <div>매칭</div>
         <div>공지사항</div>
 
       </s.AlarmModalWrapper>
     </Modal>
-  </div>
     
   );
 };
