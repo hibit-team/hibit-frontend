@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import React from 'react';
 import Modal from 'react-modal';
 import { css } from '@emotion/react';
@@ -8,7 +7,7 @@ import COLORS from '../../assets/color';
 //알람 상태관리 ( useEffect : 매칭 컴포넌트부터)
 const alarmTabState = true;
 
-const CustomModal: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }) => {
+const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }) => {
   return (
   <Modal
       isOpen={isOpen}
@@ -49,7 +48,8 @@ const CustomModal: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }) => 
       font-weight:500;      
       }`}></div>
         </s.AlarmTopBar>
-        <s.AlarmContentsWrapper>
+        
+        <s.AlarmTabWrapper>
           <s.AlarmTab>
 
           <div css={css`width:50%; font-size:18px;
@@ -68,53 +68,23 @@ const CustomModal: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }) => 
           </s.AlarmTab>
           
         {/* 알람컨텐츠 */}
-          <s.AlarmContentBox>
+          <s.AlarmContentsWrapper>
           <div css={css`
           width:100%;
-          padding: 18px 0 16px 0;
-          box-sizing: border-box;
+          padding: 1rem 0 1rem 0;
           `}>개죽이님이 회원님의 게시글에 댓글을 남겼습니다.</div>
-          <div css={css`
-          width:100%;
-          padding: 18px 0 16px 0;
-          box-sizing: border-box;
-          `}>개죽이님이 회원님의 게시글에 댓글을 남겼습니다.</div>
-         
-          <div css={css`
-          width:100%;
-          padding: 18px 0 16px 0;
-          box-sizing: border-box;
-          `}>개죽이님이 회원님의 게시글에 댓글을 남겼습니다.</div>
-         
-          <div css={css`
-          width:100%;
-          padding: 18px 0 16px 0;
-          box-sizing: border-box;
-          `}>개죽이님이 회원님의 게시글에 댓글을 남겼습니다.</div>
-         
-          <div css={css`
-          width:100%;
-          padding: 18px 0 16px 0;
-          box-sizing: border-box;
-          `}>개죽이님이 회원님의 게시글에 댓글을 남겼습니다.</div>
-         
-          <div css={css`
-          width:100%;
-          padding: 18px 0 16px 0;
-          box-sizing: border-box;
-          `}>개죽이님이 회원님의 게시글에 댓글을 남겼습니다.</div>
-         
-          </s.AlarmContentBox>
-
-        
-        
-        </s.AlarmContentsWrapper>
-      
-
+          <s.AlarmContent>
+            <div>image..</div>
+            <div>개죽이님이 회원님의 게시글에 댓글을 남겼습니다.</div>
+            <div>1시간 전</div>
+            <div>수락</div>
+          </s.AlarmContent>
+          </s.AlarmContentsWrapper>
+        </s.AlarmTabWrapper>
       </s.AlarmModalWrapper>
     </Modal>
     
   );
 };
 
-export default CustomModal;
+export default CustomModalAlarm;
