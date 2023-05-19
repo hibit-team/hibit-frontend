@@ -58,6 +58,12 @@ display:flex;
 justify-content:space-between;
 `
 export const AcceptButtonHoverCss = css`
+@media (hover: hover) { 
+  &:hover {
+    color: white;
+    background:${COLORS.sub_Friend};
+    font-weight: 900;
+  }
 `
 
 // 1. read or not 폰트 컬러 상태관리

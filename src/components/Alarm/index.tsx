@@ -123,12 +123,13 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) 
             font-size: 10px;
             font-weight:700;
             position:relative;
-            right:2rem;
+            right:1.8rem;
             width:42px;
             height:16px;
             border-radius: 12px;
             box-sizing:border-box;
             background:${COLORS.main100};
+            &:hover{${s.AcceptButtonHoverCss}};
             `}>수락</div>
             <div css={css`
           grid-column:4;
@@ -140,11 +141,12 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) 
           font-size: 10px;
           font-weight:700;
           position:relative;
-          right:4rem;
+          right:3.8rem;
           width:42px;
           height:16px;
           border-radius: 12px;
           box-sizing:border-box;
+          &:hover{${s.AcceptButtonHoverCss}};
             `}>거절</div>
           </s.AlarmContent>)})}
 
