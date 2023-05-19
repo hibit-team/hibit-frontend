@@ -9,7 +9,7 @@ import MoHeaderComponent from "../../components/Main/Mobile/MobileHeader";
 import MobileNavbar from "../../components/Main/Mobile/MobileNavbar";
 import MobileTab from "../../components/Main/Mobile/MobileTab";
 import MobileSlider from "../../components/Main/Mobile/MobileSlider";
-import CustomModalAlarm from "../../components/Alarm";
+import CustomModalAlarm, { AlarmStyles } from "../../components/Alarm";
 
 const MainPage = () => {
   const [toggleState,setToggleState] = useRecoilState<boolean>(toggleNavState);
@@ -32,7 +32,7 @@ const MainPage = () => {
     }
     return(
       <>    <CustomModalAlarm isOpen={AlarmSwitch}
-      onRequestClose={onCloseAlarm}
+      onRequestClose={onCloseAlarm} style={AlarmStyles}
      ></CustomModalAlarm>
         <MoHeaderComponent onToggle={onToggle}></MoHeaderComponent>
         <MobileTab></MobileTab>

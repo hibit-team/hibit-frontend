@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import styled from '@emotion/styled';
 import COLORS from '../../assets/color';
 import { css } from '@emotion/react';
@@ -35,18 +36,21 @@ padding:20px;
 //알람 컨텐츠
 
 export const AlarmContentsWrapper =styled.div`
-width:100%;
+max-width:310px;
 max-height: 320px;
+overflow-x:hidden;
 overflow-y:scroll;
 `
 
 export const AlarmContent = styled.div`
 width:100%;
-padding: 1rem 1rem 1rem 0;
-display:flex;
-justify-content: space-between;
+padding: 1rem 0 1rem 0;
+display:grid;
+grid-gap: 0px 12px;
+grid-template-columns:48px;
+grid-auto-columns: repeat(3,1fr);
+border-bottom: 1px solid ${COLORS.Gray2}
 `
-
 export const AcceptButtonWrapper = styled.div`
 width:90px;
 height:1rem;
@@ -60,7 +64,3 @@ export const AcceptButtonHoverCss = css`
 // 2. 프로필 + 이모지:알람타입에따른 (압축)
 // 3. Username 및 주요키워드 굵기 변경 렌더링
 // 4. 수락 거절 상태관리
-
-// export const AlarmContent =styled.div`
-// color: ${AlarmState? main100: black}
-// `
