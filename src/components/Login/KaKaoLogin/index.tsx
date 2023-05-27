@@ -1,5 +1,6 @@
 import React from 'react';
 import * as s from "./styles";
+import KakaoIcon from "../../../images/components/Login/KakaoIcon.png"
 
 const KaKaoLogin = () => {
   const REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
@@ -12,7 +13,10 @@ const KaKaoLogin = () => {
   };
 
   return (
-    <s.Wrapper onClick={kakaoLogin}>KaKaoLogin</s.Wrapper>
+    <s.Wrapper onClick={kakaoLogin}>
+      <s.KakaoIcon src={KakaoIcon} alt='kakao icon' />
+      <s.Text>Kakao 계정으로 로그인</s.Text>
+    </s.Wrapper>
   )
 };
 
