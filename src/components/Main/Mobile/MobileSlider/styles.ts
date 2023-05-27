@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {css} from '@emotion/react';
 export const SliderContainer = styled(Slider)`
-  width: 326px;
+  Width: 326px;
   height: 458px;
   margin:auto;
   margin-top:8px;

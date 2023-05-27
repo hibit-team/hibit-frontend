@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React,{useState} from 'react';
 import Modal from 'react-modal';
 import { css } from '@emotion/react';
 import * as s from './styles';
@@ -24,30 +24,37 @@ export const AlarmStyles:ReactModal.Styles =
   left: 0,
   right: 0,
   bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.25)',
+  backgroundColor: 'rgba(0, 0, 0, 0.2)',
   zIndex: 10,
 },
 content: {
   display:'flex',
+  // width:'333px',
+  // height:'470px',
   width:'333px',
   height:'470px',
   justifyContent:'center',
   top: '122px',
   left:0,
-  right: 6,
+  right: 0,
   bottom:0,
   zIndex: 10,
   borderRadius:'1rem',
   padding:'0',
   margin:'0 auto',
+  maxWidth: '100vw',
   overflow:'hidden',
 }};
 
 //알람 모달컴포넌트
 const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) => {
+  const [openState,setOpenState]=useState(true);
+  const closeAlarm = ()=>{
+    setOpenState(!openState)
+  };
   return (
   <Modal
-      isOpen={isOpen}
+      isOpen={openState}
       onRequestClose={onRequestClose}
       style={AlarmStyles}
     >
@@ -55,14 +62,13 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) 
         <s.AlarmTopBar>
         <div css={css`width:100%;
         `}>알림</div>
-        <div css={css`&:after {content: "\\00d7"; font-size:23pt;
+        <div onClick={closeAlarm} css={css`&:after {content: "\\00d7"; font-size:25pt;
       font-weight:500;      
       }`}></div>
         </s.AlarmTopBar>
         
         <s.AlarmTabWrapper>
           <s.AlarmTab>
-
           <div css={css`width:50%; font-size:18px;
           font-weight: ${alarmTabState? 900 : 500};
           padding-bottom:10px;
@@ -70,7 +76,7 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) 
           border-bottom: ${alarmTabState? '3px' :'2px'} solid ${alarmTabState? COLORS.main79 : '#C9C9C9'};
           `}>매칭</div>
 
-<div css={css`width:50%; font-size:18px;
+        <div css={css`width:50%; font-size:18px;
           font-weight: ${!alarmTabState? 900 : 500};
           padding-bottom:10px;
           color: ${!alarmTabState? COLORS.main100 : '#black'};
@@ -103,7 +109,7 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) 
             word-wrap:word-break;
             line-height:18px;
             letter-spacing:-2%;
-            font-weight:900;
+            font-weight:500;
             font-size:14px;
             `}><span css={css`font-weight:700;`}>{item.userName}</span>{item.text}</div>
 
@@ -149,13 +155,10 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) 
           &:hover{${s.AcceptButtonHoverCss}};
             `}>거절</div>
           </s.AlarmContent>)})}
-
-
           </s.AlarmContentsWrapper>
         </s.AlarmTabWrapper>
       </s.AlarmModalWrapper>
     </Modal>
-    
   );
 };
 
