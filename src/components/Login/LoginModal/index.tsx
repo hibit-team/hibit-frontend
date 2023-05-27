@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import * as s from "./styles";
 import { ILoginModalProps } from "../../../interfaces/ILoginModalProps";
 import XcloseBtn from "../../../images/components/Login/XcloseBtn.svg";
