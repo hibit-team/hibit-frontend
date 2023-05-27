@@ -5,6 +5,8 @@ import { css } from '@emotion/react';
 import * as s from './styles';
 import COLORS from '../../assets/color';
 import useIsMobile from '../../hooks/useIsMobile';
+import { useRecoilState } from 'recoil';
+import { AlarmSwitchState } from '../../recoil/atom/AlarmSwitchState';
 //알람 상태관리필요 ( useEffect : 매칭 컴포넌트부터)
 const alarmTabState = true;
 
@@ -22,7 +24,7 @@ const textData = [
 
 //알람 모달컴포넌트
 const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) => {
-  const [openState,setOpenState]=useState(true);
+  const [openState,setOpenState] =useRecoilState(AlarmSwitchState);
   const closeAlarm = ()=>{
     setOpenState(!openState)
   };
