@@ -9,7 +9,7 @@ import MoHeaderComponent from "../../components/Main/Mobile/MobileHeader";
 import MobileNavbar from "../../components/Main/Mobile/MobileNavbar";
 import MobileTab from "../../components/Main/Mobile/MobileTab";
 import MobileSlider from "../../components/Main/Mobile/MobileSlider";
-import CustomModalAlarm, { AlarmStyles } from "../../components/Alarm";
+import CustomModalAlarm from "../../components/Alarm";
 
 const MainPage = () => {
   const [toggleState,setToggleState] = useRecoilState<boolean>(toggleNavState);
@@ -32,7 +32,7 @@ const MainPage = () => {
     }
     return(
       <>    <CustomModalAlarm isOpen={AlarmSwitch}
-      onRequestClose={onCloseAlarm} style={AlarmStyles}
+      onRequestClose={onCloseAlarm} 
      ></CustomModalAlarm>
         <MoHeaderComponent onToggle={onToggle}></MoHeaderComponent>
         <MobileTab></MobileTab>
@@ -42,9 +42,9 @@ const MainPage = () => {
   }
   return (
     <LayoutTemplate>
-      {/* <CustomModal isOpen={AlarmSwitch}
-      onRequestClose={onCloseAlarm}
-     ></CustomModal> */}
+    <CustomModalAlarm isOpen={AlarmSwitch}
+      onRequestClose={onCloseAlarm} 
+     ></CustomModalAlarm>
       <MainTab></MainTab>
       <s.Wrapper>
         {/* <GoogleLoginButton /> */}

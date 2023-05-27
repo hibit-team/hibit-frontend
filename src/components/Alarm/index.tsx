@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import { css } from '@emotion/react';
 import * as s from './styles';
 import COLORS from '../../assets/color';
+import useIsMobile from '../../hooks/useIsMobile';
 //알람 상태관리필요 ( useEffect : 매칭 컴포넌트부터)
 const alarmTabState = true;
 
@@ -15,8 +16,18 @@ const textData = [
   { id: 4, userName: "고냥이", text: "님이 회원님의 게시글에 댓글을 남겼습니다. 회원님의 게시글에 SAY Hellooooo asap!", time: '1시간 전',},
 ];
 
-//리팩토링 필요
-export const AlarmStyles:ReactModal.Styles = 
+
+
+
+
+//알람 모달컴포넌트
+const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) => {
+  const [openState,setOpenState]=useState(true);
+  const closeAlarm = ()=>{
+    setOpenState(!openState)
+  };
+  const isMobile = useIsMobile();
+   const AlarmStyles1:ReactModal.Styles = 
   { 
   overlay: {
   position: 'fixed',
@@ -29,8 +40,6 @@ export const AlarmStyles:ReactModal.Styles =
 },
 content: {
   display:'flex',
-  // width:'333px',
-  // height:'470px',
   width:'333px',
   height:'470px',
   justifyContent:'center',
@@ -46,12 +55,36 @@ content: {
   overflow:'hidden',
 }};
 
-//알람 모달컴포넌트
-const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) => {
-  const [openState,setOpenState]=useState(true);
-  const closeAlarm = ()=>{
-    setOpenState(!openState)
-  };
+ const AlarmStyles2:ReactModal.Styles = 
+  { 
+  overlay: {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  zIndex: 10,
+},
+content: {
+  display:'flex',
+  width:'333px',
+  height:'470px',
+  justifyContent:'center',
+  top: '78px',
+  left: 570,
+  right: 0,
+  bottom:0,
+  zIndex: 10,
+  borderRadius:'1rem',
+  padding:'0',
+  margin:'0 auto',
+  maxWidth: '100vw',
+  overflow:'hidden',
+}};
+const AlarmStyles = isMobile ? AlarmStyles1 : AlarmStyles2;
+
+
   return (
   <Modal
       isOpen={openState}
