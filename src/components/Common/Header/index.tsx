@@ -5,6 +5,7 @@ import * as s from "./styles";
 import HibitLogo from "../../../images/components/HibitLogo.svg";
 import AlarmIcon from "../../../images/components/AlarmIcon.svg";
 import useIsMobile from '../../../hooks/useIsMobile';
+import LoginModal from '../../Login/LoginModal';
 
 const CATEGORIES: IHeaderCategory[] = [
   { title: "서비스 소개", link: "/intro" },
@@ -20,13 +21,24 @@ const Header = () => {
   const [isAlarm, setIsAlarm] = useState<boolean>(true);
   const [alarmCount, setAlarmCount] = useState<number>(3);
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    console.log({modalOpen});
+  };
+
   useEffect(() => {
     if (alarmCount === 0) setIsAlarm(false);
     else setIsAlarm(true);
   }, [alarmCount]);
 
   const onClickLogin = () => {
-    setIsLogin(true);
+    // setIsLogin(true);
+    openModal();
   };
 
   const onClickLogout = () => {
@@ -96,6 +108,7 @@ const Header = () => {
         <s.RightContainer>
           <s.TextWrapper onClick={() => onClickSignup()}>회원가입</s.TextWrapper>
           <s.TextWrapper onClick={() => onClickLogin()}>로그인</s.TextWrapper>
+          <LoginModal open={modalOpen} close={closeModal} />
         </s.RightContainer>
       }
     </s.Wrapper>
