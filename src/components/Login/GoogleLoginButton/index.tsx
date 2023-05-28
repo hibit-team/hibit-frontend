@@ -29,7 +29,7 @@ const GoogleLoginButton = () => {
   return (
     <s.Wrapper>
       <GoogleOAuthProvider clientId={clientId!}>
-        <GoogleLogin
+        <GoogleLogin 
           onSuccess={(res: CredentialResponse) => {
             handleCredentialResponse(res);
           }}

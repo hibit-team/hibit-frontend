@@ -30,6 +30,9 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1;
   font-family: 'SUIT';
+	-webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: never;
 }
 ol, ul {
 	list-style: none;
@@ -46,5 +49,8 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
+
+
 `;
 export default globalStyles;

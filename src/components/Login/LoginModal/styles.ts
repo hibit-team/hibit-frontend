@@ -37,6 +37,7 @@ export const Header = styled.div`
   width: 100%;
   height: 76px;
   background-color: #804DD3;
+  border-radius:16px 16px 0 0;
 `;
 
 export const HeaderText = styled.div`
@@ -110,9 +111,11 @@ export const IntroStrongText = styled.span`
 
 export const LoginBtnWrapper = styled.div`
   display: flex;
+  position:relative;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   margin-top: 16px;
+  right:2rem;
   width: 540px;
 `;

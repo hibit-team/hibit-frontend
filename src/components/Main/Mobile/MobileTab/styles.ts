@@ -3,12 +3,11 @@ import styled from "@emotion/styled";
 export const TabContainer = styled.div`
   margin:auto;
   font-size: 16px;
-  width:100%;
+  maxWidth:100vw;
   height:40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  scale:1.05;
 `;
 
 export const LeftTab = styled.div`
@@ -43,7 +42,6 @@ export const TabContainer_2 = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  scale:1.05;
 `;
 
 export const LeftTab_2 = styled.div`

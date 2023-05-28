@@ -6,6 +6,8 @@ import HibitLogo from "../../../images/components/HibitLogo.svg";
 import AlarmIcon from "../../../images/components/AlarmIcon.svg";
 import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
+import { useRecoilState } from 'recoil';
+import { AlarmSwitchState } from '../../../recoil/atom/AlarmSwitchState';
 
 const CATEGORIES: IHeaderCategory[] = [
   { title: "서비스 소개", link: "/intro" },
@@ -17,9 +19,11 @@ const Header = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [selectedCategory, setSelectedCategory] = useState<string>("메인");
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState<boolean>(true);
   const [isAlarm, setIsAlarm] = useState<boolean>(true);
   const [alarmCount, setAlarmCount] = useState<number>(3);
+  const [alarmState,setAlarmState] = useRecoilState<boolean>(AlarmSwitchState);
+  const onAlarmState = ()=>setAlarmState(!alarmState)
 
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = () => {
@@ -97,7 +101,7 @@ const Header = () => {
       {isLogin ?
         <s.RightContainer>
           <s.AlarmLogoContainer>
-            <img src={AlarmIcon} alt='alarm-icon' />
+            <img onClick={onAlarmState} src={AlarmIcon} alt='alarm-icon' />
             {isAlarm ? 
               <s.AlarmCountWrapper>{alarmCount}</s.AlarmCountWrapper>
               : <></>

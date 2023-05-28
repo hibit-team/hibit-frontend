@@ -1,15 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import {css} from '@emotion/react';
-import * as s from "./styles";
-// import Swimmer from "../../../images/components/swimmer.svg";
-// import TwoPeople from "../../../images/components/people.svg";
-// import PurpleBg from '../../../images/components/Purple.svg'
-// import Arrow from '../../../images/components/Arrow.svg';
 
+import * as s from "./styles";
 import Swimmer from '../../../../images/mobile/mobileSwimmer.svg';
 import TwoPeople from '../../../../images/mobile/mobilePeople.svg';
 import PurpleBg from '../../../../images/mobile/mobilePurpleBG.svg';
 import Arrow from '../../../../images/mobile/moibleArrow.svg';
+
+
 const settings = {
   arrows: false,
   dots: false,
