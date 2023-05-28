@@ -1,11 +1,11 @@
-import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MainPage from "./pages/Main";
 import styled from "@emotion/styled";
-import { Global, css } from "@emotion/react";
+import { Global } from "@emotion/react";
 import globalStyles from "./fonts/GlobalStyles";
 import KaKao from "./pages/KaKao";
 import { RecoilRoot } from "recoil";
+import MyProfile from "./pages/MyProfile";
 
 function App() {
   return (
@@ -17,6 +17,7 @@ function App() {
             <Routes>
               <Route path="/" element={<MainPage />} />
               <Route path="/user/kakao-oauth" element={<KaKao />} />
+              <Route path="/profile" element={<MyProfile />} />
             </Routes>
           </Router>
         </Container>
