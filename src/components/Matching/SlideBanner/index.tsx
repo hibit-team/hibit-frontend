@@ -32,12 +32,10 @@ const settings = {
 const MatchingSlideBanner = () => {
   return (
     <s.MatchSlideContainer {...settings} >
-
         <div css={css`background-color:#EEEEEE; width:100vw;height:400px`}>1</div>
         <div css={css`background-color:#EEEEEE; width:100vw;height:400px`}>2</div>
         <div css={css`background-color:#EEEEEE; width:100vw;height:400px`}>3</div>
         <div css={css`background-color:#EEEEEE; width:100vw;height:400px`}>4</div>
-
     </s.MatchSlideContainer>
       )
   }
