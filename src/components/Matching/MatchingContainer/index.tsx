@@ -114,6 +114,12 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
           </div>
         </div>
       </div>
+      <div css={s.MatcingCardInfoCss}>
+        <div css={css`padding:24px;`}>
+          <div css={css`font-weight: 500; color:#242424; font-size:15px; margin-bottom:8px;`}>전시회 명 최대 공백포함 </div>
+          <div css={css`font-weight:900; font-size:21px;`}>게시글명 공백포함 최대 30자까지 공백포함 최대 30자까지 공백포함 최대 30자까지 </div>
+        </div>
+      </div>
     </div>
   );
 };
