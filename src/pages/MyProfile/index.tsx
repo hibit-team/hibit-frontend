@@ -272,6 +272,10 @@ const MyProfile = () => {
               </s.CautionContainer>
             </s.OptionalInfoWrapper>
         </s.OptionalInfoContainer>
+        <s.ButtonContainer>
+          <s.CancelBtn isEditMode={isEditMode}>취소</s.CancelBtn>
+          <s.SaveBtn isEditMode={isEditMode}>저장하기</s.SaveBtn>
+        </s.ButtonContainer>
       </s.Wrapper>
     </LayoutTemplateGray>
   );

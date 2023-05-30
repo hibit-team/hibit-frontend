@@ -458,3 +458,52 @@ export const CautionText = styled.div`
   font-weight: 500;
   margin-left: 8px;
 `;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  margin-top: 60px;
+`;
+
+export const CancelBtn = styled.button<IEditMode>`
+  display: ${(props) => props.isEditMode ? "flex" : "none"};
+  justify-content: center;
+  align-items: center;
+  width: 217px;
+  height: 72px;
+  margin-right: 33px;
+  font-family: 'SUIT';
+  font-size: 22px;
+  font-weight: 500;
+  background-color: #EEEEEE;
+  color: #797979;
+  border: 1px solid #797979;
+  border-radius: 10px;
+
+  &:hover {
+    font-weight: 800;
+    background-color: #C9C9C9;
+  }
+`;
+
+export const SaveBtn = styled.button<IEditMode>`
+  display: ${(props) => props.isEditMode ? "flex" : "none"};
+  justify-content: center;
+  align-items: center;
+  width: 217px;
+  height: 72px;
+  font-family: 'SUIT';
+  font-size: 22px;
+  font-weight: 500;
+  background-color: #D8C9F2;
+  color: #5E1EC7;
+  border: 1px solid #5E1EC7;
+  border-radius: 10px;
+
+  &:hover {
+    font-weight: 800;
+    background-color: #5E1EC7;
+    color: white;
+  }
+`;
