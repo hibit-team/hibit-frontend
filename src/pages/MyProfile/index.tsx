@@ -1,9 +1,24 @@
-import React, { useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import * as s from "./styles";
 import useIsMobile from "../../hooks/useIsMobile";
 import LayoutTemplateGray from "../../components/Common/LayoutTemplateGray";
 import { IProfile } from "../../interfaces/Profile/IProfile";
 import { tmpPersonality } from "../../assets/data/personality/tmpPersonality";
+import CheckIcon from "../../images/components/Profile/CheckIcon.svg";
+import UnCheckIcon from "../../images/components/Profile/UnCheckIcon.svg";
+import address_sido_sigugun from "../../assets/data/address/address";
+import ProfileImage from "../../components/Profile";
+import WhitePlus from "../../images/components/Profile/WhitePlus.svg";
+import GrayPlus from "../../images/components/Profile/GrayPlus.svg";
+import CautionIcon from "../../images/components/Profile/CautionIcon.svg";
+
+export interface IimgProps {
+  imgURL: string;
+  isFirst: boolean;
+  isEditMode: boolean;
+  imgList: string[];
+  setImgList: (value: string[]) => void;
+}
 
 const MyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -17,8 +32,12 @@ const MyProfile = () => {
     introduce: "오늘은 축구가 땡긴다",
     job: "숭실대학교",
     address_sido: "서울특별시",
-    address_sigungu: "구로구",
-    img: ["url1", "url2"], 
+    address_sigugun: "구로구",
+    img: [
+      "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-1.png",
+      "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-2.png",
+      "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-3.png"
+    ], 
   };
 
   const [nickname, setNickname] = useState<string>(receivedData.nickname);
@@ -26,12 +45,14 @@ const MyProfile = () => {
   const [gender, setGender] = useState<number>(receivedData.gender);
   const [personality, setPersonality] = useState<string[]>(receivedData.personality);
   const [introduce, setIntroduce] = useState<string>(receivedData.introduce);
+  // const [job, setJob] = useState<string | undefined>();
   const [job, setJob] = useState<string | undefined>(receivedData.job);
   const [address_sido, setAddress_sido] = useState<string | undefined>(receivedData.address_sido);
-  const [address_sigungu, setAddress_sigungu] = useState<string | undefined>(receivedData.address_sigungu);
-  const [img, setImg] = useState<string[] | undefined>(receivedData.img);
+  const [isAddressChanged, setIsAddressChanged] = useState<boolean>(false);
+  const [address_sigungu, setAddress_sigungu] = useState<string | undefined>(receivedData.address_sigugun);
+  const [img, setImg] = useState<string[] | undefined | null>(receivedData.img);
   
-  /* 성격 리스트 - api로 받아 올 부분 */
+  /* 성격 리스트 - api로 받아 올 부분 */ 
   const personalityList = tmpPersonality;
 
   /* 수정이 반영된 데이터: `취소` 버튼 클릭 시 receivedData로 다시 초기화 */
@@ -53,6 +74,25 @@ const MyProfile = () => {
   const onClickMaleBtn = () => setGender(0);
   const onClickFemaleBtn = () => setGender(1);
 
+  const onChangeIntroText = (e: React.ChangeEvent<HTMLTextAreaElement>) => setIntroduce(e.target.value);
+  const onChangeJob = (e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value);
+
+  const onChangeSIDO = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setAddress_sido(e.target.value);
+    setIsAddressChanged(true);
+  }
+
+  const imgInputRef = useRef<HTMLInputElement | null>(null);
+  const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if(!e.target.files) return;
+    console.log(e.target.files[0].name);
+  }, []);
+  const onUploadImgBtnClick = useCallback(() => {
+    if(!imgInputRef.current) return;
+    imgInputRef.current.click();
+  }, [])
+
+  
   if(useIsMobile()) {
     return (
       <>
@@ -73,13 +113,13 @@ const MyProfile = () => {
           <s.EssentialInfoWrapper>
             <s.NicknameContainer>
               <s.EssentialColumn>닉네임</s.EssentialColumn>
-              <s.NicknameInput disabled={!isEditMode} placeholder={nickname}/>
+              <s.NicknameInput disabled={!isEditMode} placeholder={nickname} value={nickname} />
               <s.CheckIsDuplicateBtn disabled={!isEditMode} isEditMode={isEditMode}>중복확인</s.CheckIsDuplicateBtn>
             </s.NicknameContainer>
 
             <s.AgeContainer>
               <s.EssentialColumn>나이</s.EssentialColumn>
-              <s.AgeInput disabled={!isEditMode} placeholder={`${age}`} type="number"/>
+              <s.AgeInput disabled={!isEditMode} placeholder={`${age}`} type="number" value={age} />
             </s.AgeContainer>
 
             <s.GenderContainer>
@@ -112,18 +152,125 @@ const MyProfile = () => {
               })}
             </s.PersonalityTable>
 
-
             <s.HorizontalLine />
             <s.EssentialColumn2>메이트에게 자신을 소개 해 주세요.</s.EssentialColumn2>
+            <s.IntroTextArea 
+              disabled={!isEditMode} 
+              placeholder={introduce} 
+              onChange={(e) => onChangeIntroText(e)} 
+              value={introduce}
+            />
           </s.EssentialInfoWrapper>
-        </s.EssentialInfoContainer>
+        </s.EssentialInfoContainer>  
         
         <s.BottomTitleContainer>
           <s.Title>선택 노출 정보</s.Title>
         </s.BottomTitleContainer>
 
         <s.OptionalInfoContainer>
+          <s.OptionalInfoWrapper>
+              <s.JobContainer>
+                { 
+                  job ? 
+                  <s.CheckBox src={CheckIcon} alt="checked" /> : 
+                  <s.CheckBox src={UnCheckIcon} alt="unchecked" />
+                }
+                <s.OptionalColumn>직업 혹은 학교</s.OptionalColumn>
+                <s.JobInput 
+                  disabled={!isEditMode} 
+                  placeholder={job} 
+                  onChange={(e) => onChangeJob(e)} 
+                  value={job}
+                />
+              </s.JobContainer>
 
+              <s.AddressContainer>
+                { 
+                  address_sido ? 
+                  <s.CheckBox src={CheckIcon} alt="checked" /> : 
+                  <s.CheckBox src={UnCheckIcon} alt="unchecked" />
+                }
+                <s.OptionalColumn>주소</s.OptionalColumn>
+                <s.AddressSIGU 
+                  onChange={(e) => onChangeSIDO(e)} 
+                  disabled={!isEditMode}
+                >
+                  {
+                    address_sido ?
+                    <option value={address_sido}>{address_sido}</option> :
+                    <option value="">선택</option>
+                  }
+                  {
+                    address_sido_sigugun
+                      .sido
+                      .map((sido) => (
+                        <option 
+                          key={`${sido}`} 
+                          value={sido.codeNm}
+                        >{sido.codeNm}</option>
+                      )
+                    )
+                  }
+                </s.AddressSIGU>
+                <s.AddressSIGUGUN 
+                  onChange={(e) => setAddress_sigungu(e.target.value)}
+                  disabled={!isEditMode}
+                >
+                  {
+                    address_sido_sigugun && !isAddressChanged ?
+                    <option value={address_sigungu}>{address_sigungu}</option> :
+                    <option value="">선택</option>
+                  }
+                  {
+                    address_sido_sigugun.sigugun
+                      .filter((item) => item.sido === address_sido)
+                      .map((sigugun) => (
+                          <option 
+                            key={sigugun.sigugun} 
+                            value={sigugun.codeNm}
+                          >{sigugun.codeNm}</option>
+                        )
+                      )
+                  }
+                </s.AddressSIGUGUN>
+              </s.AddressContainer>
+
+              <s.ImageContainer>
+                {
+                  (img?.length !== 0) ? 
+                  <s.CheckBox src={CheckIcon} alt="checked" /> : 
+                  <s.CheckBox src={UnCheckIcon} alt="unchecked" />
+                }
+                <s.OptionalColumn>나의 사진</s.OptionalColumn>
+                <s.ImageList>
+                  <s.ImageAddBox disabled={!isEditMode} onClick={onUploadImgBtnClick}>
+                    <s.ImageInputBox type="file" accept="image/*" ref={imgInputRef} onChange={onUploadImg} />
+                    {
+                      isEditMode ? 
+                      <img src={GrayPlus} alt="gray" /> :
+                      <img src={WhitePlus} alt="white" />
+                    }
+                  </s.ImageAddBox>
+                  {
+                    img?.map((item, idx) => (
+                      <ProfileImage 
+                        imgURL={item} 
+                        isFirst={idx === 0 ? true : false}
+                        isEditMode={isEditMode}
+                        imgList={img}
+                        setImgList={setImg}
+                      />
+                    ))
+                  }
+                </s.ImageList>
+              </s.ImageContainer>
+              <s.CautionContainer>
+                <s.CautionImage>
+                  <img src={CautionIcon} alt="caution" />
+                </s.CautionImage>
+                <s.CautionText>대표 이미지는 모든 유저에게 보여집니다.</s.CautionText>
+              </s.CautionContainer>
+            </s.OptionalInfoWrapper>
         </s.OptionalInfoContainer>
       </s.Wrapper>
     </LayoutTemplateGray>

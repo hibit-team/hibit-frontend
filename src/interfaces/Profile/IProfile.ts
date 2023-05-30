@@ -6,6 +6,6 @@ export interface IProfile {
   introduce: string,
   job?: string,
   address_sido?: string,
-  address_sigungu?: string,
-  img?: string[] 
+  address_sigugun?: string,
+  img?: string[]
 }

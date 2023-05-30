@@ -52,7 +52,6 @@ export const EssentialInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 920px;
-  height: 1176px;
   border: 1px solid #c9c9c9;
   border-radius: 10px;
   background-color: white;
@@ -272,6 +271,20 @@ export const PersonalityItem = styled.button<ISelected>`
   font-weight: ${(props) => props.isSelected ? "800" : "500"};
 `;
 
+export const IntroTextArea = styled.textarea`
+  display: flex;
+  width: 840px;
+  height: 208px;
+  margin-top: 20px;
+  padding: 28px;
+  box-sizing: border-box;
+  resize: none;
+  font-family: 'SUIT';
+  font-size: 18px;
+  font-weight: 500;
+  border: 1px solid #797979;
+  border-radius: 10px;
+`;
 
 export const BottomTitleContainer = styled.div`
   display: flex;
@@ -289,4 +302,159 @@ export const OptionalInfoContainer = styled.div`
   border-radius: 10px;
   background-color: white;
   margin-top: 20px;
+`;
+
+export const OptionalInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 840px;
+  margin: 40px;
+`;
+
+export const CheckBox = styled.img`
+  display: flex;
+  width: 24px;
+  height: 24px;
+`;
+
+export const JobContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 56px;
+`;
+
+export const JobInput = styled.input`
+  display: flex;
+  width: 460px;
+  height: 56px;
+  border: 1px solid #797979;
+  border-radius: 10px;
+  margin-left: 46px;
+  box-sizing: border-box;
+  padding-left: 20px;
+  font-family: 'SUIT';
+  font-size: 18px;
+  background-color: white;
+
+  &:disabled {
+    background-color: #EEEEEE;
+  }
+`;
+
+export const OptionalColumn = styled.div`
+  display: flex;
+  width: 130px;
+  font-size: 22px;
+  font-weight: 500;
+  margin-left: 20px;
+`;
+
+export const AddressContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 56px;
+  margin-top: 20px;
+`;
+
+export const AddressSIGU = styled.select`
+  display: flex;
+  box-sizing: border-box;
+  padding-left: 20px;
+  width: 300px;
+  height: 56px;
+  border: 1px solid #797979;
+  border-radius: 10px;
+  margin-left: 46px;
+  font-family: 'SUIT';
+  font-size: 18px;
+
+  &:disabled {
+    background-color: #EEEEEE;
+    color: black;
+    border-color: #797979;
+  }
+`;
+
+export const AddressSIGUGUN = styled.select`
+  display: flex;
+  box-sizing: border-box;
+  padding-left: 20px;
+  width: 300px;
+  height: 56px;
+  border: 1px solid #797979;
+  border-radius: 10px;
+  margin-left: 20px;
+  font-family: 'SUIT';
+  font-size: 18px;
+
+  &:disabled {
+    background-color: #EEEEEE;
+    color: black;
+    border-color: #797979;
+  }
+`;
+
+export const ImageContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: 140px;
+  margin-top: 20px;
+`;
+
+export const ImageList = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const ImageAddBox = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 140px;
+  height: 140px;
+  border: 1px solid #797979;
+  border-radius: 10px;
+  margin-left: 46px;
+  
+  &:disabled {
+    background-color: #C9C9C9;
+    cursor: not-allowed;
+  }
+  background-color: #EEEEEE;
+  cursor: pointer;
+`;
+
+export const ImageInputBox = styled.input`
+  /* display: flex; */
+  width: 140px;
+  height: 140px;
+  display: none;
+`;
+
+export const ImageWrapper = styled.div`
+  display: flex;
+  width: 140px;
+  height: 140px;
+`;
+
+export const CautionContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 20px;
+  margin-left: 220px;
+`;
+
+export const CautionImage = styled.div`
+  display: flex;
+`;
+
+export const CautionText = styled.div`
+  display: flex;
+  color: #797979;
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 8px;
 `;

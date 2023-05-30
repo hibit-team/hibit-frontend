@@ -4,6 +4,7 @@ import * as s from "./styles";
 
 const GoogleLoginButton = () => {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  console.log({clientId});
 
   const handleCredentialResponse = (response: CredentialResponse) => {
     const responsePayload = decodeJwtResponse(response.credential!);
