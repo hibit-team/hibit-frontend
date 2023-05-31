@@ -15,6 +15,7 @@ const MainPage = () => {
   const onToggle: Function = ()=>{
     setToggleState(!toggleState);
   }
+  //알람 상태관리
   const [alarmState,setAlarmState] = useRecoilState<boolean>(AlarmSwitchState);
   const onAlarmState = ()=>setAlarmState(!alarmState)
 
