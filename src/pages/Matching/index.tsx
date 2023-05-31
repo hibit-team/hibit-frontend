@@ -5,6 +5,7 @@ import MatchingSearchBar from "../../components/Matching/SearchBar";
 import MatchingSlideBanner from "../../components/Matching/SlideBanner";
 
 const MatchingPage =()=>{
+  //
   return(<>
       <LayoutTemplate>
       <MatchingSlideBanner></MatchingSlideBanner>

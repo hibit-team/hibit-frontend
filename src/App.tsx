@@ -7,10 +7,16 @@ import KaKao from "./pages/KaKao";
 import { RecoilRoot } from "recoil";
 import MyProfile from "./pages/MyProfile";
 import MatchingPage from "./pages/Matching";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+
 function App() {
+  const queryClient = new QueryClient();
   return (
     <>
       <RecoilRoot>
+        <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen/>
         <Global styles={globalStyles}></Global>
         <Container>
           <Router>
@@ -22,6 +28,7 @@ function App() {
             </Routes>
           </Router>
         </Container>
+        </QueryClientProvider>
       </RecoilRoot>
     </>
   );
