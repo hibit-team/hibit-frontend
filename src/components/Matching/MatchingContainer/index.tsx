@@ -53,7 +53,7 @@ const MatchingCardComponent = () => {
   );
 };
 
-const MatchingContainer = () => {
+const MatchingContainer = ({fetchNextPage}:any) => {
   // mount시 data fetch:  useEffect(()=>{},[])
   return (
     <div>
@@ -63,7 +63,7 @@ const MatchingContainer = () => {
           <MatchingCardComponent/>
         ))}
       </s.MatchingGridContainer>
-      <s.LoadMoreButton>More...</s.LoadMoreButton>
+      <s.LoadMoreButton onClick={fetchNextPage}>More...</s.LoadMoreButton>
     </div>
   );
 };
