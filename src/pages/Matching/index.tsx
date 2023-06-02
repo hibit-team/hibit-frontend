@@ -59,7 +59,6 @@ const MatchingPage =()=>{
     },
     },
   )
-  console.log(data)
 
 
   return(status === 'loading' ? (

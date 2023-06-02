@@ -30,7 +30,7 @@ const MatchingFilterButton = ({sortOption,handleSortOption}:MatchingFilterButton
 
         <div onClick={()=>handleSortOption('allposts')}
         style={{width:'184px',height:'54px'}} css={selectedOption === 'allposts' ? s.SelectedFilterCss : s.FilterButtonCss}>게시글 전체보기👀</div>
-        <div style={{width:'151px,height:54px;'}} css={s.WriteButtonCss}>게시글 작성 ✍</div>
+        <div style={{width:'151px',height:'54px'}} css={s.WriteButtonCss}>게시글 작성 ✍</div>
       </s.FilterButtonWrapper>
     </s.FilterWrapper>
     </>

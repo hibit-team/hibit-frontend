@@ -24,7 +24,6 @@ margin-top:30px;
 max-width:100%;
 position:relative;
 left:1rem;
-
 `
 
 //카드 상단부이미지
@@ -52,34 +51,37 @@ box-sizing: border-box;
 
 `
 
-//카드 하단부 정보_header status
+//카드 상단부 label 정보의 컨테이너css(3인관람..) min-height보장
 export const HeadLabelWrapperCss =css`
-width:90%;
+width:50%;
 display:flex;
+min-height:72px;
 flex-wrap:wrap;
-position:relative;
+position:absolute;
 top:20px;
 left:1rem;
 `;
 
 export const LabelStatusCss =css`
+box-sizing:border-box;
+max-height:28px;
 padding: 4px 12px;
 font-size:16px;
-font-weigth:500px;
+font-weight:500;
 color: white;
-border-radius:1rem;
+border-radius: 1rem;
 border: 1px solid white;
 margin:4px;
 `
-//카드info영역의 하단부부분
+//카드info영역의 하단부부분(status+count)
 export const CardInfoBottom =styled.div`
 display:flex;
-box-sizing:border-box;
-width:100%;
+width:98%;
 justify-content:space-between;
-position:relative;
-top:353px;
-margin-top:8px;
+aling-items:center;
+box-sizing:border-box;
+position:absolute;
+top:394px;
 `
 //카드 모집status 
 export const CardStatus =styled.div`
@@ -92,15 +94,13 @@ font-size:16px;
 border-radius:1rem;
 border: 1.3px solid ${COLORS.Gray2};
 padding: 4px 12px;
-text-align:center;
 background-color:white;
-line-height:110%;
 `
-
+//카드 하단부 숫자카운트 정보
 export const CardBottomCountInfo =styled.div`
 display:flex;
-justify-content:center;
-align-items:center;
+position:relative;
+top:7px;
 font-size:16px;
 `
 
