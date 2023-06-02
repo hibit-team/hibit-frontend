@@ -5,26 +5,32 @@ import MatchingSearchBar from "../../components/Matching/SearchBar";
 import MatchingSlideBanner from "../../components/Matching/SlideBanner";
 import { useState } from "react";
 import HttpClient from "../../services/HttpClient";
-import { QueryFunction, useInfiniteQuery } from "@tanstack/react-query";
-import axios,{ AxiosError } from "axios";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { InfiniteData } from "@tanstack/react-query";
 
-interface Post{
-  id: number,
-  title: string,
-  body: string,
-  userId: number
-}
+
+export interface IPosts 
+  {
+    idx: number,
+    user: null,
+    title: string,
+    post_status: string,
+    number_and_What: string[],
+    mainimg: null,
+    liked: number,
+  }
+
+
 
 const MatchingPage =()=>{
 
-//sortOption : ['allPosts','thisWeek','likes']
-  const [sortOption,setSortOption] = useState<string>('allPosts')
-
-  const fetchPosts= async ({pageParam=0})=>{
-    const res = await axios.get(`https://jsonplaceholder.typicode.com/posts/`)
-    return res.data;
+//sortOption : ["allposts",'thisweek','like']
+  const [sortOption,setSortOption] = useState<string>("allposts")
+  const fetchPosts= async ({pageParam=1})=>{
+    const res = await HttpClient.get(`/post/list/${sortOption}/${pageParam}`);
+    return res
   }
-  // ?sort=${sortOption}&size=6`+pageParam
 
   //sortOption변경함수 
   const handleSortOption= (opt:string)=>{
@@ -32,26 +38,28 @@ const MatchingPage =()=>{
     setSortOption(opt)
   }
 
+
   const {
     status,
     data,
     error,
-    isFetching,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
+    // isFetching,
+    // isFetchingNextPage,
+    // isFetchingPreviousPage,
     fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-  } = useInfiniteQuery(
+    // fetchPreviousPage,
+    // hasNextPage,
+    // hasPreviousPage,
+  } = useInfiniteQuery<IPosts[],AxiosError>(
     ['posts',sortOption],
     fetchPosts,
     {
       getNextPageParam: (lastPage, allPages) => {
         return lastPage.length ? allPages.length + 1 : undefined
-    }
+    },
     },
   )
+  console.log(data)
 
 
   return(status === 'loading' ? (
@@ -62,8 +70,8 @@ const MatchingPage =()=>{
       <LayoutTemplate>
       <MatchingSlideBanner></MatchingSlideBanner>
       <MatchingSearchBar></MatchingSearchBar>
-      <MatchingFilterButton handleSortOption={handleSortOption}></MatchingFilterButton>
-      <MatchingContainer fetchNextPage={fetchNextPage}></MatchingContainer>
+      <MatchingFilterButton sortOption={sortOption} handleSortOption={handleSortOption}></MatchingFilterButton>
+      <MatchingContainer pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
       </LayoutTemplate>
   </div>
   ))

@@ -25,13 +25,25 @@ margin: 0 8px;
 cursor:pointer;
 `
 
-export const WriteButtonCss= css`
+export const WriteButtonCss = css`
 box-sizing:border-box;
 padding: 16px 24px 15px 24px;
 border: 2px solid ${COLORS.Gray3};
 border-radius:60px;
 color: ${COLORS.white};
 background-color:${COLORS.main100};
+text-align:center;
+margin: 0 8px;
+cursor:pointer;
+`
+
+
+export const SelectedFilterCss =css`
+box-sizing:border-box;
+padding: 16px 24px 15px 24px;
+color: ${COLORS.main100};
+border: 2px solid ${COLORS.main100};
+border-radius:60px;
 text-align:center;
 margin: 0 8px;
 cursor:pointer;

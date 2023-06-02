@@ -2,7 +2,10 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   // baseURL: process.env.NEXT_PUBLIC_SERVER_BASE_URL,
-  baseURL: "http://localhost:3000",
+  // public IP: http://3.34.238.189:8080
+  baseURL: "https://hibit.shop",
+  // baseURL:'https://jsonplaceholder.typicode.com',
+  // baseURL:'http://3.34.238.189:8080',
   withCredentials: true,
 });
 
