@@ -7,8 +7,6 @@ import { useState } from "react";
 import HttpClient from "../../services/HttpClient";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { InfiniteData } from "@tanstack/react-query";
-
 
 export interface IPosts 
   {
@@ -21,10 +19,7 @@ export interface IPosts
     liked: number,
   }
 
-
-
-const MatchingPage =()=>{
-
+  const MatchingPage =()=>{
 //sortOption : ["allposts",'thisweek','like']
   const [sortOption,setSortOption] = useState<string>("allposts")
   const fetchPosts= async ({pageParam=1})=>{
@@ -37,7 +32,6 @@ const MatchingPage =()=>{
     console.log(opt);
     setSortOption(opt)
   }
-
 
   const {
     status,
@@ -60,7 +54,6 @@ const MatchingPage =()=>{
     },
   )
 
-
   return(status === 'loading' ? (
     <p>Loading...</p>
   ) : status === 'error' ? (
@@ -70,7 +63,7 @@ const MatchingPage =()=>{
       <MatchingSlideBanner></MatchingSlideBanner>
       <MatchingSearchBar></MatchingSearchBar>
       <MatchingFilterButton sortOption={sortOption} handleSortOption={handleSortOption}></MatchingFilterButton>
-      <MatchingContainer pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
+      <MatchingContainer sortOption={sortOption}  pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
       </LayoutTemplate>
   </div>
   ))

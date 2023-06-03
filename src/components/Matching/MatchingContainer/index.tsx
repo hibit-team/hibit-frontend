@@ -8,8 +8,9 @@ import { IPosts } from "../../../pages/Matching";
 // import { InfiniteData } from "@tanstack/react-query";
 
 export interface IProps{
-  pages: IPosts[][] // IPosts[][]
-  fetchNextPage:any;
+  sortOption:string,
+  pages: IPosts[][],
+  fetchNextPage:any,
 }
 
 export interface IEachPost {
@@ -17,27 +18,13 @@ export interface IEachPost {
   eachData: IPosts
 }
 
-// IPosts (각 카드 게시글별 데이터 형태)
-// export interface IPosts 
-//   {
-//     idx: number,
-//     user: null,
-//     title: string,
-//     post_status: string,
-//     number_and_What: string[],
-//     mainimg: null,
-//     liked: number,
-//   }
-
-const ExhibitionText = [
-  "이번주 출발하는 전시",
-  "좋아요 많은 게시글",
-  "게시글 전체보기",
-];
-
-// const CardLabelStatus = ["2인 관람", "전시만 보기",'카페가기'];
-const CardLabelStatus = ["3인"]
-const CardDummyData = [1, 2, 3, 4, 5, 6, 7];
+const ExhibitionText: {
+  [key in string]: string;
+} = {
+thisweek:"이번주 출발하는 전시",
+like:  "좋아요 많은 게시글",
+allposts: "게시글 전체보기",
+};
 
 //매칭카드
 const MatchingCardComponent = ({eachData}:IEachPost) => {
@@ -77,13 +64,12 @@ const MatchingCardComponent = ({eachData}:IEachPost) => {
   );
 };
 
-//매칭컨테이너(pages) - 매칭 그리드컨테이너(grid틀: eachPage)-매칭카드컴포넌트(unit)
-const MatchingContainer = ({pages,fetchNextPage}:IProps) => {
+//매칭컨테이너(pages) - 매칭 그리드컨테이너(grid: eachPage)-매칭카드컴포넌트(eachData)
+const MatchingContainer = ({sortOption,pages,fetchNextPage}:IProps) => {
   console.log(`pages.length:${pages.length}`)
-  // mount시 data fetch:  useEffect(()=>{},[])
   return (
     <div>
-      <s.MatchingHeader>{ExhibitionText[0]}</s.MatchingHeader>
+      <s.MatchingHeader>{ExhibitionText[sortOption]}</s.MatchingHeader>
       <s.MatchingGridContainer>
       {/* pages: page 1 ,2 ,3 ...  각페이지의 데이터가 eachPage파라미터로 ..*/}
         {pages?.map((eachPage) => {
