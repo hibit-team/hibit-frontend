@@ -5,7 +5,6 @@ import LikeIcon from '../../../images/components/Matching/likeIcon.svg'
 import ReplyIcon from '../../../images/components/Matching/replyIcon.svg'
 import COLORS from "../../../assets/color";
 import { IPosts } from "../../../pages/Matching";
-// import { InfiniteData } from "@tanstack/react-query";
 
 export interface IProps{
   sortOption:string,
@@ -30,34 +29,29 @@ allposts: "게시글 전체보기",
 const MatchingCardComponent = ({eachData}:IEachPost) => {
   return (
     <div css={css`position:relative`}>
-      <div css={s.MatchingCardImgCss}>
-        {/* style={backgroundImage:url('data.imageUrl')} */}
-
+      <div style={{backgroundImage: `url(${eachData?.mainimg})`}} css={s.MatchingCardImgCss}>
         <div css={s.HeadLabelWrapperCss}>
-          {eachData.number_and_What.map((item:string, idx:number) => (
+          {eachData?.number_and_What.map((item:string, idx:number) => (
             <span key={idx} css={s.LabelStatusCss}>
               {item}
             </span>
           ))}
           <s.CardInfoBottom>
-            <s.CardStatus>{eachData.post_status}</s.CardStatus>
+            <s.CardStatus>{eachData?.status === 'N' ? '모집중' : eachData?.status==='C' ? '모집완료': ''}</s.CardStatus>
             <s.CardBottomCountInfo>
-              <div>
-                <img css={css`margin:0 4px -2px 0px;`} src={ReplyIcon} alt="reply-count"></img>
-                <span css={css`color: ${COLORS.Gray3};margin:0 8px 0 0px;`}>{eachData.liked}</span>
-              </div>
-              <div>
-                <img css={css`margin:0 2px -1px 0px;`} src={LikeIcon} alt="like-count"></img>
-                <span css={css`color: ${COLORS.Red};margin:0 0 0 2px;`}>{eachData.liked}</span>
-              </div>
+                <img css={css`margin:2px`} src={ReplyIcon} alt="reply-count"></img>
+                <span css={css`position:relative; top: 2px; margin:4px; color: ${COLORS.Gray3};`}>{eachData?.comment_number}</span>
+                <img css={css`margin:2px 2px 2px 6px;`} src={LikeIcon} alt="like-count"></img>
+                <span css={css`position:relative; top: 2px; margin:4px ;color: ${COLORS.Red};`}>{eachData?.liked}</span>
             </s.CardBottomCountInfo>
           </s.CardInfoBottom>
         </div>
       </div>
       <div css={s.MatcingCardInfoCss}>
         <div css={css`padding:24px;`}>
-          <div css={css`font-weight: 500; color:#242424; font-size:15px; margin-bottom:8px;`}>{eachData.title}</div>
-          <div css={css`font-weight:900; font-size:21px;`}>게시글명 공백포함 최대 30자까지 공백포함 최대 30자까지 공백포함 최대 30자까지 </div>
+          <div css={css`font-weight: 500; color:#242424; font-size:15px; margin-bottom:8px;`}>{eachData?.title}</div>
+          {/* <div css={css`font-weight: 500; color:#242424; font-size:15px; margin-bottom:8px;`}>20자까지 공백포함 최대 20자까지 공백포함 최대</div> */}
+          <div css={css`font-weight:900; font-size:21px;`}>{eachData?.title} </div>
         </div>
       </div>
     </div>
@@ -73,13 +67,12 @@ const MatchingContainer = ({sortOption,pages,fetchNextPage}:IProps) => {
       <s.MatchingGridContainer>
       {/* pages: page 1 ,2 ,3 ...  각페이지의 데이터가 eachPage파라미터로 ..*/}
         {pages?.map((eachPage) => {
-          console.log(`eachPage.length:${eachPage.length}`);
           // 페이지에 해당하는 6개 데이터 mapping
           return eachPage.map((eachPost)=>
             <MatchingCardComponent key={eachPost.idx} eachData={eachPost}/>)})
         }
       </s.MatchingGridContainer>
-      <s.LoadMoreButton onClick={fetchNextPage}>More...</s.LoadMoreButton>
+      <s.LoadMoreButton onClick={fetchNextPage}>next</s.LoadMoreButton>
     </div>
   );
 };

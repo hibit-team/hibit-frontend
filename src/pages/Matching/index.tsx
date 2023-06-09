@@ -10,13 +10,17 @@ import { AxiosError } from "axios";
 
 export interface IPosts 
   {
-    idx: number,
-    user: null,
-    title: string,
-    post_status: string,
-    number_and_What: string[],
-    mainimg: null,
-    liked: number,
+    idx: number
+    user: {
+      idx: number
+      id: string
+    }
+    title: string
+    status: string
+    number_and_What: string[]
+    mainimg: string
+    liked: number
+    comment_number:number
   }
 
   const MatchingPage =()=>{
@@ -34,15 +38,17 @@ export interface IPosts
   }
 
   const {
-    status,
+    // status,
     data,
     error,
-    // isFetching,
-    // isFetchingNextPage,
-    // isFetchingPreviousPage,
+    isError,
+    isLoading,
+    isFetchingNextPage,
     fetchNextPage,
-    // fetchPreviousPage,
+    // isFetching,
     // hasNextPage,
+    // isFetchingPreviousPage,
+    // fetchPreviousPage,
     // hasPreviousPage,
   } = useInfiniteQuery<IPosts[],AxiosError>(
     ['posts',sortOption],
@@ -54,19 +60,22 @@ export interface IPosts
     },
   )
 
-  return(status === 'loading' ? (
-    <p>Loading...</p>
-  ) : status === 'error' ? (
-    <p>Error: {(error as AxiosError).message}</p>
-  ) : (<div>
-      <LayoutTemplate>
-      <MatchingSlideBanner></MatchingSlideBanner>
-      <MatchingSearchBar></MatchingSearchBar>
-      <MatchingFilterButton sortOption={sortOption} handleSortOption={handleSortOption}></MatchingFilterButton>
-      <MatchingContainer sortOption={sortOption}  pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
-      </LayoutTemplate>
-  </div>
-  ))
+  if(isLoading || isFetchingNextPage === true) {
+    //초기 데이터fetch, nextPage fetch 로딩 플래그
+    return (<p>Loading...</p>)
+  }
+  if(isError === true ){
+    return (<p>Error: {(error as AxiosError)?.message}</p>)
+  }
+  return(<div>
+    <LayoutTemplate>
+    <MatchingSlideBanner></MatchingSlideBanner>
+    <MatchingSearchBar></MatchingSearchBar>
+    <MatchingFilterButton sortOption={sortOption} handleSortOption={handleSortOption}></MatchingFilterButton>
+    <MatchingContainer sortOption={sortOption}  pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
+    </LayoutTemplate>
+</div>
+)
 };
 
 export default MatchingPage;

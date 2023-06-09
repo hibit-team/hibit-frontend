@@ -29,13 +29,14 @@ left:1rem;
 //카드 상단부이미지
 export const MatchingCardImgCss =css`
 border-radius:1rem 1rem 0 0;
-background-color:${COLORS.main79};
+// background-color:${COLORS.main79};
 width: 296px;
 height:280px;
 border: 1px solid ${COLORS.Gray2};
 border-bottom:none;
 cursor:pointer;
 box-sizing: border-box;
+
 `
 
 //카드 하단부 info
@@ -53,30 +54,33 @@ box-sizing: border-box;
 
 //카드 상단부 label 정보의 컨테이너css(3인관람..) min-height보장
 export const HeadLabelWrapperCss =css`
-width:50%;
+max-width:220px;
 display:flex;
 min-height:72px;
 flex-wrap:wrap;
-position:absolute;
+position:relative;
 top:20px;
 left:1rem;
 `;
 
 export const LabelStatusCss =css`
 box-sizing:border-box;
-max-height:28px;
+display:flex;
+justify-content:center;
+align-items:center;
 padding: 4px 12px;
+max-height:28px;
+margin-right:6px;
 font-size:16px;
 font-weight:500;
 color: white;
 border-radius: 1rem;
 border: 1px solid white;
-margin:4px;
 `
-//카드info영역의 하단부부분(status+count)
+//카드info영역의 하단부부분(status+(댓글,좋아요수) 래퍼)
 export const CardInfoBottom =styled.div`
 display:flex;
-width:98%;
+width:100px;
 justify-content:space-between;
 aling-items:center;
 box-sizing:border-box;
@@ -86,8 +90,11 @@ top:394px;
 //카드 모집status 
 export const CardStatus =styled.div`
 box-sizing:border-box;
-width:79px;
-height:28px;
+display:flex
+justify-content:center;
+text-align:center;
+min-width:82px;
+min-height:28px;
 color:${COLORS.Gray3};
 font-weight:500;
 font-size:16px;
@@ -96,25 +103,24 @@ border: 1.3px solid ${COLORS.Gray2};
 padding: 4px 12px;
 background-color:white;
 `
-//카드 하단부 숫자카운트 정보
+//카드 하단부 숫자카운트 정보(댓글,좋아요 수)
 export const CardBottomCountInfo =styled.div`
 display:flex;
 position:relative;
-top:7px;
+left:6rem;
 font-size:16px;
 `
 
 export const LoadMoreButton =styled.div`
 color:${COLORS.main100};
 background-color:${COLORS.Gray2};
-border-radius: 1.5rem;
-line-height:100%;
-width: 270px;
-height:50px;
+border-radius: 40px;
+width: 252px;
+height:45px;
 display:flex;
 justify-content:center;
 align-items:center;
-font-size: 2rem;
+font-size: 1.9rem;
 position:relative;
 margin: 0 auto 3.5rem auto;
 text-align:center;
