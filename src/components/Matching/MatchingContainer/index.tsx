@@ -7,9 +7,10 @@ import COLORS from "../../../assets/color";
 import { IPosts } from "../../../pages/Matching";
 
 export interface IProps{
+  isFetchingNextPage:boolean;
   sortOption:string,
   pages: IPosts[][],
-  fetchNextPage:any,
+  fetchNextPage:any;
 }
 
 export interface IEachPost {
@@ -59,7 +60,7 @@ const MatchingCardComponent = ({eachData}:IEachPost) => {
 };
 
 //매칭컨테이너(pages) - 매칭 그리드컨테이너(grid: eachPage)-매칭카드컴포넌트(eachData)
-const MatchingContainer = ({sortOption,pages,fetchNextPage}:IProps) => {
+const MatchingContainer = ({isFetchingNextPage,sortOption,pages,fetchNextPage}:IProps) => {
   console.log(`pages.length:${pages.length}`)
   return (
     <div>
@@ -70,8 +71,10 @@ const MatchingContainer = ({sortOption,pages,fetchNextPage}:IProps) => {
           // 페이지에 해당하는 6개 데이터 mapping
           return eachPage.map((eachPost)=>
             <MatchingCardComponent key={eachPost.idx} eachData={eachPost}/>)})
-        }
+        }  
       </s.MatchingGridContainer>
+      {/* 로딩인디케이터 추가 예정 */}
+      {!isFetchingNextPage? <div style={{display:'flex',height:'50px',justifyContent:'center'}}>Loading Indicator...</div> : undefined}
       <s.LoadMoreButton onClick={fetchNextPage}>next</s.LoadMoreButton>
     </div>
   );

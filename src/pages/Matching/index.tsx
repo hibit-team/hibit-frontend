@@ -60,7 +60,7 @@ export interface IPosts
     },
   )
 
-  if(isLoading || isFetchingNextPage === true) {
+  if(isLoading === true) {
     //초기 데이터fetch, nextPage fetch 로딩 플래그
     return (<p>Loading...</p>)
   }
@@ -72,7 +72,7 @@ export interface IPosts
     <MatchingSlideBanner></MatchingSlideBanner>
     <MatchingSearchBar></MatchingSearchBar>
     <MatchingFilterButton sortOption={sortOption} handleSortOption={handleSortOption}></MatchingFilterButton>
-    <MatchingContainer sortOption={sortOption}  pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
+    <MatchingContainer isFetchingNextPage={isFetchingNextPage} sortOption={sortOption}  pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
     </LayoutTemplate>
 </div>
 )
