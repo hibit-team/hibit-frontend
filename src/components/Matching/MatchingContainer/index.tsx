@@ -32,9 +32,9 @@ const MatchingCardComponent = ({eachData}:IEachPost) => {
     <div css={css`position:relative`}>
       <div style={{backgroundImage: `url(${eachData?.mainimg})`}} css={s.MatchingCardImgCss}>
         <div css={s.HeadLabelWrapperCss}>
-          {eachData?.number_and_What.map((item:string, idx:number) => (
+          {eachData?.number_and_What.map((labels,idx) => (
             <span key={idx} css={s.LabelStatusCss}>
-              {item}
+              {labels}
             </span>
           ))}
           <s.CardInfoBottom>
@@ -74,8 +74,8 @@ const MatchingContainer = ({isFetchingNextPage,sortOption,pages,fetchNextPage}:I
         }  
       </s.MatchingGridContainer>
       {/* 로딩인디케이터 추가 예정 */}
-      {!isFetchingNextPage? <div style={{display:'flex',height:'50px',justifyContent:'center'}}>Loading Indicator...</div> : undefined}
-      <s.LoadMoreButton onClick={fetchNextPage}>next</s.LoadMoreButton>
+      {!isFetchingNextPage? <div css={s.LoadingIndicatorCss}>loading indicator</div>: undefined}
+      <s.LoadMoreButton onClick={fetchNextPage}>게시글 더보기</s.LoadMoreButton>
     </div>
   );
 };

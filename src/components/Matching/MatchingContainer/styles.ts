@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react'
+import { css,keyframes } from '@emotion/react'
 import styled from "@emotion/styled";
 import COLORS from "../../../assets/color";
-
 //매칭컴포넌트 헤더
 export const MatchingHeader =styled.div`
 width: 980px;
@@ -111,17 +110,46 @@ left:6rem;
 font-size:16px;
 `
 
-export const LoadMoreButton =styled.div`
+const hoverAnimation = keyframes`
+  0% {
+    color: ${COLORS.main100};
+    box-shadow: none
+  }
+  100% {
+    background-color: ${COLORS.main100}
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  }
+`;
+
+export const LoadMoreButton  =styled.div`
+font-size:18px;
 color:${COLORS.main100};
-background-color:${COLORS.Gray2};
-border-radius: 40px;
-width: 252px;
-height:45px;
+border: 2px solid ${COLORS.main100};
+box-sizing:border-box;
+width:177px;
+height:54px;
 display:flex;
+justify-content: center;
+align-items:center;
+margin:0 auto 120px auto;
+border-radius:3rem;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
+&:hover{
+  font-weight:600;
+  animation:${hoverAnimation} 0.4s ease-out;
+  border: 2.5px solid ${COLORS.Gray1};
+  background-color:${COLORS.main100};
+  color:white;
+  cursor:pointer;
+}
+`
+export const LoadingIndicatorCss =css`
+display:flex; 
 justify-content:center;
 align-items:center;
-font-size: 1.9rem;
-position:relative;
-margin: 0 auto 3.5rem auto;
-text-align:center;
+width: 300px;
+height: 100px;
+margin:0 auto;
 `
