@@ -35,7 +35,7 @@ border: 1px solid ${COLORS.Gray2};
 border-bottom:none;
 cursor:pointer;
 box-sizing: border-box;
-
+opacity:0.9;
 `
 
 //카드 하단부 info
@@ -48,7 +48,6 @@ margin-bottom: 30px;
 border: 1px solid ${COLORS.Gray2};
 border-top:none;
 box-sizing: border-box;
-
 `
 
 //카드 상단부 label 정보의 컨테이너css(3인관람..) min-height보장
@@ -60,9 +59,25 @@ flex-wrap:wrap;
 position:relative;
 top:20px;
 left:1rem;
+opacity:1;
 `;
 
 export const LabelStatusCss =css`
+box-sizing:border-box;
+opaicty:1.0;
+display:flex;
+justify-content:center;
+align-items:center;
+padding: 4px 12px;
+max-height:28px;
+margin-right:6px;
+font-size:16px;
+font-weight:500;
+color:purple;
+border-radius: 1rem;
+border: 1px solid purple;
+`
+export const LabelPartyNumber =css`
 box-sizing:border-box;
 display:flex;
 justify-content:center;
@@ -72,9 +87,14 @@ max-height:28px;
 margin-right:6px;
 font-size:16px;
 font-weight:500;
-color: white;
+color:purple;
 border-radius: 1rem;
-border: 1px solid white;
+border: 1px solid purple;
+
+background: #FFFFFF;
+opacity: 0.24;
+border: 1px solid #FFFFFF;
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `
 //카드info영역의 하단부부분(status+(댓글,좋아요수) 래퍼)
 export const CardInfoBottom =styled.div`

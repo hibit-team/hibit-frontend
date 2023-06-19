@@ -28,13 +28,14 @@ allposts: "게시글 전체보기",
 
 //매칭카드
 const MatchingCardComponent = ({eachData}:IEachPost) => {
+  console.log( eachData?.number_and_What)
   return (
     <div css={css`position:relative`}>
       <div style={{backgroundImage: `url(${eachData?.mainimg})`}} css={s.MatchingCardImgCss}>
         <div css={s.HeadLabelWrapperCss}>
-          {eachData?.number_and_What.map((labels,idx) => (
-            <span key={idx} css={s.LabelStatusCss}>
-              {labels}
+          {eachData?.number_and_What.map((item:string, idx:number) => (
+            <span key={idx} css={ idx===0? s.LabelPartyNumber:s.LabelStatusCss}>
+              {item}
             </span>
           ))}
           <s.CardInfoBottom>
