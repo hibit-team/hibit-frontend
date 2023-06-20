@@ -19,11 +19,9 @@ const textData = [
 ];
 
 
-
-
-
 //알람 모달컴포넌트
 const CustomModalAlarm: React.FC<ReactModal.Props> = ({isOpen, onRequestClose}) => {
+  //알람 recoil 상태관리 
   const [openState,setOpenState] =useRecoilState(AlarmSwitchState);
   const closeAlarm = ()=>{
     setOpenState(!openState)
