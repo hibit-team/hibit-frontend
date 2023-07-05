@@ -29,7 +29,7 @@ border-radius: 10px;
 padding:6px 12px;
 font-size:18px;
 color:white;
-margin: 0 6px;
+margin: 0 8px;
 `;
 export const MatchPostStatus = styled.div`
 display:flex;
@@ -44,11 +44,17 @@ color:white;
 margin: 1.5rem;
 font-weight:500;
 padding:6px 0px 6px 12px;
+cursor: pointer;
+
 & > :nth-child(n + 2):hover {
+  cursor: pointer;
   scale:1.03;
+  transition: all 0.2s ease-in;
   background:${COLORS.sub_Friend};
-  border: none;
-}
+  border:none;
+  box-shadow: 3px 2px 73px -5px rgba(206,12,222,0.77);
+-webkit-box-shadow: 3px 2px 73px -5px rgba(206,12,222,0.77);
+-moz-box-shadow: 3px 2px 73px -5px rgba(206,12,222,0.77);
 
 `;
 export const MatchPostStatusArrowCss = css`font-size:2rem;
@@ -67,7 +73,7 @@ color: white;
 `
 
 
-export const csss =css`
+export const postStatusCss =css`
 position:relative;
 right:7px;
 display:flex;
@@ -78,10 +84,12 @@ width:100%;
 height:1.7rem;
 font-size:18px;
 color:${COLORS.white};
-background: ${COLORS.main42};
+
+background-image: radial-gradient(circle at 51.02% 50.59%, #bfa4eb 0, #bba0e8 50%, #b79ce5 100%);
+
 border-radius:0.5rem;
 border:2px solid ${COLORS.main42};
 padding:10px;
-margin:1px;
+margin:1.5px 0;
 z-index:10;
 `

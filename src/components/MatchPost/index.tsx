@@ -33,7 +33,7 @@ export default function MatchPost() {
           { postStatusModal ? <MdArrowDropDown css={s.MatchPostStatusArrowCss}/> : <MdArrowDropUp css={s.MatchPostStatusArrowCss}/>}
           </div>
 
-           {!postStatusModal ? postStatusSelect.map(status=>(<div onClick={()=>{window.confirm(status)}}css={s.csss}>{status}</div>)): undefined}
+           {!postStatusModal ? postStatusSelect.map(status=>(<div onClick={()=>{window.confirm(status)}}css={s.postStatusCss}>{status}</div>)): undefined}
     
         </s.MatchPostStatus>
       </s.MatchPostLabelSection>
