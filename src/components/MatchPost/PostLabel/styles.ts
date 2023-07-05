@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import COLORS from "../../assets/color";
+import COLORS from "../../../assets/color";
 import {css} from '@emotion/react';
 
 export const MatchPostContainer = styled.div`
