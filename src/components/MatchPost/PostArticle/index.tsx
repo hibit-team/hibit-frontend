@@ -75,6 +75,18 @@ export default function MatchPostArticle() {
 						<div css={ArticleDateCss}>{day}</div>
 					))}
 				</s.ArticleDateSection>
+
+        <s.ArticlePlaceTogoSection>
+          <div css={css`
+          flex: 0 1 250px;
+          font-size:20px; font-weight:900;
+          color: ${COLORS.Gray3};
+          `}>가고 싶은 전시회</div>
+          <div css={css`
+          font-size:20px; font-weight:500;
+          color: ${COLORS.Gray3}`}
+          >뚝섬 미술관 인사이드미 전시회</div>
+        </s.ArticlePlaceTogoSection>
 			</s.MatchArticleWrapper>
 		</div>
 	);

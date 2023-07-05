@@ -30,4 +30,14 @@ export const ArticleDateSection = styled.div`
 	margin: 0px auto;
 	border-bottom: 1px solid ${COLORS.Gray2};
 `;
+
+export const ArticlePlaceTogoSection = styled.div`
+box-sizing: border-box;
+display: flex;
+align-items: center;
+width: 874px;
+height: 96px;
+margin: 0px auto;
+border-bottom: 1px solid ${COLORS.Gray2};
+`;
 export const ArticleTextSection = styled.div``;
