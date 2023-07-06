@@ -85,6 +85,10 @@ const MyProfile = () => {
   const imgInputRef = useRef<HTMLInputElement | null>(null);
   const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if(!e.target.files) return;
+    if(img?.length === 3) {
+      alert("이미지는 최대 3장까지 추가할 수 있습니다.");
+      return;
+    }
     img?.push(e.target.files[0].name);
     const newImgList = JSON.parse(JSON.stringify(img));
     setImg(newImgList)
