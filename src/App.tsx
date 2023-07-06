@@ -6,6 +6,7 @@ import globalStyles from "./fonts/GlobalStyles";
 import KaKao from "./pages/KaKao";
 import { RecoilRoot } from "recoil";
 import MyProfile from "./pages/MyProfile";
+import OtherProfile from "./pages/OtherProfile";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
               <Route path="/" element={<MainPage />} />
               <Route path="/user/kakao-oauth" element={<KaKao />} />
               <Route path="/profile" element={<MyProfile />} />
+              <Route path="/others/:userID" element={<OtherProfile />} />
             </Routes>
           </Router>
         </Container>
