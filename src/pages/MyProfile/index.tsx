@@ -85,8 +85,11 @@ const MyProfile = () => {
   const imgInputRef = useRef<HTMLInputElement | null>(null);
   const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if(!e.target.files) return;
-    console.log(e.target.files[0].name);
-  }, []);
+    img?.push(e.target.files[0].name);
+    const newImgList = JSON.parse(JSON.stringify(img));
+    setImg(newImgList)
+    // console.log(e.target.files[0].name);
+  }, [img]);
   const onUploadImgBtnClick = useCallback(() => {
     if(!imgInputRef.current) return;
     imgInputRef.current.click();
