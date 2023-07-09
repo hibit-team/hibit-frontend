@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import COLORS from "../../../assets/color";
 import { css } from "@emotion/react";
+import { color } from "framer-motion";
 
 export const MatchPostContainer = styled.div`
 	box-sizing: border-box;
@@ -32,31 +33,33 @@ export const MatchPostLabelCss = css`
 	margin: 0 8px;
 `;
 export const MatchPostStatus = styled.div`
-display:flex;
-flex-direction:column;
-align-items:center;
-box-sizing:border-box;
-min-width:109px;
-border: 1px solid white;
-border-radius: 10px;
-font-size:18px;
-color:white;
-margin: 1.5rem;
-font-weight:500;
-padding:6px 0px 6px 12px;
-cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	box-sizing: border-box;
+	min-width: 109px;
+	border: 1px solid white;
+	border-radius: 10px;
+	font-size: 18px;
+	color: white;
+	margin: 1.5rem;
+	font-weight: 500;
+	padding: 6px 0px 6px 12px;
+	cursor: pointer;
 
-& > :nth-child(n + 2):hover {
-  cursor: pointer;
-  scale:1.03;
-  transition: all 0.2s ease-in;
-  background:${COLORS.sub_Friend};
-  border:none;
-  box-shadow: 3px 2px 73px -5px rgba(206,12,222,0.77);
--webkit-box-shadow: 3px 2px 73px -5px rgba(206,12,222,0.77);
--moz-box-shadow: 3px 2px 73px -5px rgba(206,12,222,0.77);
-
+	// & > :nth-child(n + 2):hover {
+	//   cursor: pointer;
+	//   scale:1.03;
+	//   transition: all 0.2s ease-in;
+	//   background:${COLORS.sub_Friend};
+	//   border:none;
+	//   box-shadow: 3px 2px 73px -5px rgba(206,12,222,0.77);
+	// -webkit-box-shadow: 3px 2px 73px -5px rgba(206,12,222,0.77);
+	// -moz-box-shadow: 3px 2px 73px -5px rgba(206,12,222,0.77);
 `;
+
+
+
 export const MatchPostStatusArrowCss = css`
 	font-size: 2rem;
 	position: relative;
@@ -95,3 +98,24 @@ export const postStatusCss = css`
 	margin: 1.5px 0;
 	z-index: 10;
 `;
+
+export const MatchPostStatusContainer = styled.div<{isStatusModalOpen:boolean}>`
+	height: ${(props) => (props.isStatusModalOpen ? "102px" : "34px")};
+	background: white;
+	border-radius: 10px;
+	border: 1px solid ${COLORS.main79};
+	color: ${COLORS.main79};
+	margin: 24px;
+
+	box-sizing: border-box;
+	width: 108px;
+	font-size: 18px;
+	font-weight: 500;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	position: relative;
+	z-index:10;
+`;
+
+

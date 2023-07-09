@@ -40,4 +40,36 @@ height: 96px;
 margin: 0px auto;
 border-bottom: 1px solid ${COLORS.Gray2};
 `;
-export const ArticleTextSection = styled.div``;
+export const ArticleTextSection = styled.div`
+position:relative;
+box-sizing:border-box;
+display: grid;
+width:874px;
+margin: 28px auto;
+border-bottom: 1px solid ${COLORS.Gray2};
+grid-template-columns: 233px 640px;
+& : nth-child(2){ grid-row: 2/3; }
+& : nth-child(3){ 
+  grid-column: 2/3; 
+}
+border-bottom: 1px solid ${COLORS.Gray2};
+`;
+
+export const ArticleArrowWrapper = styled.div`
+width:32px;
+height:32px;
+position:relative;
+display:flex;
+justify-content:center;
+align-items:center;
+left:190px;
+bottom:50px;
+box-sizing: border-box
+border-radius:6px;
+background:white;
+border-radius:10px;
+&: hover {
+  scale: 1.05;
+}
+cursor:pointer;
+`
