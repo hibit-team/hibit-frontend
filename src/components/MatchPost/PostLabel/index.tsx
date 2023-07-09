@@ -2,18 +2,14 @@
 import React, { useState } from "react";
 import * as s from "./styles";
 import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import COLORS from "../../../assets/color";
 import ArrownDown from "../../../images/components/MatchPost/ArrowDown.svg";
 import ArrowUp from "../../../images/components/MatchPost/ArrowUp.svg";
 
 export default function MatchPostLabel() {
 	const label = ["전시만보기", "2인관람"];
-	const postStatusSelect = ["모집 중", "모집완료"];
-
 	const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
 	const [postStatus, setPostStatus] = useState("모집완료");
-
 	return (
 		<div>
 			<s.MatchPostContainer>
@@ -38,9 +34,20 @@ export default function MatchPostLabel() {
 								<img css={{ position: "relative", left: 6, bottom: 1 }} src={ArrowUp} alt="modalClose-arrow"></img>
 							)}
 						</div>
-						<ul css={{ display: isStatusModalOpen ? "block" : "none" }}>
-							<li
+						<div css={{ display: isStatusModalOpen ? "block" : "none" }}>
+							<div
+								onClick={() => {
+									const confirmed = window.confirm(`모집 상태를 '모집 중'으로 변경하시겠습니까?`);
+									if (confirmed) {
+										setPostStatus("모집 중");
+										setIsStatusModalOpen(false);
+									}
+								}}
 								css={{
+									"&:hover": {
+										backgroundColor: `${COLORS.main42}`,
+										color: "white",
+									},
 									padding: "6px 0px 6px 12px",
 									borderTop: `1px solid ${COLORS.main79}`,
 									borderBottom: `1px solid ${COLORS.main79}`,
@@ -48,9 +55,29 @@ export default function MatchPostLabel() {
 								}}
 							>
 								모집 중
-							</li>
-							<li css={{ padding: "6px 0px 6px 12px" }}>모집 완료</li>
-						</ul>
+							</div>
+							<div
+								onClick={() => {
+									const confirmed = window.confirm(`모집 상태를 '모집완료'로 변경하시겠습니까?`);
+									if (confirmed) {
+										setPostStatus("모집 완료");
+										setIsStatusModalOpen(false);
+									}
+								}}
+								css={{
+									"&:hover": {
+										backgroundColor: `${COLORS.main42}`,
+										color: "white",
+									},
+									padding: "6px 0px 7px 12px",
+									boxSizing: "border-box",
+									borderBottomLeftRadius: 8,
+									borderBottomRightRadius: 8,
+								}}
+							>
+								모집 완료
+							</div>
+						</div>
 					</s.MatchPostStatusContainer>
 				</s.MatchPostLabelSection>
 			</s.MatchPostContainer>
