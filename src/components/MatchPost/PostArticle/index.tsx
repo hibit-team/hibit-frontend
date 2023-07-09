@@ -14,10 +14,50 @@ import ArticleArrow from '../../../images/components/MatchPost/ArticleArrow.webp
 import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
 import PurpleLike from '../../../images/components/MatchPost/purpleLike.png';
 import WhiteLike from '../../../images/components/MatchPost/whiteLike.png';
+import FsLightbox from 'fslightbox-react';
+import { useRecoilState } from 'recoil';
+import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
 
+const FsLightboxWrapper = () => {
+  const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
+  return (
+    <>
+      <button
+        css={css`
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          display: hidden;
+          width: 0px;
+          height: 0px;
+          display: none;
+        `}
+        onClick={() => setToggler(!toggler)}
+      ></button>
+      <FsLightbox
+        toggler={toggler}
+        sources={[
+          <div>
+            <img src={Tim} alt="dd" />
+          </div>,
+          <div>
+            <img src={ProfileDefault} alt="dd" />
+          </div>,
+          <div>
+            <img src={Tim} alt="dd" />
+          </div>,
+          <div>
+            <img src={PurpleKebap} alt="dd" />
+          </div>,
+        ]}
+      />
+    </>
+  );
+};
 export default function MatchPostArticle() {
   const [isPurpleKebapOpen, setIsPurpleKebapOpen] = useState(false);
   const [isLikeStateOn, setIsLikeStateOn] = useState(false);
+  const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   const settings = {
     dots: true,
     infinite: true,
@@ -167,6 +207,12 @@ export default function MatchPostArticle() {
           </ArticleImageSlider>
           <s.ArticleArrowWrapper>
             <img
+              onClick={() => {
+                if (toggler === true) setToggler(false);
+                else {
+                  setToggler(true);
+                }
+              }}
               css={{
                 maxWidth: 22,
                 maxHeight: 22,
@@ -190,22 +236,22 @@ export default function MatchPostArticle() {
               setIsLikeStateOn(!isLikeStateOn);
             }}
             css={{
-							cursor:'pointer',
-							gridRow:2,
+              cursor: 'pointer',
+              gridRow: 2,
               display: 'flex',
-							position:'relative',
-							left:545,
-							bottom:30,
+              position: 'relative',
+              left: 545,
+              bottom: 30,
               justifyContent: 'center',
               alignItems: 'center',
-							lineHeight:'100%',
+              lineHeight: '100%',
               boxSizing: 'border-box',
               width: 88,
               height: 32,
               borderRadius: '100px',
               border: isLikeStateOn ? `1px solid ${COLORS.main79}` : `1px solid ${COLORS.Gray3}`,
               color: COLORS.Gray3,
-							fontSize:'1rem',
+              fontSize: '1rem',
             }}
           >
             <div
@@ -223,6 +269,7 @@ export default function MatchPostArticle() {
           </div>
         </s.ArticleTextSection>
       </s.MatchArticleWrapper>
+      <FsLightboxWrapper />
     </div>
   );
 }

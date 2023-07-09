@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import * as s from './styles';
 import { css } from '@emotion/react';
+import FsLightbox from "fslightbox-react";
 import COLORS from '../../../assets/color';
 import ArrownDown from '../../../images/components/MatchPost/ArrowDown.svg';
 import ArrowUp from '../../../images/components/MatchPost/ArrowUp.svg';
