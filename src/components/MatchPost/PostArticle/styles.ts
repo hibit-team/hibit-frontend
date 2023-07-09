@@ -60,14 +60,16 @@ export const ArticleTextSection = styled.div`
 export const ArticleArrowWrapper = styled.div`
 width:32px;
 height:32px;
-position:relative;
 display:flex;
-justify-content:center;
-align-items:center;
+grid-row: 2/3;
+position:relative;
 left:190px;
 bottom:50px;
-box-sizing: border-box
-border-radius:6px;
+justify-content:center;
+align-items:center;
+
+box-sizing: border-box;
+border-radius:10px;
 background:white;
 border-radius:10px;
 &: hover {

@@ -15,8 +15,10 @@ export default function MatchPostLabel() {
       <s.MatchPostContainer>
         <s.MatchPostLabelSection>
           <s.MatchPostLabel>
-            {label.map(item => (
-              <div css={s.MatchPostLabelCss}>{item}</div>
+            {label.map((item, idx) => (
+              <div key={idx} css={s.MatchPostLabelCss}>
+                {item}
+              </div>
             ))}
           </s.MatchPostLabel>
 

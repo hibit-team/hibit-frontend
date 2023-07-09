@@ -12,9 +12,12 @@ import 'slick-carousel/slick/slick-theme.css';
 import '../../../assets/slick.css';
 import ArticleArrow from '../../../images/components/MatchPost/ArticleArrow.webp';
 import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
+import PurpleLike from '../../../images/components/MatchPost/purpleLike.png';
+import WhiteLike from '../../../images/components/MatchPost/whiteLike.png';
 
 export default function MatchPostArticle() {
   const [isPurpleKebapOpen, setIsPurpleKebapOpen] = useState(false);
+  const [isLikeStateOn, setIsLikeStateOn] = useState(false);
   const settings = {
     dots: true,
     infinite: true,
@@ -67,7 +70,7 @@ export default function MatchPostArticle() {
               margin: 6px;
             `}
           >
-            닉네임123123{' '}
+            닉네임123123
           </div>
           <div
             css={css`
@@ -127,8 +130,10 @@ export default function MatchPostArticle() {
           >
             관람희망날짜
           </div>
-          {dateOption.map(day => (
-            <div css={ArticleDateCss}>{day}</div>
+          {dateOption.map((day, idx) => (
+            <div key={idx} css={ArticleDateCss}>
+              {day}
+            </div>
           ))}
         </s.ArticleDateSection>
 
@@ -162,24 +167,60 @@ export default function MatchPostArticle() {
           </ArticleImageSlider>
           <s.ArticleArrowWrapper>
             <img
-              css={css`
-                max-width: 22px;
-                max-height: 22px;
-              `}
+              css={{
+                maxWidth: 22,
+                maxHeight: 22,
+              }}
               src={ArticleArrow}
               alt="article-arrow"
             />
           </s.ArticleArrowWrapper>
-          <text
-            css={css`
-              color: ${COLORS.Gray3};
-              font-size: 20px;
-              margin: -3px 1.6rem;
-              line-height: 1.4;
-            `}
+          <span
+            css={{
+              color: COLORS.Gray3,
+              fontSize: 20,
+              margin: '-3px 1.6rem',
+              lineHeight: 1.4,
+            }}
           >
             게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다.
-          </text>
+          </span>
+          <div
+            onClick={() => {
+              setIsLikeStateOn(!isLikeStateOn);
+            }}
+            css={{
+							cursor:'pointer',
+							gridRow:2,
+              display: 'flex',
+							position:'relative',
+							left:545,
+							bottom:30,
+              justifyContent: 'center',
+              alignItems: 'center',
+							lineHeight:'100%',
+              boxSizing: 'border-box',
+              width: 88,
+              height: 32,
+              borderRadius: '100px',
+              border: isLikeStateOn ? `1px solid ${COLORS.main79}` : `1px solid ${COLORS.Gray3}`,
+              color: COLORS.Gray3,
+							fontSize:'1rem',
+            }}
+          >
+            <div
+              css={{
+                color: isLikeStateOn ? COLORS.main79 : COLORS.Gray3,
+              }}
+            >
+              좋아요
+            </div>
+            {isLikeStateOn ? (
+              <img css={{ marginLeft: '6px', width: 13, height: 12 }} src={PurpleLike} alt="purple-like"></img>
+            ) : (
+              <img css={{ marginLeft: '6px', width: 13, height: 12 }} src={WhiteLike} alt="white-like"></img>
+            )}
+          </div>
         </s.ArticleTextSection>
       </s.MatchArticleWrapper>
     </div>
@@ -237,7 +278,6 @@ export const postOption3 = css({
   top: 2,
   fontSize: 18,
   padding: '6px',
-  borderBottom: `1px solid ${COLORS.Gray2}`,
   color: COLORS.Gray3,
   '&:hover': { color: 'red', scale: '1.04' },
 });
