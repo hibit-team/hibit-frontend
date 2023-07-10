@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import * as s from './styles';
 import { css } from '@emotion/react';
-import FsLightbox from "fslightbox-react";
 import COLORS from '../../../assets/color';
 import ArrownDown from '../../../images/components/MatchPost/ArrowDown.svg';
 import ArrowUp from '../../../images/components/MatchPost/ArrowUp.svg';
@@ -30,7 +29,7 @@ export default function MatchPostLabel() {
               }}
               css={{ display: 'flex', padding: '6px 0px 6px 12px' }}
             >
-              <div>{postStatus}</div>
+              <button css={{all: 'unset'}}>{postStatus}</button>
               {!isStatusModalOpen ? (
                 <img css={{ position: 'relative', left: 5, bottom: 1 }} src={ArrownDown} alt="modalOpen-arrow"></img>
               ) : (

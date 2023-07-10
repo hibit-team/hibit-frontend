@@ -77,3 +77,20 @@ border-radius:10px;
 }
 cursor:pointer;
 `;
+
+export const InviteBoxWrapper = styled.button({
+  all:'unset',
+  border: `1px solid ${COLORS.main79}`,
+  borderRadius: 10,
+  width: 217,
+  height:72,
+  background: COLORS.main24,
+  color: COLORS.main79,
+  fontWeight:700,
+  fontSize:22,
+  display:'flex',
+  justifyContent:'center',
+  alignItems:'center',
+  margin :'40px auto',
+  cursor:'pointer',
+})

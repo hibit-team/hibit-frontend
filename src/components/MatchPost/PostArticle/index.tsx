@@ -17,43 +17,8 @@ import WhiteLike from '../../../images/components/MatchPost/whiteLike.png';
 import FsLightbox from 'fslightbox-react';
 import { useRecoilState } from 'recoil';
 import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
+import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
 
-const FsLightboxWrapper = () => {
-  const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
-  return (
-    <>
-      <button
-        css={css`
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          appearance: none;
-          display: hidden;
-          width: 0px;
-          height: 0px;
-          display: none;
-        `}
-        onClick={() => setToggler(!toggler)}
-      ></button>
-      <FsLightbox
-        toggler={toggler}
-        sources={[
-          <div>
-            <img src={Tim} alt="dd" />
-          </div>,
-          <div>
-            <img src={ProfileDefault} alt="dd" />
-          </div>,
-          <div>
-            <img src={Tim} alt="dd" />
-          </div>,
-          <div>
-            <img src={PurpleKebap} alt="dd" />
-          </div>,
-        ]}
-      />
-    </>
-  );
-};
 export default function MatchPostArticle() {
   const [isPurpleKebapOpen, setIsPurpleKebapOpen] = useState(false);
   const [isLikeStateOn, setIsLikeStateOn] = useState(false);
@@ -95,13 +60,25 @@ export default function MatchPostArticle() {
           >
             게시글 명 게시글 명 게시글 공백포함 최대 30자까지
           </div>
-          <img
-            css={css`
-              margin: 6px;
-            `}
-            src={ProfileDefault}
-            alt="defaultImage"
-          />
+          <div css={{
+            boxSizing:'border-box',
+            width: 35,
+            height: 35,
+            borderRadius: '50%',
+            overflow: 'hidden',
+          }}>
+            <img
+              css={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'fill',
+              }}
+              // src={ProfileDefault}
+              src={PEPE}
+              alt="defaultImage"
+            />
+          </div>
+
           <div
             css={css`
               font-size: 20px;
@@ -110,7 +87,7 @@ export default function MatchPostArticle() {
               margin: 6px;
             `}
           >
-            닉네임123123
+            NEWJEANS
           </div>
           <div
             css={css`
@@ -154,9 +131,9 @@ export default function MatchPostArticle() {
               justifyContent: 'center',
             }}
           >
-            <div css={postOption1}>수정</div>
-            <div css={postOption2}>삭제</div>
-            <div css={postOption3}>신고</div>
+            <button css={postOption1}>수정</button>
+            <button css={postOption2}>삭제</button>
+            <button css={postOption3}>신고</button>
           </div>
         </s.ArticleTitleSection>
         <s.ArticleDateSection>
@@ -205,14 +182,15 @@ export default function MatchPostArticle() {
             <img src={Tim} alt="tempo"></img>
             <img src={Tim} alt="tempo"></img>
           </ArticleImageSlider>
-          <s.ArticleArrowWrapper>
+          <s.ArticleArrowWrapper
+            onClick={() => {
+              if (toggler === true) setToggler(false);
+              else {
+                setToggler(true);
+              }
+            }}
+          >
             <img
-              onClick={() => {
-                if (toggler === true) setToggler(false);
-                else {
-                  setToggler(true);
-                }
-              }}
               css={{
                 maxWidth: 22,
                 maxHeight: 22,
@@ -221,33 +199,41 @@ export default function MatchPostArticle() {
               alt="article-arrow"
             />
           </s.ArticleArrowWrapper>
-          <span
+          <article
             css={{
               color: COLORS.Gray3,
               fontSize: 20,
               margin: '-3px 1.6rem',
               lineHeight: 1.4,
+              maxHeight:276,
+              overflow:'hidden',
             }}
           >
-            게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다.
-          </span>
-          <div
+            게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
+            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동
+            했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
+            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동
+            했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
+            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문.게시했습니다.게시글 본문.게시했습니다.게시글 본문.게시했습니다.게시글 본문.게시게시글 본문.게시
+          </article>
+          <button
             onClick={() => {
               setIsLikeStateOn(!isLikeStateOn);
             }}
             css={{
+              all: 'unset',
               cursor: 'pointer',
               gridRow: 2,
               display: 'flex',
               position: 'relative',
-              left: 545,
-              bottom: 30,
+              left: 538,
+              bottom: 24,
               justifyContent: 'center',
               alignItems: 'center',
               lineHeight: '100%',
               boxSizing: 'border-box',
-              width: 88,
-              height: 32,
+              width: 82,
+              height: 31,
               borderRadius: '100px',
               border: isLikeStateOn ? `1px solid ${COLORS.main79}` : `1px solid ${COLORS.Gray3}`,
               color: COLORS.Gray3,
@@ -262,14 +248,15 @@ export default function MatchPostArticle() {
               좋아요
             </div>
             {isLikeStateOn ? (
-              <img css={{ marginLeft: '6px', width: 13, height: 12 }} src={PurpleLike} alt="purple-like"></img>
+              <img css={{ marginLeft: '4px', width: 13, height: 12 }} src={PurpleLike} alt="purple-like"></img>
             ) : (
-              <img css={{ marginLeft: '6px', width: 13, height: 12 }} src={WhiteLike} alt="white-like"></img>
+              <img css={{ marginLeft: '4px', width: 13, height: 12 }} src={WhiteLike} alt="white-like"></img>
             )}
-          </div>
+          </button>
         </s.ArticleTextSection>
       </s.MatchArticleWrapper>
       <FsLightboxWrapper />
+      <s.InviteBoxWrapper>초대하기</s.InviteBoxWrapper>
     </div>
   );
 }
@@ -298,6 +285,7 @@ export const ArticleImageSlider = styled(Slider)`
 
 export const postOption1 = css({
   //수정
+  all: 'unset',
   position: 'relative',
   cursor: 'pointer',
   top: 2,
@@ -309,6 +297,7 @@ export const postOption1 = css({
 });
 export const postOption2 = css({
   //삭제(idx=2)
+  all: 'unset',
   position: 'relative',
   cursor: 'pointer',
   top: 2,
@@ -320,6 +309,7 @@ export const postOption2 = css({
 });
 export const postOption3 = css({
   //신고
+  all: 'unset',
   position: 'relative',
   cursor: 'pointer',
   top: 2,
@@ -328,3 +318,40 @@ export const postOption3 = css({
   color: COLORS.Gray3,
   '&:hover': { color: 'red', scale: '1.04' },
 });
+
+export const FsLightboxWrapper = () => {
+  const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
+  return (
+    <>
+      <button
+        css={css`
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          display: hidden;
+          width: 0px;
+          height: 0px;
+          display: none;
+        `}
+        onClick={() => setToggler(!toggler)}
+      ></button>
+      <FsLightbox
+        toggler={toggler}
+        sources={[
+          <div>
+            <img src={Tim} alt="dd" />
+          </div>,
+          <div>
+            <img src={ProfileDefault} alt="dd" />
+          </div>,
+          <div>
+            <img src={Tim} alt="dd" />
+          </div>,
+          <div>
+            <img src={PurpleKebap} alt="dd" />
+          </div>,
+        ]}
+      />
+    </>
+  );
+};
