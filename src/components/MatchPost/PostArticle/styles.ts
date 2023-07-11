@@ -45,7 +45,7 @@ export const ArticleTextSection = styled.div`
   box-sizing: border-box;
   display: grid;
   width: 874px;
-  margin: 40px 34px;
+  margin: 40px 34px 0px 34px;
   border-bottom: 1px solid ${COLORS.Gray2};
   grid-template-columns: 233px 640px;
   &: nth-child(2) {
@@ -93,4 +93,43 @@ export const InviteBoxWrapper = styled.button({
   alignItems:'center',
   margin :'40px auto',
   cursor:'pointer',
-})
+});
+
+export const ReplyInputWrapper = styled.div(
+  {
+    boxSizing:'border-box',
+    width:864,
+    height:188,
+    borderRadius:10,
+    border: `1px solid ${COLORS.Gray2}`,
+    margin:'0px auto',
+    display:'grid',
+    gridTemplateColumns:'67px auto',
+    position:'relative',
+    padding: 20,
+    strokeWidth: '1px',
+    stroke: COLORS.Gray2,
+  }
+)
+export const ReplyButton =styled.button(
+  {
+    boxSizing:'border-box',
+    all:'unset',cursor:'pointer',
+    width:94,height:34,
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    fontSize:18,
+    color: 'white',
+    background:COLORS.Gray3,
+    borderRadius:60,
+  }
+);
+
+// export const ReplySection =styled.div(
+//   {
+//     boxSizing:'border-box',
+//     margin: '24px auto',
+//     display: 'grid',
+//   }
+// )

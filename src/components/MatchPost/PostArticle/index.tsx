@@ -18,6 +18,7 @@ import FsLightbox from 'fslightbox-react';
 import { useRecoilState } from 'recoil';
 import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
 import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
+import ReplySectionComponent from '../PostReplySection';
 
 export default function MatchPostArticle() {
   const [isPurpleKebapOpen, setIsPurpleKebapOpen] = useState(false);
@@ -60,18 +61,22 @@ export default function MatchPostArticle() {
           >
             게시글 명 게시글 명 게시글 공백포함 최대 30자까지
           </div>
-          <div css={{
-            boxSizing:'border-box',
-            width: 35,
-            height: 35,
-            borderRadius: '50%',
-            overflow: 'hidden',
-          }}>
+          <div
+            css={{
+              boxSizing: 'border-box',
+              width: 35,
+              height: 35,
+              borderRadius: '50%',
+              overflow: 'hidden',
+            }}
+          >
             <img
               css={{
                 width: '100%',
                 height: '100%',
                 objectFit: 'fill',
+                position: 'relative',
+                bottom: 3,
               }}
               // src={ProfileDefault}
               src={PEPE}
@@ -87,7 +92,7 @@ export default function MatchPostArticle() {
               margin: 6px;
             `}
           >
-            NEWJEANS
+            닉네임
           </div>
           <div
             css={css`
@@ -205,8 +210,8 @@ export default function MatchPostArticle() {
               fontSize: 20,
               margin: '-3px 1.6rem',
               lineHeight: 1.4,
-              maxHeight:276,
-              overflow:'hidden',
+              maxHeight: 276,
+              overflow: 'hidden',
             }}
           >
             게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
@@ -214,7 +219,8 @@ export default function MatchPostArticle() {
             했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
             했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동
             했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
-            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문.게시했습니다.게시글 본문.게시했습니다.게시글 본문.게시했습니다.게시글 본문.게시게시글 본문.게시
+            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문.게시했습니다.게시글 본문.게시했습니다.게시글 본문.게시했습니다.게시글
+            본문.게시게시글 본문.게시
           </article>
           <button
             onClick={() => {
@@ -254,9 +260,10 @@ export default function MatchPostArticle() {
             )}
           </button>
         </s.ArticleTextSection>
+        <FsLightboxWrapper />
+        <s.InviteBoxWrapper>초대하기</s.InviteBoxWrapper>
+        <ReplySectionComponent></ReplySectionComponent>
       </s.MatchArticleWrapper>
-      <FsLightboxWrapper />
-      <s.InviteBoxWrapper>초대하기</s.InviteBoxWrapper>
     </div>
   );
 }
@@ -355,3 +362,5 @@ export const FsLightboxWrapper = () => {
     </>
   );
 };
+
+
