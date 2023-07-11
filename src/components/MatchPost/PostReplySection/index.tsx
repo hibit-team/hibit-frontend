@@ -4,6 +4,7 @@ import * as s from './styles';
 import COLORS from '../../../assets/color';
 import { css } from '@emotion/react';
 import ProfileDefault from '../../../images/components/MatchPost/profileDefault.svg';
+import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
 
 export default function ReplySectionComponent() {
   //useQuery: 댓글 관련 data
@@ -13,27 +14,7 @@ export default function ReplySectionComponent() {
   return (
     <div>
       <s.InputReplyWrapper>
-        <div
-          css={{
-            boxSizing: 'border-box',
-            width: 35,
-            height: 35,
-            borderRadius: '50%',
-            overflow: 'hidden',
-            border: `1px solid ${COLORS.Gray2}`,
-          }}
-        >
-          <img
-            css={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-            }}
-            src={ProfileDefault}
-            // src={PEPE}
-            alt="defaultImage"
-          />
-        </div>
+        <ProfileImage source={PEPE} />
         <textarea
           placeholder="댓글을 입력하세요"
           css={{
@@ -45,8 +26,8 @@ export default function ReplySectionComponent() {
             color: COLORS.Gray3,
             wordBreak: 'break-all',
             position: 'relative',
-            top: 4,
-            right: 10,
+            top: 7,
+            right: 12,
             overflow: 'hidden',
             '&::placeholder': {
               fontSize: 18,
@@ -61,15 +42,45 @@ export default function ReplySectionComponent() {
         </div>
       </s.InputReplyWrapper>
       <s.ReplySection>
-        <div>프로필</div>
-        <div>닉네임</div>
-        <div>7시간 전</div>
-        <div>좋아요 0개</div>
-        <div>좋아요하트</div>
-        <div>답글버튼</div>
-        <div>보라케밥(통일)</div>
+        <div css={{display:'flex'}}>
+          <div>프로필</div>
+          <div css={{fontWeight:800}}>닉네임</div>
+          <div>7시간 전</div>
+          <div>좋아요 0개</div>
+          <div>좋아요하트</div>
+          <div>답글버튼</div>
+          <div>보라케밥버튼</div>
+        </div>
         <div>작성한댓글영역</div>
       </s.ReplySection>
     </div>
   );
 }
+
+export const ProfileImage = ({ source }: { source: string }) => {
+  return (
+    <div
+      css={{
+        boxSizing: 'border-box',
+        width: 35,
+        height: 35,
+        borderRadius: '50%',
+        overflow: 'hidden',
+        border: `1px solid ${COLORS.Gray2}`,
+        position: 'relative',
+        left: 3,
+      }}
+    >
+      <img
+        css={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain',
+        }}
+        // src={ProfileDefault}
+        src={source}
+        alt="pepe"
+      />
+    </div>
+  );
+};

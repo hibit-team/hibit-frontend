@@ -17,7 +17,7 @@ function App() {
       <RecoilRoot>
         <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen/>
-        <Global styles={globalStyles}></Global>
+        <Global styles={globalStyles}/>
         <Container>
           <Router>
             <Routes>

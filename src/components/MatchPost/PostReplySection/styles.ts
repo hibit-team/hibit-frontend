@@ -7,13 +7,11 @@ export const InputReplyWrapper = styled.div({
   height: 188,
   borderRadius: 10,
   border: `1px solid ${COLORS.Gray2}`,
-  margin: '0px auto',
+  margin: '0px auto 0px auto',
   display: 'grid',
   gridTemplateColumns: '67px auto',
   position: 'relative',
   padding: 20,
-  strokeWidth: '1px',
-  stroke: COLORS.Gray2,
 });
 
 export const ReplyButton = styled.button({
@@ -34,4 +32,6 @@ export const ReplyButton = styled.button({
 export const ReplySection = styled.div({
   boxSizing: 'border-box',
   display: 'flex',
+  margin: '28px auto',
+  
 });
