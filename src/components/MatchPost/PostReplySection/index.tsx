@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, Dispatch, DispatchWithoutAction, SetStateAction } from 'react';
 import * as s from './styles';
 import COLORS from '../../../assets/color';
 import { css } from '@emotion/react';
@@ -77,6 +77,9 @@ export const OriginalReplyComponent = () => {
             <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>좋아요 0개</div>
             <ImageBox width={32} height={32} source={EmptyLike} />
             <div
+              onClick={() => {
+                setIsDaetgulOpen(!isDaetgulOpen);
+              }}
               css={{
                 margin: '0 6px 0 12px',
                 width: 76,
@@ -88,10 +91,11 @@ export const OriginalReplyComponent = () => {
                 color: COLORS.Gray3,
                 border: `1px solid ${COLORS.Gray3}`,
                 borderRadius: '100px',
+                cursor: 'pointer',
               }}
             >
               <img src={ReplyArrow} alt="reply-arrow-button" />
-              <div onClick={()=>{setIsDaetgulOpen(!isDaetgulOpen)}}css={{ marginLeft: 4, cursor: 'pointer' }}>답글</div>
+              <div css={{ marginLeft: 4 }}>답글</div>
             </div>
             <img
               onClick={() => {
@@ -128,35 +132,45 @@ export const OriginalReplyComponent = () => {
         <s.InputReplyText>{replyTextState}</s.InputReplyText>
         {/* 대댓글 */}
         <div css={{ display: isDaetgulOpen ? 'block' : 'none' }}>
-          <SecondaryReplyInputComponent></SecondaryReplyInputComponent>
+          <SecondaryReplyInputComponent isDaetgulOpen={isDaetgulOpen}></SecondaryReplyInputComponent>
         </div>
       </s.OriginalReplyWrapper>
     </div>
   );
 };
+
 // 대댓글입력컴포넌트
-export const SecondaryReplyInputComponent = () => {
+export const SecondaryReplyInputComponent = ({isDaetgulOpen}:{isDaetgulOpen:boolean}) => {
   const [secondaryReplyText, setSecondaryReplyText] = useState('');
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
-  const handleSecondaryReplyTextChange = (e:React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleSecondaryReplyTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = e.target.value;
-    if ( value.length <= 250) {
+    if (value.length <= 250) {
+      value = value.slice(0,value.length);
       setSecondaryReplyText(value);
-      console.log(secondaryReplyText);
       adjustTextareaHeight();
-    };
-    if( value.length  > 250) {alert('250')
-    value = value.slice(0, 250);
-    setSecondaryReplyText(value)}
+      return;
+    } else if (value.length > 250) {
+      value = value.slice(0, 250);
+      setSecondaryReplyText(value);
+      alert('250자를 넘을 수 없습니다.');
+    }
   };
+  //댓글 길이에 반응하는 댓글창 (auto측정 -> scrollHeight추가)
   const adjustTextareaHeight = () => {
     const textarea = replyTextAreaRef.current;
     if (textarea) {
-      textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 'px';
+      if (textarea.value.length === 0) textarea.style.height = '28';
+      else {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+      }
     }
   };
-  console.log(secondaryReplyText);
+  useEffect(()=>{
+    console.log(secondaryReplyText);
+    if(replyTextAreaRef.current) replyTextAreaRef.current.value = '';
+    setSecondaryReplyText('')}, [isDaetgulOpen])
   return (
     <div
       css={{
@@ -164,16 +178,19 @@ export const SecondaryReplyInputComponent = () => {
         border: `1px solid ${COLORS.Gray2}`,
         borderRadius: 10,
         padding: 20,
-        display: 'flex',
+        display: 'grid',
+        gridTemplateColumns: '707px auto',
+        // flexDirection: 'column', // 수정된 부분
       }}
     >
       <textarea
+        maxLength={251}
         ref={replyTextAreaRef}
         defaultValue={secondaryReplyText}
         onChange={handleSecondaryReplyTextChange}
         placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다."
         css={{
-          width: '100%',
+          height: 24,
           fontSize: 20,
           fontWeight: 500,
           color: COLORS.Gray3,
@@ -182,12 +199,12 @@ export const SecondaryReplyInputComponent = () => {
           outline: 'none',
           overflow: 'hidden',
           resize: 'none',
-          // overflowWrap: 'break-word',
+          wordBreak:'break-word',
+          overflowWrap: 'break-word',
           '&:placeholder': { color: COLORS.Gray3 },
           letterSpacing: -2,
         }}
       ></textarea>
-      {secondaryReplyText.length }
       <s.ReplyButton>작성하기</s.ReplyButton>
     </div>
   );

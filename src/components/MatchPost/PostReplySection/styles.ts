@@ -28,6 +28,10 @@ export const ReplyButton = styled.button({
   background: COLORS.Gray3,
   borderRadius: 60,
   alignSelf:'flex-end',
+  position:'absolute',
+  right:50,
+  bottom:20,
+
 });
 
 export const ReplySection = styled.div({
