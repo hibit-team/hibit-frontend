@@ -32,9 +32,8 @@ export const ReplyButton = styled.button({
 export const ReplySection = styled.div({
 });
 
-export const OriginalReply = styled.div({
+export const OriginalReplyWrapper = styled.div({
   boxSizing: 'border-box',
-  display: 'grid',
-  gridTemplateRows:'56px auto',
   margin: '28px auto',
+  position:'relative',
 });

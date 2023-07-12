@@ -289,6 +289,7 @@ export const ArticleImageSlider = styled(Slider)`
 `;
 
 export const OptionComponent = ()=>{
+  //수정삭제신고 게시글 옵션
 const postOption1 = css({
     //수정
     all: 'unset',
