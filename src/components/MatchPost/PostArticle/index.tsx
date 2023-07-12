@@ -210,6 +210,7 @@ export default function MatchPostArticle() {
               lineHeight: 1.4,
               maxHeight: 276,
               overflow: 'hidden',
+              overflowWrap: 'break-word',
             }}
           >
             게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동

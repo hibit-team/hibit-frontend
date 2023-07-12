@@ -27,13 +27,24 @@ export const ReplyButton = styled.button({
   color: 'white',
   background: COLORS.Gray3,
   borderRadius: 60,
+  alignSelf:'flex-end'
 });
 
 export const ReplySection = styled.div({
 });
+export const InputReplyText =styled.div({
+  width: 864,
+            height: 96,
+            color: COLORS.Gray3,
+            fontSize: 20,
+            fontWeight: 500,
+            margin: '12px auto',
+            overFlow: 'hidden',
+            overflowWrap: 'break-word',
+});
 
 export const OriginalReplyWrapper = styled.div({
   boxSizing: 'border-box',
-  margin: '28px auto',
+  margin: '28px 0px',
   position:'relative',
 });

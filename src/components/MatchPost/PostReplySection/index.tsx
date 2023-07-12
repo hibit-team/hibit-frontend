@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import * as s from './styles';
 import COLORS from '../../../assets/color';
 import { css } from '@emotion/react';
@@ -10,20 +10,19 @@ import EmptyLike from '../../../images/components/MatchPost/EmptyLike.png';
 import ReplyArrow from '../../../images/components/MatchPost/replyArrow.svg';
 import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
 import { OptionComponent } from '../PostArticle';
+
 export default function ReplySectionComponent() {
   //useQuery: 댓글 관련 data
   //OriginalReply
   //SecondaryReply
-
-  const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
-
   return (
-    <div css={{position:'relative'}}>
+    <div css={{ position: 'relative' }}>
       <s.InputReplyWrapper>
-        <ProfileImage width={32} height={32} source={PEPE} />
+        <ImageBox width={32} height={32} source={PEPE} />
         <textarea
           placeholder="댓글을 입력하세요"
           css={{
+            boxSizing: 'border-box',
             border: 'none',
             appearance: 'none',
             outline: 'none',
@@ -48,55 +47,72 @@ export default function ReplySectionComponent() {
         </div>
       </s.InputReplyWrapper>
       <s.ReplySection>
-        {[1,2].map(()=><OriginalReplyComponent></OriginalReplyComponent>)}
+        {[1, 2].map(() => (
+          <OriginalReplyComponent></OriginalReplyComponent>
+        ))}
       </s.ReplySection>
     </div>
   );
 }
 
-export const OriginalReplyComponent =()=>{
+
+
+export const OriginalReplyComponent = () => {
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
-  return <>
-    <s.OriginalReplyWrapper>
-          <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 30px', justifyContent: 'space-between' }}>
-            <ProfileImage width={32} height={32} source={ProfileDefault} />
-            <div css={{ display: 'flex', flex: '0 1 187px' }}>
-              <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
-                닉네임
-              </div>
-              <div css={{ color: COLORS.Gray3, padding: '0 12px', fontWeight: 500, fontSize: 20 }}>7시간 전</div>
+  const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
+  const [isDaetgulOpen, setIsDaegulOpen] = useState(false);
+  const [replyTextState, setReplyTextState] = useState(
+    '댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대'
+  );
+  return (
+    <div>
+      <s.OriginalReplyWrapper>
+        <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 30px', justifyContent: 'space-between' }}>
+          <ImageBox width={32} height={32} source={ProfileDefault} />
+          <div css={{ display: 'flex', flex: '0 1 187px' }}>
+            <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
+              닉네임
             </div>
-            <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
-              <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>좋아요 0개</div>
-              <ProfileImage width={32} height={32} source={EmptyLike} />
-              <div
-                css={{
-                  margin: '0 6px 0 12px',
-                  width: 76,
-                  height: 32,
-                  boxSizing: 'border-box',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: COLORS.Gray3,
-                  border: `1px solid ${COLORS.Gray3}`,
-                  borderRadius: '100px',
-                }}
-              >
-                <img src={ReplyArrow} alt="reply-arrow-button" />
-                <span css={{ marginLeft: 4 }}>답글</span>
-              </div>
-              <img onClick={()=>{
-                //내가 클릭한 리플의 게시글id가 맞다면 ()
-                if(true)setIsReplyOptModalOpen(!isReplyOptModalOpen)}
-              }css={{ 
-                cursor:'pointer', margin: '0 6px' }} src={PurpleKebap} alt="purple-kebap" />
-            </div>
+            <div css={{ color: COLORS.Gray3, padding: '0 12px', fontWeight: 500, fontSize: 20 }}>7시간 전</div>
+          </div>
+          <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>좋아요 0개</div>
+            <ImageBox width={32} height={32} source={EmptyLike} />
             <div
+              css={{
+                margin: '0 6px 0 12px',
+                width: 76,
+                height: 32,
+                boxSizing: 'border-box',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: COLORS.Gray3,
+                border: `1px solid ${COLORS.Gray3}`,
+                borderRadius: '100px',
+              }}
+            >
+              <img src={ReplyArrow} alt="reply-arrow-button" />
+              <span css={{ marginLeft: 4, cursor: 'pointer' }}>답글</span>
+            </div>
+            <img
+              onClick={() => {
+                //내가 클릭한 리플의 게시글id가 맞다면 ()
+                if (true) setIsReplyOptModalOpen(!isReplyOptModalOpen);
+              }}
+              css={{
+                cursor: 'pointer',
+                margin: '0 6px',
+              }}
+              src={PurpleKebap}
+              alt="purple-kebap"
+            />
+          </div>
+          <div
             css={{
-              position:'absolute',
-              left:835,
-              top:30,  
+              position: 'absolute',
+              left: 835,
+              top: 30,
               display: isReplyOptModalOpen ? 'flex' : 'none',
               justifyContent: 'center',
               width: 56,
@@ -105,34 +121,73 @@ export const OriginalReplyComponent =()=>{
               flexDirection: 'column',
               border: `1px solid ${COLORS.Gray2}`,
               borderRadius: 10,
-              background:'white',
+              background: 'white',
             }}
           >
             <OptionComponent></OptionComponent>
           </div>
-          </div>
-          <div
-            css={{
-              width: 864,
-              height: 96,
-              color: COLORS.Gray3,
-              fontSize: 20,
-              fontWeight: 500,
-              margin: '12px auto',
-              wordBreak: 'break-all',
-              overFlow: 'hidden',
-            }}
-          >
-            댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대
-            250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대
-            250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대
-            250자댓글최대 250자 250자댓글최대 250자댓글최대 250자댓글최대 250자
-          </div>
-          
-        </s.OriginalReplyWrapper></>
+        </div>
+        <s.InputReplyText>{replyTextState}</s.InputReplyText>
+        <SecondaryReplyInputComponent></SecondaryReplyInputComponent>
+        
+      </s.OriginalReplyWrapper>
+    </div>
+  );
+};
+
+export const SecondaryReplyInputComponent = ()=>{
+  const [secondaryReplyText, setSecondaryReplyText] = useState('');
+  const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
+  const handleSecondaryReplyTextChange =()=>{
+    setSecondaryReplyText(secondaryReplyText);
+    adjustTextareaHeight();
+  }  
+  const adjustTextareaHeight = () => {
+    const textarea = replyTextAreaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
+  };
+
+  return <div
+  css={{
+    margin: '24px 30px',
+    border: `1px solid ${COLORS.Gray2}`,
+    borderRadius: 10,
+    padding: 20,
+    display:'flex',
+    flexDirection:'column',
+    
+  }}
+>
+  <textarea ref={replyTextAreaRef}
+    onChange={handleSecondaryReplyTextChange}
+    placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다."
+    css={{
+      width:'100%',
+      maxHeight:500,
+      fontSize: 20,
+      fontWeight: 500,
+      color: COLORS.Gray3,
+      border: 'none',
+      appearance: 'none',
+      outline: 'none',
+      // overflow: 'hidden',
+      resize: 'none',
+      overflowWrap: 'break-word',
+      '&:placeholder': { fontSize: 20, color: COLORS.Gray3 },
+      letterSpacing: -2,
+    }}
+  >
+    {secondaryReplyText}
+  </textarea>
+  <s.ReplyButton>작성하기</s.ReplyButton>
+</div>
 }
 
-export const ProfileImage = ({ source, width, height }: { source: string; width: number; height: number }) => {
+
+export const ImageBox = ({ source, width, height }: { source: string; width: number; height: number }) => {
   return (
     <div
       css={{
