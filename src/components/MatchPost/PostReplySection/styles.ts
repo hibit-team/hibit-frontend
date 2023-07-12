@@ -27,7 +27,7 @@ export const ReplyButton = styled.button({
   color: 'white',
   background: COLORS.Gray3,
   borderRadius: 60,
-  alignSelf:'flex-end'
+  alignSelf:'flex-end',
 });
 
 export const ReplySection = styled.div({

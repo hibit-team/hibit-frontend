@@ -10,11 +10,11 @@ import EmptyLike from '../../../images/components/MatchPost/EmptyLike.png';
 import ReplyArrow from '../../../images/components/MatchPost/replyArrow.svg';
 import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
 import { OptionComponent } from '../PostArticle';
-
+//댓글영역 컴포넌트
 export default function ReplySectionComponent() {
   //useQuery: 댓글 관련 data
-  //OriginalReply
-  //SecondaryReply
+  //OriginalReply:댓글
+  //SecondaryReply:대댓글
   return (
     <div css={{ position: 'relative' }}>
       <s.InputReplyWrapper>
@@ -47,20 +47,18 @@ export default function ReplySectionComponent() {
         </div>
       </s.InputReplyWrapper>
       <s.ReplySection>
-        {[1, 2].map(() => (
-          <OriginalReplyComponent></OriginalReplyComponent>
+        {[1, 2].map((item, keys) => (
+          <OriginalReplyComponent key={keys}></OriginalReplyComponent>
         ))}
       </s.ReplySection>
     </div>
   );
 }
-
-
-
+//댓글 컴포넌트
 export const OriginalReplyComponent = () => {
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
-  const [isDaetgulOpen, setIsDaegulOpen] = useState(false);
+  const [isDaetgulOpen, setIsDaetgulOpen] = useState(false);
   const [replyTextState, setReplyTextState] = useState(
     '댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대'
   );
@@ -93,7 +91,7 @@ export const OriginalReplyComponent = () => {
               }}
             >
               <img src={ReplyArrow} alt="reply-arrow-button" />
-              <span css={{ marginLeft: 4, cursor: 'pointer' }}>답글</span>
+              <div onClick={()=>{setIsDaetgulOpen(!isDaetgulOpen)}}css={{ marginLeft: 4, cursor: 'pointer' }}>답글</div>
             </div>
             <img
               onClick={() => {
@@ -128,20 +126,29 @@ export const OriginalReplyComponent = () => {
           </div>
         </div>
         <s.InputReplyText>{replyTextState}</s.InputReplyText>
-        <SecondaryReplyInputComponent></SecondaryReplyInputComponent>
-        
+        {/* 대댓글 */}
+        <div css={{ display: isDaetgulOpen ? 'block' : 'none' }}>
+          <SecondaryReplyInputComponent></SecondaryReplyInputComponent>
+        </div>
       </s.OriginalReplyWrapper>
     </div>
   );
 };
-
-export const SecondaryReplyInputComponent = ()=>{
+// 대댓글입력컴포넌트
+export const SecondaryReplyInputComponent = () => {
   const [secondaryReplyText, setSecondaryReplyText] = useState('');
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
-  const handleSecondaryReplyTextChange =()=>{
-    setSecondaryReplyText(secondaryReplyText);
-    adjustTextareaHeight();
-  }  
+  const handleSecondaryReplyTextChange = (e:React.ChangeEvent<HTMLTextAreaElement>) => {
+    let value = e.target.value;
+    if ( value.length <= 250) {
+      setSecondaryReplyText(value);
+      console.log(secondaryReplyText);
+      adjustTextareaHeight();
+    };
+    if( value.length  > 250) {alert('250')
+    value = value.slice(0, 250);
+    setSecondaryReplyText(value)}
+  };
   const adjustTextareaHeight = () => {
     const textarea = replyTextAreaRef.current;
     if (textarea) {
@@ -149,44 +156,43 @@ export const SecondaryReplyInputComponent = ()=>{
       textarea.style.height = textarea.scrollHeight + 'px';
     }
   };
-
-  return <div
-  css={{
-    margin: '24px 30px',
-    border: `1px solid ${COLORS.Gray2}`,
-    borderRadius: 10,
-    padding: 20,
-    display:'flex',
-    flexDirection:'column',
-    
-  }}
->
-  <textarea ref={replyTextAreaRef}
-    onChange={handleSecondaryReplyTextChange}
-    placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다."
-    css={{
-      width:'100%',
-      maxHeight:500,
-      fontSize: 20,
-      fontWeight: 500,
-      color: COLORS.Gray3,
-      border: 'none',
-      appearance: 'none',
-      outline: 'none',
-      // overflow: 'hidden',
-      resize: 'none',
-      overflowWrap: 'break-word',
-      '&:placeholder': { fontSize: 20, color: COLORS.Gray3 },
-      letterSpacing: -2,
-    }}
-  >
-    {secondaryReplyText}
-  </textarea>
-  <s.ReplyButton>작성하기</s.ReplyButton>
-</div>
-}
-
-
+  console.log(secondaryReplyText);
+  return (
+    <div
+      css={{
+        margin: '24px 30px',
+        border: `1px solid ${COLORS.Gray2}`,
+        borderRadius: 10,
+        padding: 20,
+        display: 'flex',
+      }}
+    >
+      <textarea
+        ref={replyTextAreaRef}
+        defaultValue={secondaryReplyText}
+        onChange={handleSecondaryReplyTextChange}
+        placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다."
+        css={{
+          width: '100%',
+          fontSize: 20,
+          fontWeight: 500,
+          color: COLORS.Gray3,
+          border: 'none',
+          appearance: 'none',
+          outline: 'none',
+          overflow: 'hidden',
+          resize: 'none',
+          // overflowWrap: 'break-word',
+          '&:placeholder': { color: COLORS.Gray3 },
+          letterSpacing: -2,
+        }}
+      ></textarea>
+      {secondaryReplyText.length }
+      <s.ReplyButton>작성하기</s.ReplyButton>
+    </div>
+  );
+};
+//이미지박스
 export const ImageBox = ({ source, width, height }: { source: string; width: number; height: number }) => {
   return (
     <div
