@@ -56,7 +56,7 @@ export default function MatchPostArticle() {
               display: flex;
               flex: 1 1 auto;
               font-size: 24px;
-              font-weight: 900;
+              font-weight: 800;
             `}
           >
             게시글 명 게시글 명 게시글 공백포함 최대 30자까지
@@ -88,7 +88,7 @@ export default function MatchPostArticle() {
             css={css`
               font-size: 20px;
               color: #797979;
-              font-weight: 900;
+              font-weight: 700;
               margin: 6px;
             `}
           >
@@ -136,9 +136,7 @@ export default function MatchPostArticle() {
               justifyContent: 'center',
             }}
           >
-            <button css={postOption1}>수정</button>
-            <button css={postOption2}>삭제</button>
-            <button css={postOption3}>신고</button>
+            <OptionComponent></OptionComponent>
           </div>
         </s.ArticleTitleSection>
         <s.ArticleDateSection>
@@ -290,41 +288,45 @@ export const ArticleImageSlider = styled(Slider)`
   border-radius: 10px;
 `;
 
-export const postOption1 = css({
-  //수정
-  all: 'unset',
-  position: 'relative',
-  cursor: 'pointer',
-  top: 2,
-  fontSize: 18,
-  padding: '6px',
-  borderBottom: `1px solid ${COLORS.Gray2}`,
-  color: COLORS.Gray3,
-  '&:hover': { color: COLORS.main79, scale: '1.04' },
-});
-export const postOption2 = css({
-  //삭제(idx=2)
-  all: 'unset',
-  position: 'relative',
-  cursor: 'pointer',
-  top: 2,
-  fontSize: 18,
-  padding: '6px',
-  borderBottom: `1px solid ${COLORS.Gray2}`,
-  color: COLORS.Gray3,
-  '&:hover': { color: COLORS.main79, scale: '1.04' },
-});
-export const postOption3 = css({
-  //신고
-  all: 'unset',
-  position: 'relative',
-  cursor: 'pointer',
-  top: 2,
-  fontSize: 18,
-  padding: '6px',
-  color: COLORS.Gray3,
-  '&:hover': { color: 'red', scale: '1.04' },
-});
+export const OptionComponent = ()=>{
+const postOption1 = css({
+    //수정
+    all: 'unset',
+    position: 'relative',
+    cursor: 'pointer',
+    top: 2,
+    fontSize: 18,
+    padding: '6px',
+    borderBottom: `1px solid ${COLORS.Gray2}`,
+    color: COLORS.Gray3,
+    '&:hover': { color: COLORS.main79, scale: '1.04' },
+  });
+ const postOption2 = css({
+    //삭제(idx=2)
+    all: 'unset',
+    position: 'relative',
+    cursor: 'pointer',
+    top: 2,
+    fontSize: 18,
+    padding: '6px',
+    borderBottom: `1px solid ${COLORS.Gray2}`,
+    color: COLORS.Gray3,
+    '&:hover': { color: COLORS.main79, scale: '1.04' },
+  });
+const postOption3 = css({
+    //신고
+    all: 'unset',
+    position: 'relative',
+    cursor: 'pointer',
+    top: 2,
+    fontSize: 18,
+    padding: '6px',
+    color: COLORS.Gray3,
+    '&:hover': { color: 'red', scale: '1.04' },
+  });
+  const options =['수정','삭제','신고'];
+  return <>{options.map((opt,idx)=><button key={idx} css={idx === 0 ? postOption1 : idx === 1 ? postOption2 : postOption3}>{opt}</button>)}</>
+}
 
 export const FsLightboxWrapper = () => {
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
