@@ -10,6 +10,7 @@ import YellowLike from '../../../images/components/MatchPost/yellowLike.svg';
 import EmptyLike from '../../../images/components/MatchPost/EmptyLike.png';
 import ReplyArrow from '../../../images/components/MatchPost/replyArrow.svg';
 import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
+import EmptyReplyArrow from '../../../images/components/MatchPost/emptyReplyArrow.svg';
 import { OptionComponent } from '../PostArticle';
 //댓글영역 컴포넌트
 export default function ReplySectionComponent() {
@@ -17,7 +18,8 @@ export default function ReplySectionComponent() {
   //OriginalReply:댓글
   //SecondaryReply:대댓글
   return (
-    <div css={{ position: 'relative' }}>
+    <div css={{ position: 'relative',paddingBottom:100 }}>
+      {/* 댓글입력창 */}
       <s.InputReplyWrapper>
         <ImageBox width={32} height={32} source={PEPE} />
         <textarea
@@ -51,6 +53,7 @@ export default function ReplySectionComponent() {
           </ReplyButton>
         </div>
       </s.InputReplyWrapper>
+      {/* //댓글영역 */}
       <s.ReplySection>
         {[1, 2].map((item, keys) => (
           <OriginalReplyComponent key={keys}></OriginalReplyComponent>
@@ -59,7 +62,7 @@ export default function ReplySectionComponent() {
     </div>
   );
 }
-//처음 댓글 컴포넌트
+//기본 댓글 컴포넌트
 export const OriginalReplyComponent = () => {
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
@@ -134,17 +137,18 @@ export const OriginalReplyComponent = () => {
             <OptionComponent></OptionComponent>
           </div>
         </div>
-        <s.InputReplyText>{replyTextState}</s.InputReplyText>
+        <s.OriginalReplyText>{replyTextState}</s.OriginalReplyText>
         {/* 대댓글 */}
         <div css={{ display: isDaetgulOpen ? 'block' : 'none' }}>
           <SecondaryReplyInputComponent isDaetgulOpen={isDaetgulOpen}></SecondaryReplyInputComponent>
         </div>
       </s.OriginalReplyWrapper>
+      <SecondaryReplyComponent></SecondaryReplyComponent>
     </div>
   );
 };
 
-// 대댓글입력컴포넌트
+// 대댓글입력창(input)컴포넌트
 export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen: boolean }) => {
   const [secondaryReplyText, setSecondaryReplyText] = useState('');
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -198,9 +202,9 @@ export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen:
         onChange={handleSecondaryReplyTextChange}
         placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다."
         css={{
-          boxSizing:'content-box',
-          padding:0,
-          lineHeight:'100%',
+          boxSizing: 'content-box',
+          padding: 0,
+          lineHeight: '100%',
           height: 24,
           fontSize: 20,
           fontWeight: 500,
@@ -214,8 +218,8 @@ export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen:
           overflowWrap: 'break-word',
           '&:placeholder': { color: COLORS.Gray3 },
           letterSpacing: -2,
-          position:'relative',
-          top:2,
+          position: 'relative',
+          top: 2,
         }}
       ></textarea>
       <ReplyButton right={50} bottom={17}>
@@ -224,6 +228,68 @@ export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen:
     </div>
   );
 };
+//대댓글 컴포넌트
+export const SecondaryReplyComponent = () => {
+  const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
+  const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
+  const [isDaetgulOpen, setIsDaetgulOpen] = useState(false);
+  const [seconaryReplyTextState, setSecondaryReplyTextState] = useState(
+    '댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대'
+  );
+  return (
+    <div>
+      <s.SecondaryReplyWrapper>
+        <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 30px', justifyContent: 'space-between' }}>
+          <img css={{ marginRight: 12 }} src={EmptyReplyArrow} alt="reply-arrow-empty" />
+          <ImageBox width={32} height={32} source={ProfileDefault} />
+          <div css={{ display: 'flex', flex: '0 1 187px' }}>
+            <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
+              닉네임
+            </div>
+            <div css={{ color: COLORS.Gray3, padding: '0 12px', fontWeight: 500, fontSize: 20 }}>7시간 전</div>
+          </div>
+          <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>좋아요 0개</div>
+            <ImageBox width={32} height={32} source={EmptyLike} />
+            <img
+              onClick={()=>{setIsReplyOptModalOpen(!isReplyOptModalOpen)}}
+              css={{
+                margin: '0 0 0px 12px ',
+              }}
+              src={PurpleKebap}
+              alt="purple-kebap"
+            />
+          </div>
+          <div
+            css={{
+              position: 'absolute',
+              left: 844,
+              top: 30,
+              display: isReplyOptModalOpen ? 'flex' : 'none',
+              justifyContent: 'center',
+              width: 56,
+              height: 102,
+              alignItems: 'center',
+              flexDirection: 'column',
+              border: `1px solid ${COLORS.Gray2}`,
+              borderRadius: 10,
+              background: 'white',
+              zIndex:10,
+            }}
+          >
+            <OptionComponent></OptionComponent>
+          </div>
+        </div>
+        <s.SecondaryReplyText>{seconaryReplyTextState}</s.SecondaryReplyText>
+      </s.SecondaryReplyWrapper>
+      {/* 대댓글구분선 */}
+      <div css={{margin: '0px auto', boxSizing:'border-box', width:864,height:1,borderBottom:`1.5px solid ${COLORS.Gray2}`,
+      paddingTop:18,
+    }}></div>
+    </div>
+  );
+};
+
 //이미지박스
 export const ImageBox = ({ source, width, height }: { source: string; width: number; height: number }) => {
   return (
