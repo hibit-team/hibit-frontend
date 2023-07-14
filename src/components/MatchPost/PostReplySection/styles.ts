@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 import COLORS from '../../../assets/color';
 
 export const InputReplyWrapper = styled.div({
@@ -17,15 +18,30 @@ export const InputReplyWrapper = styled.div({
 export const ReplySection = styled.div({});
 export const OriginalReplyText = styled.div({
   width: 855,
-  height: 96,
   color: COLORS.Gray3,
   fontSize: 20,
   fontWeight: 500,
   margin: '12px auto -15px auto',
   overFlow: 'hidden',
-  wordBreak: 'break-word',
   overflowWrap: 'break-word',
 });
+export const OriginalReplyModifiedTextCss = css({
+  borderRadius:10,
+  padding:20,
+  width: 855,
+  color: COLORS.Gray3,
+  fontSize: 20,
+  fontWeight: 500,
+  margin: '12px auto 0 20px',
+  overFlow: 'hidden',
+  overflowWrap: 'break-word',
+  border: `1px solid ${COLORS.Gray3}`,
+  appearance: 'none',
+  outline: 'none',
+  overflow: 'hidden',
+  resize: 'none',
+});
+
 export const SecondaryReplyText = styled.div({
   width: 820,
   height: 96,
@@ -36,8 +52,8 @@ export const SecondaryReplyText = styled.div({
   overFlow: 'hidden',
   wordBreak: 'break-word',
   overflowWrap: 'break-word',
-  position:'relative',
-  left:8,
+  position: 'relative',
+  left: 8,
 });
 
 export const OriginalReplyWrapper = styled.div({
@@ -45,7 +61,6 @@ export const OriginalReplyWrapper = styled.div({
   margin: '28px 0px',
   position: 'relative',
 });
-
 
 export const SecondaryReplyWrapper = styled.div({
   boxSizing: 'border-box',

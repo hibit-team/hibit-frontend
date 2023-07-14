@@ -21,7 +21,7 @@ import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
 import ReplySectionComponent from '../PostReplySection';
 
 export default function MatchPostArticle() {
-  const [isPurpleKebapOpen, setIsPurpleKebapOpen] = useState(false);
+  const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [isLikeStateOn, setIsLikeStateOn] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   const settings = {
@@ -110,7 +110,7 @@ export default function MatchPostArticle() {
           </div>
           <img
             onClick={() => {
-              setIsPurpleKebapOpen(!isPurpleKebapOpen);
+              setIsPurpleKebapOptionOpen(!isPurpleKebapOptionOpen);
             }}
             css={{
               margin: 6,
@@ -130,7 +130,7 @@ export default function MatchPostArticle() {
               boxSizing: 'border-box',
               width: 56,
               height: 102,
-              display: isPurpleKebapOpen ? 'flex' : 'none',
+              display: isPurpleKebapOptionOpen ? 'flex' : 'none',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
@@ -292,7 +292,17 @@ export const ArticleImageSlider = styled(Slider)`
   border-radius: 10px;
 `;
 
-export const OptionComponent = () => {
+export const OptionComponent = ({
+  setIsModifyOn,
+  isModifyOn,
+  isReplyOptModalOpen,
+  setIsReplyOptModalOpen,
+}: {
+  setIsModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
+  isModifyOn?: boolean;
+  isReplyOptModalOpen?: boolean;
+  setIsReplyOptModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   //수정삭제신고 게시글 옵션
   const postOption1 = css({
     //수정
@@ -333,7 +343,22 @@ export const OptionComponent = () => {
   return (
     <>
       {options.map((opt, idx) => (
-        <button key={idx} css={idx === 0 ? postOption1 : idx === 1 ? postOption2 : postOption3}>
+        <button
+          onClick={
+            idx === 0 && setIsModifyOn
+              ? () => {
+                  //옵션모달꺼주기
+                  if (setIsReplyOptModalOpen) {
+                    setIsReplyOptModalOpen(!isReplyOptModalOpen);
+                  }
+                  //수정모드On
+                  setIsModifyOn(!isModifyOn);
+                }
+              : () => {}
+          }
+          key={idx}
+          css={idx === 0 ? postOption1 : idx === 1 ? postOption2 : postOption3}
+        >
           {opt}
         </button>
       ))}
