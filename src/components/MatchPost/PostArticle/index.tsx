@@ -46,7 +46,7 @@ export default function MatchPostArticle() {
     ),
     dotsClass: 'dots_custom2',
   };
-  const dateOption = ['0000-00-00-오전', '0000-00-00-오후', '0000-00-00-오후'];
+  const dateOption = ['0000-00-00-오전', '0000-00-00-오후'];
   return (
     <div>
       <s.MatchArticleWrapper>
@@ -141,20 +141,20 @@ export default function MatchPostArticle() {
         </s.ArticleTitleSection>
         <s.ArticleDateSection>
           <div
-            css={css`
-              flex: 1 1 auto;
-              font-size: 20px;
-              font-weight: 900;
-              color: ${COLORS.Gray3};
-            `}
+            css={{
+              flex: '0 1 252px',
+              fontSize: 20,
+              fontWeight: 800,
+              color: COLORS.Gray3,
+            }}
           >
             관람희망날짜
           </div>
-          {dateOption.map((day, idx) => (
-            <div key={idx} css={ArticleDateCss}>
-              {day}
-            </div>
-          ))}
+            {dateOption.map((date, idx) => (
+              <div key={idx} css={ArticleDateCss}>
+                {date}
+              </div>
+            ))}
         </s.ArticleDateSection>
 
         <s.ArticlePlaceTogoSection>
@@ -280,6 +280,9 @@ export const ArticleDateCss = css`
   color: ${COLORS.Gray3};
   font-size: 18px;
   border: 1px solid ${COLORS.Gray2};
+  position:relative;
+  right: 10px;
+
 `;
 
 export const ArticleImageSlider = styled(Slider)`
@@ -289,9 +292,9 @@ export const ArticleImageSlider = styled(Slider)`
   border-radius: 10px;
 `;
 
-export const OptionComponent = ()=>{
+export const OptionComponent = () => {
   //수정삭제신고 게시글 옵션
-const postOption1 = css({
+  const postOption1 = css({
     //수정
     all: 'unset',
     position: 'relative',
@@ -303,7 +306,7 @@ const postOption1 = css({
     color: COLORS.Gray3,
     '&:hover': { color: COLORS.main79, scale: '1.04' },
   });
- const postOption2 = css({
+  const postOption2 = css({
     //삭제(idx=2)
     all: 'unset',
     position: 'relative',
@@ -315,7 +318,7 @@ const postOption1 = css({
     color: COLORS.Gray3,
     '&:hover': { color: COLORS.main79, scale: '1.04' },
   });
-const postOption3 = css({
+  const postOption3 = css({
     //신고
     all: 'unset',
     position: 'relative',
@@ -326,9 +329,17 @@ const postOption3 = css({
     color: COLORS.Gray3,
     '&:hover': { color: 'red', scale: '1.04' },
   });
-  const options =['수정','삭제','신고'];
-  return <>{options.map((opt,idx)=><button key={idx} css={idx === 0 ? postOption1 : idx === 1 ? postOption2 : postOption3}>{opt}</button>)}</>
-}
+  const options = ['수정', '삭제', '신고'];
+  return (
+    <>
+      {options.map((opt, idx) => (
+        <button key={idx} css={idx === 0 ? postOption1 : idx === 1 ? postOption2 : postOption3}>
+          {opt}
+        </button>
+      ))}
+    </>
+  );
+};
 
 export const FsLightboxWrapper = () => {
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
@@ -366,5 +377,3 @@ export const FsLightboxWrapper = () => {
     </>
   );
 };
-
-
