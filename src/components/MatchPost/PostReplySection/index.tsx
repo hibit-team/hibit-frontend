@@ -64,7 +64,8 @@ export default function ReplySectionComponent() {
 }
 //댓글 컴포넌트
 export const OriginalReplyComponent = () => {
-  const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
+  //선택옵션on-off
+  const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false)
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
   const [isDaetgulOpen, setIsDaetgulOpen] = useState(false);
   //수정모드on-off여부
@@ -196,7 +197,7 @@ export const OriginalReplyComponent = () => {
 };
 
 // 대댓글입력창(input)컴포넌트
-export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen?: boolean }) => {
+export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen: boolean }) => {
   const [secondaryReplyText, setSecondaryReplyText] = useState('');
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const handleSecondaryReplyTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -269,7 +270,7 @@ export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen?
           top: 2,
         }}
       ></textarea>
-      <ReplyButton right={50} bottom={17}>
+      <ReplyButton right={-20} bottom={0}>
         작성하기
       </ReplyButton>
     </div>
@@ -283,8 +284,8 @@ export const ReplyModifyOnComponent = ({
   isModifyOn,
   setIsModifyOn,
 }: {
-  replyTextState: string;
-  setReplyTextState: React.Dispatch<React.SetStateAction<string>>;
+  replyTextState?: string;
+  setReplyTextState?: React.Dispatch<React.SetStateAction<string>>;
   isModifyOn?: boolean;
   setIsModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -358,7 +359,7 @@ export const ReplyModifyOnComponent = ({
           top: 2,
         }}
       ></textarea>
-      <ReplyButton right={50} bottom={17}>
+      <ReplyButton right={-20} bottom={0}>
         수정하기
       </ReplyButton>
     </div>
@@ -367,9 +368,10 @@ export const ReplyModifyOnComponent = ({
 
 //대댓글 컴포넌트
 export const SecondaryReplyComponent = () => {
+  //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
-  const [replyTextState] = useState(
+  const [replyTextState, setReplyTextState] = useState(
     '댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대'
   );
   const [isModifyOn, setIsModifyOn] = useState(false);
@@ -420,10 +422,15 @@ export const SecondaryReplyComponent = () => {
               cursor: 'pointer',
             }}
           >
-            <OptionComponent isModifyOn={isModifyOn} setIsModifyOn={setIsModifyOn}></OptionComponent>
+            <OptionComponent isReplyOptModalOpen={isReplyOptModalOpen} 
+            setIsReplyOptModalOpen={setIsReplyOptModalOpen} isModifyOn={isModifyOn} setIsModifyOn={setIsModifyOn}></OptionComponent>
           </div>
         </div>
-        <s.SecondaryReplyText>{replyTextState}</s.SecondaryReplyText>
+        {isModifyOn ? (
+          <s.SecondaryReplyText>{replyTextState}</s.SecondaryReplyText>
+        ) : (
+          <ReplyModifyOnComponent replyTextState={replyTextState} setReplyTextState={setReplyTextState}></ReplyModifyOnComponent>
+        )}
       </s.SecondaryReplyWrapper>
       {/* 대댓글구분선 */}
       <div
@@ -488,7 +495,7 @@ export const ReplyButton = styled.button<{ right?: number; bottom?: number }>(({
   background: COLORS.Gray3,
   borderRadius: 60,
   alignSelf: 'flex-end',
-  position: 'absolute',
+  position: 'relative',
   right: right,
   bottom: bottom,
 }));
