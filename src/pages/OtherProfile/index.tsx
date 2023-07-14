@@ -12,7 +12,7 @@ const OtherProfile = () => {
   const userID = idParams.userID;
   // console.log(userID);
 
-  // 프로필 등록 or 미등록 유저에 따른 조건부 렌더링 -> 레이어 하나 추가 여부만 달라짐
+  // 프로필 등록 or 미등록 유저에 따른 조건부 렌더링
   const [isProfileRegistered, setIsProfileRegistered] = useState(true);
 
 
