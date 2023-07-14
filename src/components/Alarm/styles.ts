@@ -65,8 +65,3 @@ export const AcceptButtonHoverCss = css`
     font-weight: 900;
   }
 `
-
-// 1. read or not 폰트 컬러 상태관리
-// 2. 프로필 + 이모지:알람타입에따른 (압축)
-// 3. Username 및 주요키워드 굵기 변경 렌더링
-// 4. 수락 거절 상태관리

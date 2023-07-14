@@ -22,6 +22,7 @@ const Header = () => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const [isAlarm, setIsAlarm] = useState<boolean>(true);
   const [alarmCount, setAlarmCount] = useState<number>(3);
+  
   const [alarmState,setAlarmState] = useRecoilState<boolean>(AlarmSwitchState);
   const onAlarmState = ()=>setAlarmState(!alarmState)
 
