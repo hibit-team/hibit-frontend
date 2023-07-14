@@ -44,8 +44,8 @@ export const ArticleTextSection = styled.div`
   position: relative;
   box-sizing: border-box;
   display: grid;
-  width: 874px;
-  margin: 40px 34px 0px 34px;
+  width: 864px;
+  margin: 40px auto 0px auto;
   border-bottom: 1px solid ${COLORS.Gray2};
   grid-template-columns: 233px 640px;
   &: nth-child(2) {

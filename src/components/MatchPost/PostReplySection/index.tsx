@@ -6,8 +6,8 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import ProfileDefault from '../../../images/components/MatchPost/profileDefault.svg';
 import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
-import YellowLike from '../../../images/components/MatchPost/yellowLike.svg';
-import EmptyLike from '../../../images/components/MatchPost/EmptyLike.png';
+import EmptyRoundLike from '../../../images/components/MatchPost/EmptyRoundLike.png';
+import YellowRoundLike from '../../../images/components/MatchPost/YellowRoundLike.svg';
 import ReplyArrow from '../../../images/components/MatchPost/replyArrow.svg';
 import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
 import EmptyReplyArrow from '../../../images/components/MatchPost/emptyReplyArrow.svg';
@@ -18,8 +18,8 @@ export default function ReplySectionComponent() {
   //OriginalReply:댓글
   //SecondaryReply:대댓글
   return (
-    <div css={{ position: 'relative',paddingBottom:100 }}>
-      {/* 댓글입력창 */}
+    <div css={{ position: 'relative', paddingBottom: 100 }}>
+      {/* 유저 댓글입력창 */}
       <s.InputReplyWrapper>
         <ImageBox width={32} height={32} source={PEPE} />
         <textarea
@@ -83,7 +83,12 @@ export const OriginalReplyComponent = () => {
           </div>
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
             <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>좋아요 0개</div>
-            <ImageBox width={32} height={32} source={EmptyLike} />
+            <div onClick={()=>setIsReplyLikeOn(!isReplyLikeOn)}>
+              <ReplyEmptyRoundLikeButton
+                isReplyLikeOn={isReplyLikeOn}
+              />
+            </div>
+
             <div
               onClick={() => {
                 setIsDaetgulOpen(!isDaetgulOpen);
@@ -250,9 +255,15 @@ export const SecondaryReplyComponent = () => {
           </div>
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
             <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>좋아요 0개</div>
-            <ImageBox width={32} height={32} source={EmptyLike} />
+            <div onClick={()=>setIsReplyLikeOn(!isReplyLikeOn)}>
+              <ReplyEmptyRoundLikeButton
+                isReplyLikeOn={isReplyLikeOn}
+              />
+            </div>
             <img
-              onClick={()=>{setIsReplyOptModalOpen(!isReplyOptModalOpen)}}
+              onClick={() => {
+                setIsReplyOptModalOpen(!isReplyOptModalOpen);
+              }}
               css={{
                 margin: '0 0 0px 12px ',
               }}
@@ -263,7 +274,7 @@ export const SecondaryReplyComponent = () => {
           <div
             css={{
               position: 'absolute',
-              left: 844,
+              left: 842,
               top: 30,
               display: isReplyOptModalOpen ? 'flex' : 'none',
               justifyContent: 'center',
@@ -274,7 +285,7 @@ export const SecondaryReplyComponent = () => {
               border: `1px solid ${COLORS.Gray2}`,
               borderRadius: 10,
               background: 'white',
-              zIndex:10,
+              zIndex: 10,
             }}
           >
             <OptionComponent></OptionComponent>
@@ -283,9 +294,9 @@ export const SecondaryReplyComponent = () => {
         <s.SecondaryReplyText>{seconaryReplyTextState}</s.SecondaryReplyText>
       </s.SecondaryReplyWrapper>
       {/* 대댓글구분선 */}
-      <div css={{margin: '0px auto', boxSizing:'border-box', width:864,height:1,borderBottom:`1.5px solid ${COLORS.Gray2}`,
-      paddingTop:18,
-    }}></div>
+      <div
+        css={{ margin: '0px auto', boxSizing: 'border-box', width: 864, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
+      ></div>
     </div>
   );
 };
@@ -316,6 +327,20 @@ export const ImageBox = ({ source, width, height }: { source: string; width: num
     </div>
   );
 };
+
+// 댓글&대댓글 좋아요 버튼
+export const ReplyEmptyRoundLikeButton = ({ isReplyLikeOn}: { isReplyLikeOn: boolean}) => {
+  return (
+    <>
+      {isReplyLikeOn ? (
+        <img css={{ width: 33, height: 32, cursor: 'pointer' }} src={YellowRoundLike} alt="empty-like" />
+      ) : (
+        <img css={{ width: 33, height: 32, cursor: 'pointer' }} src={EmptyRoundLike} alt="empty-like" />
+      )}
+    </>
+  );
+};
+
 //작성하기 버튼
 export const ReplyButton = styled.button<{ right: number; bottom: number }>(({ right, bottom }) => ({
   boxSizing: 'border-box',

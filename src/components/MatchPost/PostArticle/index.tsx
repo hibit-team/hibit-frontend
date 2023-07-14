@@ -150,11 +150,11 @@ export default function MatchPostArticle() {
           >
             관람희망날짜
           </div>
-            {dateOption.map((date, idx) => (
-              <div key={idx} css={ArticleDateCss}>
-                {date}
-              </div>
-            ))}
+          {dateOption.map((date, idx) => (
+            <div key={idx} css={ArticleDateCss}>
+              {date}
+            </div>
+          ))}
         </s.ArticleDateSection>
 
         <s.ArticlePlaceTogoSection>
@@ -223,6 +223,7 @@ export default function MatchPostArticle() {
           </article>
           <button
             onClick={() => {
+              alert(isLikeStateOn ? '해당 게시글의 `좋아요`를 취소했습니다.' : '해당 게시글에 `좋아요`를 눌렀습니다.');
               setIsLikeStateOn(!isLikeStateOn);
             }}
             css={{
@@ -231,8 +232,8 @@ export default function MatchPostArticle() {
               gridRow: 2,
               display: 'flex',
               position: 'relative',
-              left: 538,
-              bottom: 24,
+              left: 542,
+              bottom: 23,
               justifyContent: 'center',
               alignItems: 'center',
               lineHeight: '100%',
@@ -280,9 +281,8 @@ export const ArticleDateCss = css`
   color: ${COLORS.Gray3};
   font-size: 18px;
   border: 1px solid ${COLORS.Gray2};
-  position:relative;
+  position: relative;
   right: 10px;
-
 `;
 
 export const ArticleImageSlider = styled(Slider)`
