@@ -28,7 +28,7 @@ left:1rem;
 //카드 상단부이미지
 export const MatchingCardImgCss =css`
 border-radius:1rem 1rem 0 0;
-// background-color:${COLORS.main79};
+background-color:${COLORS.Gray2};
 width: 296px;
 height:280px;
 border: 1px solid ${COLORS.Gray2};

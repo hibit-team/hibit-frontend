@@ -196,7 +196,7 @@ export const OriginalReplyComponent = () => {
       </s.OriginalReplyWrapper>
       {/* 대댓글 컴포넌트 */}
 
-      {[1, 2, 3].map((item, lineNumber) => (
+      {[1, 2].map((item, lineNumber) => (
         <SecondaryReplyComponent lineNumber={lineNumber}></SecondaryReplyComponent>
       ))}
     </div>
