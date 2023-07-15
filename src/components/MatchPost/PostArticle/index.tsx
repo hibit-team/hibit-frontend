@@ -119,25 +119,27 @@ export default function MatchPostArticle() {
             src={PurpleKebap}
             alt="ellipsis"
           />
-          <div
-            css={{
-              position: 'absolute',
-              top: '3.3rem',
-              right: '-0.4rem',
-              border: `1.5px solid ${COLORS.Gray2}`,
-              borderRadius: '10px',
-              background: 'white',
-              boxSizing: 'border-box',
-              width: 56,
-              height: 102,
-              display: isPurpleKebapOptionOpen ? 'flex' : 'none',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <OptionComponent></OptionComponent>
-          </div>
+          {isPurpleKebapOptionOpen && (
+            <div
+              css={{
+                position: 'absolute',
+                top: '3.3rem',
+                right: '-0.4rem',
+                border: `1.5px solid ${COLORS.Gray2}`,
+                borderRadius: '10px',
+                background: 'white',
+                boxSizing: 'border-box',
+                width: 56,
+                height: 102,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <OptionComponent></OptionComponent>
+            </div>
+          )}
         </s.ArticleTitleSection>
         <s.ArticleDateSection>
           <div
@@ -376,7 +378,6 @@ export const FsLightboxWrapper = () => {
           -webkit-appearance: none;
           -moz-appearance: none;
           appearance: none;
-          display: hidden;
           width: 0px;
           height: 0px;
           display: none;

@@ -77,8 +77,8 @@ export const OriginalReplyComponent = () => {
 
   const handleOriginalReplyText = () => {
     if (OriginalReplyTextRef.current) {
-      OriginalReplyTextRef.current.style.height = OriginalReplyTextRef.current.scrollHeight + 'px';
       OriginalReplyTextRef.current.style.height = 'auto';
+      OriginalReplyTextRef.current.style.height = OriginalReplyTextRef.current.scrollHeight + 'px';
     }
   };
   useEffect(() => {
@@ -150,29 +150,31 @@ export const OriginalReplyComponent = () => {
             />
           </div>
           {/* 게시글OPTION */}
-          <div
-            css={{
-              position: 'absolute',
-              right: -30,
-              top: -5,
-              display: isReplyOptModalOpen ? 'flex' : 'none',
-              justifyContent: 'center',
-              width: 56,
-              height: 102,
-              alignItems: 'center',
-              flexDirection: 'column',
-              border: `1px solid ${COLORS.Gray2}`,
-              borderRadius: 10,
-              background: 'white',
-            }}
-          >
-            <OptionComponent
-              isModifyOn={isModifyOn}
-              setIsModifyOn={setIsModifyOn}
-              isReplyOptModalOpen={isReplyOptModalOpen}
-              setIsReplyOptModalOpen={setIsReplyOptModalOpen}
-            ></OptionComponent>
-          </div>
+          {isReplyOptModalOpen && (
+            <div
+              css={{
+                position: 'absolute',
+                right: -30,
+                top: -5,
+                display: 'flex',
+                justifyContent: 'center',
+                width: 56,
+                height: 102,
+                alignItems: 'center',
+                flexDirection: 'column',
+                border: `1px solid ${COLORS.Gray2}`,
+                borderRadius: 10,
+                background: 'white',
+              }}
+            >
+              <OptionComponent
+                isModifyOn={isModifyOn}
+                setIsModifyOn={setIsModifyOn}
+                isReplyOptModalOpen={isReplyOptModalOpen}
+                setIsReplyOptModalOpen={setIsReplyOptModalOpen}
+              ></OptionComponent>
+            </div>
+          )}
         </div>
         {/* 댓글텍스트 */}
         {isModifyOn ? (
@@ -186,14 +188,16 @@ export const OriginalReplyComponent = () => {
           <s.OriginalReplyText>{replyTextState}</s.OriginalReplyText>
         )}
         {/* 대댓글입력창 */}
-        <div css={{ display: isDaetgulOpen ? 'block' : 'none' }}>
-          <SecondaryReplyInputComponent isDaetgulOpen={isDaetgulOpen}></SecondaryReplyInputComponent>
-        </div>
+        {isDaetgulOpen && (
+          <div>
+            <SecondaryReplyInputComponent isDaetgulOpen={isDaetgulOpen}></SecondaryReplyInputComponent>
+          </div>
+        )}
       </s.OriginalReplyWrapper>
       {/* 대댓글 컴포넌트 */}
 
-      {[1, 2].map((item, idx) => (
-        <SecondaryReplyComponent key={idx}></SecondaryReplyComponent>
+      {[1, 2, 3].map((item, lineNumber) => (
+        <SecondaryReplyComponent lineNumber={lineNumber}></SecondaryReplyComponent>
       ))}
     </div>
   );
@@ -241,7 +245,7 @@ export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen:
         margin: '24px 30px',
         border: `1px solid ${COLORS.Gray2}`,
         borderRadius: 10,
-        padding: 20,
+        padding: '12px 20px',
         display: 'grid',
         gridTemplateColumns: '707px auto',
       }}
@@ -255,7 +259,7 @@ export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen:
         css={{
           boxSizing: 'content-box',
           padding: 0,
-          lineHeight: '100%',
+          lineHeight: '130%',
           height: 24,
           fontSize: 20,
           fontWeight: 500,
@@ -270,12 +274,14 @@ export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen:
           '&:placeholder': { color: COLORS.Gray3 },
           letterSpacing: -2,
           position: 'relative',
-          top: 2,
+          top: 5,
         }}
       ></textarea>
-      <ReplyButton right={-20} bottom={0}>
-        작성하기
-      </ReplyButton>
+      <div css={{ height: '100%' }}>
+        <ReplyButton right={-20} bottom={0}>
+          작성하기
+        </ReplyButton>
+      </div>
     </div>
   );
 };
@@ -303,7 +309,7 @@ export const ReplyModifyOnComponent = ({
   const adjustTextareaHeight = () => {
     const textarea = replyTextAreaRef.current;
     if (textarea) {
-      textarea.style.height = 'auto';
+      textarea.style.height = '24px';
       //scroll 생기면?
       const hasScrollbar = textarea.scrollHeight > textarea.clientHeight;
       if (hasScrollbar) {
@@ -330,7 +336,7 @@ export const ReplyModifyOnComponent = ({
         margin: '24px 30px',
         border: `1px solid ${COLORS.Gray2}`,
         borderRadius: 10,
-        padding: 20,
+        padding: 16,
         display: 'grid',
         gridTemplateColumns: '707px auto',
       }}
@@ -343,8 +349,7 @@ export const ReplyModifyOnComponent = ({
         onChange={handleOriginalTextModifying}
         css={{
           boxSizing: 'content-box',
-          padding: 0,
-          lineHeight: '100%',
+          lineHeight: '130%',
           height: 24,
           fontSize: 20,
           fontWeight: 500,
@@ -363,11 +368,12 @@ export const ReplyModifyOnComponent = ({
         }}
       ></textarea>
       <div
+        css={{ display: 'flex', alignItems: 'end' }}
         onClick={() => {
           if (setReplyTextState && replyTextAreaRef.current) setReplyTextState(replyTextAreaRef.current.value);
         }}
       >
-        <ReplyButton right={-20} bottom={0}>
+        <ReplyButton right={-24} bottom={0}>
           수정하기
         </ReplyButton>
       </div>
@@ -376,7 +382,7 @@ export const ReplyModifyOnComponent = ({
 };
 
 //대댓글 컴포넌트
-export const SecondaryReplyComponent = ({ key }: { key: number }) => {
+export const SecondaryReplyComponent = ({ lineNumber }: { lineNumber: number }) => {
   //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
@@ -413,31 +419,33 @@ export const SecondaryReplyComponent = ({ key }: { key: number }) => {
               alt="purple-kebap"
             />
           </div>
-          <div
-            css={{
-              position: 'absolute',
-              right: -35,
-              top: -5,
-              display: isReplyOptModalOpen ? 'flex' : 'none',
-              justifyContent: 'center',
-              width: 56,
-              height: 102,
-              alignItems: 'center',
-              flexDirection: 'column',
-              border: `1px solid ${COLORS.Gray2}`,
-              borderRadius: 10,
-              background: 'white',
-              zIndex: 10,
-              cursor: 'pointer',
-            }}
-          >
-            <OptionComponent
-              isReplyOptModalOpen={isReplyOptModalOpen}
-              setIsReplyOptModalOpen={setIsReplyOptModalOpen}
-              isModifyOn={isModifyOn}
-              setIsModifyOn={setIsModifyOn}
-            ></OptionComponent>
-          </div>
+          {isReplyOptModalOpen && (
+            <div
+              css={{
+                position: 'absolute',
+                right: -35,
+                top: -5,
+                display: 'flex',
+                justifyContent: 'center',
+                width: 56,
+                height: 102,
+                alignItems: 'center',
+                flexDirection: 'column',
+                border: `1px solid ${COLORS.Gray2}`,
+                borderRadius: 10,
+                background: 'white',
+                zIndex: 10,
+                cursor: 'pointer',
+              }}
+            >
+              <OptionComponent
+                isReplyOptModalOpen={isReplyOptModalOpen}
+                setIsReplyOptModalOpen={setIsReplyOptModalOpen}
+                isModifyOn={isModifyOn}
+                setIsModifyOn={setIsModifyOn}
+              ></OptionComponent>
+            </div>
+          )}
         </div>
         {isModifyOn ? (
           <ReplyModifyOnComponent replyTextState={replyTextState} setReplyTextState={setReplyTextState}></ReplyModifyOnComponent>
@@ -446,13 +454,13 @@ export const SecondaryReplyComponent = ({ key }: { key: number }) => {
         )}
       </s.SecondaryReplyWrapper>
       {/* 대댓글구분선 */}
-      {key === 0 ? (
+      {lineNumber === 2 ? (
         <div
-          css={{ margin: '0px auto', boxSizing: 'border-box', width: 900, height: 1, borderBottom: `1px solid ${COLORS.Gray2}`, paddingTop: 18 }}
+          css={{ margin: '0px auto', boxSizing: 'border-box', width: 860, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
         ></div>
       ) : (
         <div
-          css={{ margin: '0px auto', boxSizing: 'border-box', width: 864, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
+          css={{ margin: '0px auto', boxSizing: 'border-box', width: 820, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
         ></div>
       )}
     </div>
@@ -501,6 +509,7 @@ export const ReplyEmptyRoundLikeButton = ({ isReplyLikeOn }: { isReplyLikeOn: bo
 
 //작성하기 버튼
 export const ReplyButton = styled.button<{ right?: number; bottom?: number }>(({ right, bottom }) => ({
+  alignSelf: 'end',
   boxSizing: 'border-box',
   all: 'unset',
   cursor: 'pointer',
@@ -509,11 +518,10 @@ export const ReplyButton = styled.button<{ right?: number; bottom?: number }>(({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  fontSize: 18,
+  fontSize: 20,
   color: 'white',
   background: COLORS.Gray3,
   borderRadius: 60,
-  alignSelf: 'flex-end',
   position: 'relative',
   right: right,
   bottom: bottom,

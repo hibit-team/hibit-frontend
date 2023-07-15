@@ -95,7 +95,7 @@ export const InviteBoxWrapper = styled.button({
   all: 'unset',
   border: `2px solid ${COLORS.main79}`,
   borderRadius: 20,
-  width: 200,
+  width: 190,
   height: 72,
   background: COLORS.main24,
   color: COLORS.main79,
@@ -106,12 +106,12 @@ export const InviteBoxWrapper = styled.button({
   alignItems: 'center',
   margin: '40px auto 40px auto',
   cursor: 'pointer',
-  "&:hover": {
-    fontWeight:700,
+  '&:hover': {
+    fontWeight: 700,
     animation: `${hoverAnimation} 0.6s ease-out`,
     border: `2px solid ${COLORS.Gray3}`,
     backgroundColor: COLORS.main100,
-    color:'white',
-    cursor:'pointer'
-  }
+    color: 'white',
+    cursor: 'pointer',
+  },
 });
