@@ -10,6 +10,8 @@ import MatchingPage from "./pages/Matching";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import MatchingPostPage from "./pages/MatchPost";
+import OtherProfile from "./pages/OtherProfile";
+
 function App() {
   const queryClient = new QueryClient();
   return (
@@ -26,6 +28,7 @@ function App() {
               <Route path="/user/kakao-oauth" element={<KaKao />} />
               <Route path="/profile" element={<MyProfile />} />
               <Route path="/match-post" element={<MatchingPostPage />} />
+              <Route path="/others/:userID" element={<OtherProfile />} />
             </Routes>
           </Router>
         </Container>

@@ -62,6 +62,7 @@
     ]
   },
   "devDependencies": {
+    "@types/fslightbox-react": "^1.7.3",
     "@types/react-slick": "^0.23.10"
   }
 }
