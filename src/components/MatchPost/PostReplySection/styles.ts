@@ -26,8 +26,8 @@ export const OriginalReplyText = styled.div({
   overflowWrap: 'break-word',
 });
 export const OriginalReplyModifiedTextCss = css({
-  borderRadius:10,
-  padding:20,
+  borderRadius: 10,
+  padding: 20,
   width: 855,
   color: COLORS.Gray3,
   fontSize: 20,
@@ -44,7 +44,6 @@ export const OriginalReplyModifiedTextCss = css({
 
 export const SecondaryReplyText = styled.div({
   width: 820,
-  height: 96,
   color: COLORS.Gray3,
   fontSize: 20,
   fontWeight: 500,
@@ -58,12 +57,12 @@ export const SecondaryReplyText = styled.div({
 
 export const OriginalReplyWrapper = styled.div({
   boxSizing: 'border-box',
-  margin: '28px 0px',
+  margin: '28px 0px 28px 0px',
   position: 'relative',
 });
 
 export const SecondaryReplyWrapper = styled.div({
   boxSizing: 'border-box',
-  margin: '28px 0px',
+  margin: '38px auto 28px auto ',
   position: 'relative',
 });

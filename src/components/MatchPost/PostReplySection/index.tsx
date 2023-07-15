@@ -55,7 +55,7 @@ export default function ReplySectionComponent() {
       </s.InputReplyWrapper>
       {/* //댓글영역 */}
       <s.ReplySection>
-        {[1, 2].map((item, keys) => (
+        {[1, 2, 3].map((item, keys) => (
           <OriginalReplyComponent key={keys}></OriginalReplyComponent>
         ))}
       </s.ReplySection>
@@ -65,7 +65,7 @@ export default function ReplySectionComponent() {
 //댓글 컴포넌트
 export const OriginalReplyComponent = () => {
   //선택옵션on-off
-  const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false)
+  const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
   const [isDaetgulOpen, setIsDaetgulOpen] = useState(false);
   //수정모드on-off여부
@@ -96,7 +96,7 @@ export const OriginalReplyComponent = () => {
     }
   }, [isDaetgulOpen, isModifyOn]);
   return (
-    <div>
+    <div css={{ paddingBottom: 10 }}>
       <s.OriginalReplyWrapper>
         <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 30px', justifyContent: 'space-between' }}>
           <ImageBox width={32} height={32} source={ProfileDefault} />
@@ -191,7 +191,10 @@ export const OriginalReplyComponent = () => {
         </div>
       </s.OriginalReplyWrapper>
       {/* 대댓글 컴포넌트 */}
-      <SecondaryReplyComponent></SecondaryReplyComponent>
+
+      {[1, 2].map((item, idx) => (
+        <SecondaryReplyComponent key={idx}></SecondaryReplyComponent>
+      ))}
     </div>
   );
 };
@@ -359,20 +362,26 @@ export const ReplyModifyOnComponent = ({
           top: 2,
         }}
       ></textarea>
-      <ReplyButton right={-20} bottom={0}>
-        수정하기
-      </ReplyButton>
+      <div
+        onClick={() => {
+          if (setReplyTextState && replyTextAreaRef.current) setReplyTextState(replyTextAreaRef.current.value);
+        }}
+      >
+        <ReplyButton right={-20} bottom={0}>
+          수정하기
+        </ReplyButton>
+      </div>
     </div>
   );
 };
 
 //대댓글 컴포넌트
-export const SecondaryReplyComponent = () => {
+export const SecondaryReplyComponent = ({ key }: { key: number }) => {
   //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
   const [replyTextState, setReplyTextState] = useState(
-    '댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대'
+    '댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대'
   );
   const [isModifyOn, setIsModifyOn] = useState(false);
   return (
@@ -422,20 +431,30 @@ export const SecondaryReplyComponent = () => {
               cursor: 'pointer',
             }}
           >
-            <OptionComponent isReplyOptModalOpen={isReplyOptModalOpen} 
-            setIsReplyOptModalOpen={setIsReplyOptModalOpen} isModifyOn={isModifyOn} setIsModifyOn={setIsModifyOn}></OptionComponent>
+            <OptionComponent
+              isReplyOptModalOpen={isReplyOptModalOpen}
+              setIsReplyOptModalOpen={setIsReplyOptModalOpen}
+              isModifyOn={isModifyOn}
+              setIsModifyOn={setIsModifyOn}
+            ></OptionComponent>
           </div>
         </div>
         {isModifyOn ? (
-          <s.SecondaryReplyText>{replyTextState}</s.SecondaryReplyText>
-        ) : (
           <ReplyModifyOnComponent replyTextState={replyTextState} setReplyTextState={setReplyTextState}></ReplyModifyOnComponent>
+        ) : (
+          <s.SecondaryReplyText>{replyTextState}</s.SecondaryReplyText>
         )}
       </s.SecondaryReplyWrapper>
       {/* 대댓글구분선 */}
-      <div
-        css={{ margin: '0px auto', boxSizing: 'border-box', width: 864, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
-      ></div>
+      {key === 0 ? (
+        <div
+          css={{ margin: '0px auto', boxSizing: 'border-box', width: 900, height: 1, borderBottom: `1px solid ${COLORS.Gray2}`, paddingTop: 18 }}
+        ></div>
+      ) : (
+        <div
+          css={{ margin: '0px auto', boxSizing: 'border-box', width: 864, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
+        ></div>
+      )}
     </div>
   );
 };

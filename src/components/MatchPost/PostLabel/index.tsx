@@ -29,7 +29,7 @@ export default function MatchPostLabel() {
               }}
               css={{ display: 'flex', padding: '6px 0px 6px 12px' }}
             >
-              <button css={{all: 'unset'}}>{postStatus}</button>
+              <button css={{ all: 'unset' }}>{postStatus}</button>
               {!isStatusModalOpen ? (
                 <img css={{ position: 'relative', left: 5, bottom: 1 }} src={ArrownDown} alt="modalOpen-arrow"></img>
               ) : (

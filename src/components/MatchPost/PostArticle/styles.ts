@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import COLORS from '../../../assets/color';
 
 export const MatchArticleWrapper = styled.div`
@@ -28,7 +29,7 @@ export const ArticleDateSection = styled.div`
   width: 874px;
   height: 96px;
   margin: 0px auto;
-  border-bottom: 1px solid ${COLORS.Gray2}; 
+  border-bottom: 1px solid ${COLORS.Gray2};
 `;
 
 export const ArticlePlaceTogoSection = styled.div`
@@ -78,11 +79,23 @@ export const ArticleArrowWrapper = styled.div`
   cursor: pointer;
 `;
 
+export const hoverAnimation = keyframes`
+  0% {
+    color: ${COLORS.main100};
+    box-shadow: none
+  }
+  100% {
+    background-color: ${COLORS.main100}
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+`;
+
 export const InviteBoxWrapper = styled.button({
   all: 'unset',
-  border: `1px solid ${COLORS.main79}`,
-  borderRadius: 10,
-  width: 217,
+  border: `2px solid ${COLORS.main79}`,
+  borderRadius: 20,
+  width: 200,
   height: 72,
   background: COLORS.main24,
   color: COLORS.main79,
@@ -91,6 +104,14 @@ export const InviteBoxWrapper = styled.button({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  margin: '40px auto',
+  margin: '40px auto 40px auto',
   cursor: 'pointer',
+  "&:hover": {
+    fontWeight:700,
+    animation: `${hoverAnimation} 0.6s ease-out`,
+    border: `2px solid ${COLORS.Gray3}`,
+    backgroundColor: COLORS.main100,
+    color:'white',
+    cursor:'pointer'
+  }
 });

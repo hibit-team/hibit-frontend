@@ -48,7 +48,7 @@ export default function MatchPostArticle() {
   };
   const dateOption = ['0000-00-00-오전', '0000-00-00-오후'];
   return (
-    <div>
+    <div css={{ marginBottom: 100 }}>
       <s.MatchArticleWrapper>
         <s.ArticleTitleSection css={{ position: 'relative' }}>
           <div
@@ -260,8 +260,9 @@ export default function MatchPostArticle() {
             )}
           </button>
         </s.ArticleTextSection>
-        <FsLightboxWrapper />
         <s.InviteBoxWrapper>초대하기</s.InviteBoxWrapper>
+
+        <FsLightboxWrapper />
         <ReplySectionComponent></ReplySectionComponent>
       </s.MatchArticleWrapper>
     </div>
