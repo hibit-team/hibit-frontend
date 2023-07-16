@@ -11,6 +11,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import OtherProfile from "./pages/OtherProfile";
 import Posting from "./pages/Posting";
+import 'react-day-picker/dist/style.css';
 
 function App() {
   const queryClient = new QueryClient();
