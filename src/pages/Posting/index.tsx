@@ -1,12 +1,25 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import LayoutTemplateGray from "../../components/Common/LayoutTemplateGray";
 import useIsMobile from "../../hooks/useIsMobile";
 import CalendarComponent from "../../components/CalendarComponent";
 import * as s  from "./styles";
 import AddBtn from "../../images/components/Posting/AddBtn.svg";
+import OpenchatGuide from "../../images/components/Posting/OpenchatGuide.svg";
+import GrayPlus from "../../images/components/Profile/GrayPlus.svg";
+import ProfileImage from "../../components/Profile";
 
 const tmpExhibitionData = [
   "로그아웃 전시회", "전시회2", "전시회3", "전시회4"
+];
+
+const activityData = [
+  "맛집 가기😋", "카페 가기☕", "전시만 보기👓", "만나서 정해요!"
+];
+
+const testImgs: string[] = [
+  // "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-1.png",
+  // "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-2.png",
+  // "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-3.png"
 ];
 
 const Posting = () => {
@@ -34,7 +47,6 @@ const Posting = () => {
     setPerson(Number(e.target.value));
   };
 
-  // 최대 5개까지 선택 가능
   const [dateCnt, setDateCnt] = useState<number[]>([1]);
   const onClickAddBtn = () => {
     if(dateCnt.length === 5) {
@@ -43,7 +55,45 @@ const Posting = () => {
     };
     setDateCnt([...dateCnt, 1]);
   };
-  const [isMorning, setIsMorning] = useState(true);
+
+  const [openchat, setOpenchat] = useState("");
+  const onChangeOpenchat = (e: ChangeEvent<HTMLInputElement>) => {
+    setOpenchat(e.target.value);
+  };
+
+  const [isActivitySelect, setIsActivitySelect] = useState(-1);
+  const onClickActivity = (idx: number) => {
+    setIsActivitySelect(idx);
+  };
+
+  const detailPlaceholder = "본인의 전시 관람 스타일, 메이트를 구하는 목적을 자세히 작성하면 매칭 성공률이 높아져요.";
+  const [detail, setDetail] = useState("");
+  const onChangeDetail = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    if(e.target.value.length >= 201) {
+      alert("최대 200자까지 작성할 수 있어요.");
+      e.target.value = e.target.value.slice(0, e.target.value.length-1);
+      return;
+    }
+    setDetail(e.target.value);
+  };
+
+  const [img, setImg] = useState<string[] | undefined | null>(testImgs);
+  const imgInputRef = useRef<HTMLInputElement | null>(null);
+  const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if(!e.target.files) return;
+    if(img?.length === 3) {
+      alert("이미지는 최대 3장까지 추가할 수 있습니다.");
+      return;
+    }
+    img?.push(e.target.files[0].name);
+    const newImgList = JSON.parse(JSON.stringify(img));
+    setImg(newImgList)
+    // console.log(e.target.files[0].name);
+  }, [img]);
+  const onUploadImgBtnClick = useCallback(() => {
+    if(!imgInputRef.current) return;
+    imgInputRef.current.click();
+  }, []);
 
 
 
@@ -132,8 +182,73 @@ const Posting = () => {
               </s.DateContainer>
             </s.DateWrapper>
 
+            <s.OpenChatContainer>
+              <s.Column>오픈 채팅방 URL</s.Column>
+              <s.OpenChatInput 
+                onChange={onChangeOpenchat}
+                value={openchat}
+              />
+              <s.OpenchatGuideBtn src={OpenchatGuide} alt="guide" />
+              <s.OpenchatGuideMent>도움이 필요하세요?</s.OpenchatGuideMent>
+            </s.OpenChatContainer>
+
+            <s.ActivityContainer>
+              <s.Column>함께 하고싶은 활동</s.Column>
+              <s.ActivityGrid>
+                {
+                  activityData.map((activity, idx) => 
+                    <s.Activity 
+                      onClick={() => onClickActivity(idx)}
+                      isSelected={isActivitySelect === idx ? true : false}
+                    >{activity}</s.Activity>)
+                }
+              </s.ActivityGrid>
+            </s.ActivityContainer>
+
+            <s.DetailContainer>
+              <s.Column>상세 내용</s.Column>
+              <s.DetailInputWrapper>
+                <s.DetailInput 
+                  placeholder={detailPlaceholder}
+                  value={detail}
+                  onChange={onChangeDetail}
+                />
+                <s.DetailLengthChecker>
+                  <s.DetailLengthNum>{detail.length}</s.DetailLengthNum>
+                  <s.DetailLengthNum>/200</s.DetailLengthNum>
+                </s.DetailLengthChecker>
+              </s.DetailInputWrapper>
+            </s.DetailContainer>
+
+            <s.ImgContainer>
+              <s.Column>이미지</s.Column>
+              <s.ImageList>
+                <s.ImageAddBox onClick={onUploadImgBtnClick}>
+                  <s.ImageInputBox 
+                    type="file" 
+                    accept="image/*" 
+                    ref={imgInputRef} 
+                    onChange={onUploadImg}
+                  />
+                  <img src={GrayPlus} alt="gray" />
+                </s.ImageAddBox>
+                {
+                  img?.map((item, idx) => 
+                    <ProfileImage
+                      imgURL={item} 
+                      isFirst={idx === 0 ? true : false}
+                      isEditMode={true}
+                      imgList={img}
+                      setImgList={setImg}
+                    />
+                  )
+                }
+              </s.ImageList>
+            </s.ImgContainer>
+
           </s.InfoWrapper>
         </s.InfoContainer>
+        <s.SubmitBtn>게시글 등록하기</s.SubmitBtn>
       </s.Wrapper>
     </LayoutTemplateGray>
   )
