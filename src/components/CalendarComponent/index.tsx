@@ -17,6 +17,9 @@ const CalendarComponent = () => {
   const onClickOpenBtn = () => {
     setIsOpenCalendar(!isOpenCalendar);
   };
+  const onClickDate = () => {
+    setIsOpenCalendar(false);
+  };
 
   const [isMorning, setIsMorning] = useState<boolean>(true);
   const onClickMorning = () => {
@@ -44,6 +47,7 @@ const CalendarComponent = () => {
               mode="single"
               selected={selected}
               onSelect={setSelected}
+              onDayClick={onClickDate}
             />
             <s.MorningAfternoonWrapper>
               <s.Morning onClick={onClickMorning}>오전</s.Morning>
