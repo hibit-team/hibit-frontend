@@ -1,4 +1,5 @@
 import { ChangeEvent, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import LayoutTemplateGray from "../../components/Common/LayoutTemplateGray";
 import useIsMobile from "../../hooks/useIsMobile";
 import CalendarComponent from "../../components/CalendarComponent";
@@ -24,7 +25,7 @@ const testImgs: string[] = [
 
 const Posting = () => {
   const isMobile = useIsMobile();
-
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +95,16 @@ const Posting = () => {
     if(!imgInputRef.current) return;
     imgInputRef.current.click();
   }, []);
+
+  const onClickSubmitBtn = () => {
+    const result = window.confirm("매칭 게시글을 등록하시겠습니까?");
+    if(result) {
+      alert("게시글이 등록되었습니다.");
+      // submit api 추가 필요
+      navigate(-1);
+    }
+    else return;
+  };
 
 
 
@@ -248,7 +259,9 @@ const Posting = () => {
 
           </s.InfoWrapper>
         </s.InfoContainer>
-        <s.SubmitBtn>게시글 등록하기</s.SubmitBtn>
+        <s.SubmitBtn
+          onClick={onClickSubmitBtn}
+        >게시글 등록하기</s.SubmitBtn>
       </s.Wrapper>
     </LayoutTemplateGray>
   )
