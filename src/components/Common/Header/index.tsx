@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { IHeaderCategory } from '../../../interfaces/IHeaderCategories';
 import { useNavigate, useLocation } from "react-router-dom";
-import * as s from "./styles";
 import HibitLogo from "../../../images/components/HibitLogo.svg";
 import AlarmIcon from "../../../images/components/AlarmIcon.svg";
 import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
-import { useRecoilState } from 'recoil';
-import { AlarmSwitchState } from '../../../recoil/atom/AlarmSwitchState';
+import CustomModalAlarm from '../../Alarm';
+import * as s from "./styles";
 
 const CATEGORIES: IHeaderCategory[] = [
   { title: "서비스 소개", link: "/intro" },
@@ -20,11 +19,16 @@ const Header = () => {
   const { pathname } = useLocation();
   const [selectedCategory, setSelectedCategory] = useState<string>("메인");
   const [isLogin, setIsLogin] = useState<boolean>(true);
-  const [isAlarm, setIsAlarm] = useState<boolean>(true);
-  const [alarmCount, setAlarmCount] = useState<number>(3);
+  const [hasAlarm, setHasAlarm] = useState<boolean>(true);
+  const [alarmCount, setAlarmCount] = useState<number>(14);
   
-  const [alarmState,setAlarmState] = useRecoilState<boolean>(AlarmSwitchState);
-  const onAlarmState = ()=>setAlarmState(!alarmState)
+  // const [alarmState, setAlarmState] = useRecoilState<boolean>(AlarmSwitchState);
+  // const onAlarmState = ()=>setAlarmState(!alarmState)
+  const [isAlarmOpen, setIsAlarmOpen] = useState<boolean>(false);
+  const onClickAlarm = () => {
+    setIsAlarmOpen(!isAlarmOpen);
+    console.log({isAlarmOpen});
+  };
 
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = () => {
@@ -37,8 +41,8 @@ const Header = () => {
   };
 
   useEffect(() => {
-    if (alarmCount === 0) setIsAlarm(false);
-    else setIsAlarm(true);
+    if (alarmCount === 0) setHasAlarm(false);
+    else setHasAlarm(true);
   }, [alarmCount]);
 
   const onClickLogin = () => {
@@ -102,12 +106,18 @@ const Header = () => {
       {isLogin ?
         <s.RightContainer>
           <s.AlarmLogoContainer>
-            <img onClick={onAlarmState} src={AlarmIcon} alt='alarm-icon' />
-            {isAlarm ? 
+            <img onClick={onClickAlarm} src={AlarmIcon} alt='alarm-icon' />
+            {
+              hasAlarm ?
               <s.AlarmCountWrapper>{alarmCount}</s.AlarmCountWrapper>
               : <></>
             }
+            
           </s.AlarmLogoContainer>
+          <CustomModalAlarm 
+            isOpen={isAlarmOpen}
+            onRequestClose={onClickAlarm}
+          />
           <s.TextWrapper onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
         </s.RightContainer> :
         <s.RightContainer>
