@@ -1,0 +1,80 @@
+
+.dots_custom {
+  display: inline-block;
+  vertical-align: middle;
+  margin: auto 0;
+  padding: 0;
+}
+
+.dots_custom li {
+  list-style: none;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0 4px;
+  padding: 0;
+}
+
+.dots_custom li button {
+  border: 1px solid #797979;
+  color: transparent;
+  cursor: pointer;
+  display: block;
+  width:24px;
+  height:5.5px; 
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  padding: 0;
+}
+
+.dots_custom li.slick-active button {
+  background-color: #797979;
+  box-sizing: border-box;
+  width:48px;
+  height:8px;
+  border-radius: 0.5rem;
+  position: relative;
+  top:-1.5px;
+}
+
+
+
+
+.dots_custom2{
+  display: inline-block;
+  vertical-align: middle;
+  margin: auto 0;
+  padding-bottom: 10px;
+}
+
+.dots_custom2 li {
+  list-style: none;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0 4px;
+  padding: 0;
+}
+
+.dots_custom2 li button {
+  box-sizing: border-box;
+  border: 1px solid white;
+  color: transparent;
+  background-color: transparent;
+  cursor: pointer;
+  display: block;
+  width:10px;
+  height:10px; 
+  border-radius: 100%;
+  padding: 0;
+  margin: 0px 3px;
+}
+
+.dots_custom2 li.slick-active button {
+  background-color: white;
+  cursor: pointer;
+  box-sizing: border-box;
+  width:20px;
+  height:10px; 
+  border-radius: 100px;
+  position: relative;
+  margin: 0px 3px;
+}

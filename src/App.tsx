@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import MainPage from "./pages/Main";
+import styled from "@emotion/styled";
+import { Global } from "@emotion/react";
+import globalStyles from "./fonts/GlobalStyles";
+import KaKao from "./pages/KaKao";
+import { RecoilRoot } from "recoil";
+import MyProfile from "./pages/MyProfile";
+import MatchingPage from "./pages/Matching";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import MatchingPostPage from "./pages/MatchPost";
+import OtherProfile from "./pages/OtherProfile";
+import Posting from "./pages/Posting";
+import 'react-day-picker/dist/style.css';
 
 function App() {
+  const queryClient = new QueryClient();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <RecoilRoot>
+        <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen/>
+        <Global styles={globalStyles}/>
+        <Container>
+          <Router>
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+              <Route path='/matching' element={<MatchingPage></MatchingPage>}/>
+              <Route path="/user/kakao-oauth" element={<KaKao />} />
+              <Route path="/profile" element={<MyProfile />} />
+              <Route path="/match-post" element={<MatchingPostPage />} />
+              <Route path="/others/:userID" element={<OtherProfile />} />
+              <Route path="/posting" element={<Posting />} />
+            </Routes>
+          </Router>
+        </Container>
+        </QueryClientProvider>
+      </RecoilRoot>
+    </>
   );
 }
 
 export default App;
+
+const Container = styled.div``;
