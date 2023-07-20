@@ -8,20 +8,17 @@ import HttpClient from '../../services/HttpClient';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-export interface IPosts {
-  idx: number;
-  user: {
-    idx: number;
-    id: string;
-  };
-  title: string;
-  status: string;
-  number_and_What: string[];
-  mainimg: string;
-  liked: number;
-  comment_number: number;
+export interface IPosts{
+  idx: number,
+  title: string, //글제목
+  exhibition: string,
+  status: string, //게시글상태
+  number_and_What: Array<string>, //라벨
+  mainimg: string,
+  liked: number, //게시글 좋아요수
+  comment_number: number, //댓글 수 
+  dateTime: string, //호버시 나오는 희망 관람시간
 }
-
 const MatchingPage = () => {
   //sortOption : ["allposts",'thisweek','like']
   const [sortOption, setSortOption] = useState<string>('allposts');

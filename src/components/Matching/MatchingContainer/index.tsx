@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { useState } from 'react';
 import { css } from '@emotion/react';
 import * as s from './styles';
 import LikeIcon from '../../../images/components/Matching/likeIcon.svg';
@@ -27,6 +28,8 @@ const ExhibitionText: {
 //매칭카드컴포넌트
 const MatchingCardComponent = ({ eachData }: IEachPost) => {
   const navigate = useNavigate();
+  const [timeVisibleState, setTimeVisibleState] = useState(false);
+
   return (
     <div
       css={css`
@@ -34,8 +37,14 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
       `}
     >
       <div
+        onMouseEnter={() => {
+          if (!timeVisibleState) setTimeVisibleState(true);
+        }}
+        onMouseLeave={() => {
+          if (timeVisibleState) setTimeVisibleState(false);
+        }}
         onClick={() => {
-          navigate('/match-post');
+          navigate(`/matchPost/${eachData.idx}`);
         }}
         style={{ backgroundImage: `url(${eachData?.mainimg})` }}
         css={s.MatchingCardImgCss}
@@ -47,7 +56,7 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
             </span>
           ))}
           <s.CardInfoBottom>
-            <s.CardStatus>{eachData?.status === 'N' ? '모집중' : eachData?.status === 'C' ? '모집완료' : ''}</s.CardStatus>
+            <s.CardStatus>{eachData?.status === 'N' ? '모집중' : eachData?.status === 'C' ? '모집완료' : 'error'}</s.CardStatus>
             <s.CardBottomCountInfo>
               <img
                 css={css`
@@ -101,23 +110,19 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
               margin-bottom: 8px;
             `}
           >
-            {eachData?.title}
+            {eachData?.exhibition}
           </div>
-          {/* <div css={css`font-weight: 500; color:#242424; font-size:15px; margin-bottom:8px;`}>20자까지 공백포함 최대 20자까지 공백포함 최대</div> */}
           <div
             css={css`
               font-weight: 900;
               font-size: 21px;
             `}
           >
-            {eachData?.title}{' '}
+            {eachData?.title}
           </div>
         </div>
-      </div>
-      <div css={s.MatcingCardInfoCss}>
-        <div css={css`padding:24px;`}>
-          <div css={css`font-weight: 500; color:#242424; font-size:15px; margin-bottom:8px;`}>전시회 명 최대 공백포함 </div>
-          <div css={css`font-weight:900; font-size:21px;`}>게시글명 공백포함 최대 30자까지 공백포함 최대 30자까지 공백포함 최대 30자까지 </div>
+        <div css={{ fontWeight:600, fontSize: 16, position: 'absolute', top: 250, left: 20, display: timeVisibleState ? 'block' : 'none', color: 'white' }}>
+          {eachData.dateTime}
         </div>
       </div>
     </div>
