@@ -1,9 +1,11 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_SERVER_BASE_URL,
+  // baseURL: process.env.REACT_APP_SERVER_BASE_URL,
+  baseURL:`http://3.34.238.189:8080`,
   withCredentials: true,
 });
+
 
 const HttpClient = {
   get: async (path: string, params = {}, headers = {}) => {

@@ -5,17 +5,18 @@ import { css } from '@emotion/react';
 import COLORS from '../../../assets/color';
 import ArrownDown from '../../../images/components/MatchPost/ArrowDown.svg';
 import ArrowUp from '../../../images/components/MatchPost/ArrowUp.svg';
+import { IMatchingPostPage } from '../../../pages/MatchPost';
 
-export default function MatchPostLabel() {
-  const label = ['전시만보기', '2인관람'];
+export default function MatchPostLabel({data}:{data?:IMatchingPostPage}) {
+  const label = data?.number_and_What
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
-  const [postStatus, setPostStatus] = useState('모집완료');
+  const [postStatus, setPostStatus] = useState(data?.status ==='N' ? '모집중':'모집완료');
   return (
     <div>
       <s.MatchPostContainer>
         <s.MatchPostLabelSection>
           <s.MatchPostLabel>
-            {label.map((item, idx) => (
+            {label?.map((item, idx) => (
               <div key={idx} css={s.MatchPostLabelCss}>
                 {item}
               </div>

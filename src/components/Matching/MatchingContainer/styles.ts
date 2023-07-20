@@ -60,6 +60,7 @@ position:relative;
 top:20px;
 left:1rem;
 opacity:1;
+background-size:contain;
 `;
 
 export const LabelStatusCss =css`
@@ -89,10 +90,9 @@ font-size:16px;
 font-weight:500;
 color:purple;
 border-radius: 1rem;
-border: 1px solid purple;
-
+border: 1px solid white;
 background: #FFFFFF;
-opacity: 0.24;
+opacity: 0.7;
 border: 1px solid #FFFFFF;
 box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `
