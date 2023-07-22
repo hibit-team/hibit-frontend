@@ -29,20 +29,19 @@ const ExhibitionText: {
 const MatchingCardComponent = ({ eachData }: IEachPost) => {
   const navigate = useNavigate();
   const [timeVisibleState, setTimeVisibleState] = useState(false);
-
   return (
     <div
+      onMouseEnter={() => {
+        if (timeVisibleState === false) setTimeVisibleState(!timeVisibleState);
+      }}
+      onMouseLeave={() => {
+        if (timeVisibleState === true) setTimeVisibleState(!timeVisibleState);
+      }}
       css={css`
         position: relative;
       `}
     >
       <div
-        onMouseEnter={() => {
-          if (!timeVisibleState) setTimeVisibleState(true);
-        }}
-        onMouseLeave={() => {
-          if (timeVisibleState) setTimeVisibleState(false);
-        }}
         onClick={() => {
           navigate(`/matchPost/${eachData.idx}`);
         }}
@@ -121,7 +120,17 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
             {eachData?.title}
           </div>
         </div>
-        <div css={{ fontWeight:600, fontSize: 16, position: 'absolute', top: 250, left: 20, display: timeVisibleState ? 'block' : 'none', color: 'white' }}>
+        <div
+          css={{
+            fontWeight: 600,
+            fontSize: 16,
+            position: 'absolute',
+            top: 250,
+            left: 20,
+            display: timeVisibleState ? 'block' : 'none',
+            color: 'white',
+          }}
+        >
           {eachData.dateTime}
         </div>
       </div>

@@ -10,7 +10,7 @@ import { IMatchingPostPage } from '../../../pages/MatchPost';
 export default function MatchPostLabel({data}:{data?:IMatchingPostPage}) {
   const label = data?.number_and_What
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
-  const [postStatus, setPostStatus] = useState(data?.status ==='N' ? '모집중':'모집완료');
+  const [postStatus, setPostStatus] = useState(data?.status ==='N' ? '모집 중':'모집완료');
   return (
     <div>
       <s.MatchPostContainer>

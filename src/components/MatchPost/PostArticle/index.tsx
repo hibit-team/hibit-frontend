@@ -19,8 +19,9 @@ import { useRecoilState } from 'recoil';
 import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
 import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
 import ReplySectionComponent from '../PostReplySection';
+import { IMatchingPostPage } from '../../../pages/MatchPost';
 
-export default function MatchPostArticle() {
+export default function MatchPostArticle({data,postIDX}:{data?:IMatchingPostPage, postIDX?:string}) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [isLikeStateOn, setIsLikeStateOn] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
@@ -59,7 +60,7 @@ export default function MatchPostArticle() {
               font-weight: 800;
             `}
           >
-            게시글 명 게시글 명 게시글 공백포함 최대 30자까지
+            {data?.title}
           </div>
           <div
             css={{
@@ -79,8 +80,8 @@ export default function MatchPostArticle() {
                 bottom: 3,
               }}
               // src={ProfileDefault}
-              src={PEPE}
-              alt="defaultImage"
+              src={data?.writerImg}
+              alt="writer-profile-img"
             />
           </div>
 
@@ -92,7 +93,7 @@ export default function MatchPostArticle() {
               margin: 6px;
             `}
           >
-            닉네임
+            {data?.writer}
           </div>
           <div
             css={css`
@@ -106,7 +107,7 @@ export default function MatchPostArticle() {
               color: #797979;
             `}
           >
-            7시간 전{' '}
+            {data?.time}
           </div>
           <img
             onClick={() => {
@@ -177,7 +178,7 @@ export default function MatchPostArticle() {
               color: ${COLORS.Gray3};
             `}
           >
-            뚝섬 미술관 인사이드미 전시회
+            {data?.exhibiton}
           </div>
         </s.ArticlePlaceTogoSection>
 
@@ -215,13 +216,7 @@ export default function MatchPostArticle() {
               overflowWrap: 'break-word',
             }}
           >
-            게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
-            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동
-            했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
-            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동
-            했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
-            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문.게시했습니다.게시글 본문.게시했습니다.게시글 본문.게시했습니다.게시글
-            본문.게시게시글 본문.게시
+            {data?.content}
           </article>
           <button
             onClick={() => {
@@ -369,7 +364,7 @@ export const OptionComponent = ({
   );
 };
 
-export const FsLightboxWrapper = () => {
+export const FsLightboxWrapper = (data:any) => {
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   return (
     <>
@@ -387,18 +382,7 @@ export const FsLightboxWrapper = () => {
       <FsLightbox
         toggler={toggler}
         sources={[
-          <div>
-            <img src={Tim} alt="dd" />
-          </div>,
-          <div>
-            <img src={ProfileDefault} alt="dd" />
-          </div>,
-          <div>
-            <img src={Tim} alt="dd" />
-          </div>,
-          <div>
-            <img src={PurpleKebap} alt="dd" />
-          </div>,
+          <img src="https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/2.png" alt="dd"/>
         ]}
       />
     </>
