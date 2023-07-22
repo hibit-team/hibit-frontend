@@ -20,8 +20,10 @@ export interface IMatchingPostPage {
   view: number; // 열람횟수?
   createdDate: string;
   number_and_What: Array<string>; //label
-  mainimg: null; //게시글 사진 3장
+  mainimg: string; //메인이미지1장
+  subimg:Array<string>;//서브이미지2장
   time: string; //게시글 작성시간
+  dateTime:Array<string>;
 }
 
 export default function MatchingPostPage() {

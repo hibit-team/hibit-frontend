@@ -12,11 +12,38 @@ import ReplyArrow from '../../../images/components/MatchPost/replyArrow.svg';
 import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
 import EmptyReplyArrow from '../../../images/components/MatchPost/emptyReplyArrow.svg';
 import { OptionComponent } from '../PostArticle';
+import { useQuery, QueryFunction, QueryKey } from '@tanstack/react-query';
+import HttpClient from '../../../services/HttpClient';
+import MatchingPostAPI from '../../../api/MatchingPostAPI';
+import { AxiosError } from 'axios';
+//댓글(대댓글)리스트 인터페이스
+interface IComments {
+  idx: number;
+  writer: string;
+  writerImg: string;
+  content: string;
+  childComments: IComments[];
+  liked: number;
+  time: string;
+  likeUsers: string[];
+}
 //댓글영역 컴포넌트
-export default function ReplySectionComponent() {
-  //useQuery: 댓글 관련 data
+export default function ReplySectionComponent({ postIDX }: { postIDX?: string }) {
   //OriginalReply:댓글
   //SecondaryReply:대댓글
+  const queryKeys = {
+    Rlists: ['reply-lists'],
+  };
+  const getMatchingPostReplyLists = async () => {
+    const res = HttpClient.get(`comment/list/${postIDX}`);
+    return res;
+  };
+  const { data: replyData, error, isError, isFetching, isLoading } = useQuery<IComments[], AxiosError>(queryKeys.Rlists, getMatchingPostReplyLists);
+
+  if (isError) {
+    console.error(`댓글리스트를 불러오지 못했습니다 :  ${error as AxiosError}`);
+  }
+
   return (
     <div css={{ position: 'relative', paddingBottom: 100 }}>
       {/* 유저 댓글입력창 */}
@@ -55,15 +82,15 @@ export default function ReplySectionComponent() {
       </s.InputReplyWrapper>
       {/* //댓글영역 */}
       <s.ReplySection>
-        {[1, 2, 3].map((item, keys) => (
-          <OriginalReplyComponent key={keys}></OriginalReplyComponent>
+        {replyData?.map((reply, idx) => (
+          <OriginalReplyComponent reply={reply} key={replyData[idx].idx}></OriginalReplyComponent>
         ))}
       </s.ReplySection>
     </div>
   );
 }
 //댓글 컴포넌트
-export const OriginalReplyComponent = () => {
+export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   //선택옵션on-off
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
@@ -99,18 +126,22 @@ export const OriginalReplyComponent = () => {
     <div css={{ paddingBottom: 10 }}>
       <s.OriginalReplyWrapper>
         <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 30px', justifyContent: 'space-between' }}>
-          <ImageBox width={32} height={32} source={ProfileDefault} />
-          {/* NICKNAME */}
+          <ImageBox width={32} height={32} source={reply.writerImg} />
           <div css={{ display: 'flex', flex: '0 1 187px' }}>
             <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
-              닉네임
+              {/* 닉네임 */}
+              {reply.writer}
             </div>
-            {/* WRITRING TIME(경과시간) */}
-            <div css={{ color: COLORS.Gray3, padding: '0 12px', fontWeight: 500, fontSize: 20 }}>7시간 전</div>
+            <div css={{ color: COLORS.Gray3, padding: '0 12px', fontWeight: 500, fontSize: 20 }}>
+              {/* 작성 시간 */}
+              {reply.time}
+            </div>
           </div>
           {/* LIKE BUTTON */}
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>좋아요 0개</div>
+            <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>
+              {/* 좋아요 수 */}
+              좋아요 {reply.liked}개</div>
             <div onClick={() => setIsReplyLikeOn(!isReplyLikeOn)}>
               <ReplyEmptyRoundLikeButton isReplyLikeOn={isReplyLikeOn} />
             </div>
@@ -196,8 +227,8 @@ export const OriginalReplyComponent = () => {
       </s.OriginalReplyWrapper>
       {/* 대댓글 컴포넌트 */}
 
-      {[1, 2].map((item, lineNumber) => (
-        <SecondaryReplyComponent lineNumber={lineNumber}></SecondaryReplyComponent>
+      {reply.childComments.map((reReply, lineNumber) => (
+        <SecondaryReplyComponent reReply={reReply} lineNumber={lineNumber}></SecondaryReplyComponent>
       ))}
     </div>
   );
@@ -382,7 +413,7 @@ export const ReplyModifyOnComponent = ({
 };
 
 //대댓글 컴포넌트
-export const SecondaryReplyComponent = ({ lineNumber }: { lineNumber: number }) => {
+export const SecondaryReplyComponent = ({ reReply, lineNumber }: { reReply: IComments; lineNumber: number }) => {
   //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
@@ -395,15 +426,20 @@ export const SecondaryReplyComponent = ({ lineNumber }: { lineNumber: number }) 
       <s.SecondaryReplyWrapper>
         <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 30px', justifyContent: 'space-between' }}>
           <img css={{ marginRight: 12 }} src={EmptyReplyArrow} alt="reply-arrow-empty" />
-          <ImageBox width={32} height={32} source={ProfileDefault} />
+          <ImageBox width={32} height={32} source={reReply.writerImg} />
           <div css={{ display: 'flex', flex: '0 1 187px' }}>
             <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
-              닉네임
+              {/* 닉네임 */}
+              {reReply.writer}
             </div>
-            <div css={{ color: COLORS.Gray3, padding: '0 12px', fontWeight: 500, fontSize: 20 }}>7시간 전</div>
+            <div css={{ color: COLORS.Gray3, padding: '0 12px', fontWeight: 500, fontSize: 20 }}>
+              {/* 작성시간 */}
+              {reReply.time}</div>
           </div>
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>좋아요 0개</div>
+            <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>
+              {/* 좋아요 수 */}
+              좋아요 {reReply.liked}개</div>
             <div onClick={() => setIsReplyLikeOn(!isReplyLikeOn)}>
               <ReplyEmptyRoundLikeButton isReplyLikeOn={isReplyLikeOn} />
             </div>
