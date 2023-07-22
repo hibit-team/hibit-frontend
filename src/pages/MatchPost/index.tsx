@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import LayoutTemplate from '../../components/Common/LayoutTemplate';
 import * as s from './styles';
 import MatchPostLabel from '../../components/MatchPost/PostLabel';
@@ -10,7 +10,7 @@ import { AxiosError } from 'axios';
 export interface IMatchingPostPage {
   idx: number; //게시글넘버
   writer: string; //게시글 작성자
-  writerImg: string; //작성자 프로필 
+  writerImg: string; //작성자 프로필
   title: string; //게시글제목
   content: string; //본문텍스트
   exhibiton: string; //전시회명
@@ -25,20 +25,27 @@ export interface IMatchingPostPage {
 }
 
 export default function MatchingPostPage() {
-	//게시글정보 
-	const {idx} = useParams();
-	const getPostInfoFn = async ()=>{
-		const res = await HttpClient.get(`/post/${idx}`);
-		return res;
-	}
-	const { data , isError, isLoading } = useQuery<IMatchingPostPage,AxiosError>(['post-info'],getPostInfoFn);
+  //게시글정보
+  const { idx } = useParams();
+  const getPostInfoFn = async () => {
+    const res = await HttpClient.get(`/post/${idx}`);
+    return res;
+  };
+  const { data, isError, error, isLoading, isFetching } = useQuery<IMatchingPostPage, AxiosError>(['post-info'], getPostInfoFn);
 
+  useEffect(() => {
+    window.scrollTo(0, 100); // x축은 0, y축은 0으로 설정하여 상단으로 스크롤
+  }, []);
+
+  if (isError) {
+    console.error(`MatchingPostPage data-fetching error: ${(error as AxiosError).message}`);
+  }
 
   return (
     <LayoutTemplate>
       <s.Wrapper>
         <MatchPostLabel data={data}></MatchPostLabel>
-        <MatchPostArticle></MatchPostArticle>
+        <MatchPostArticle postIDX={idx} data={data}></MatchPostArticle>
       </s.Wrapper>
     </LayoutTemplate>
   );

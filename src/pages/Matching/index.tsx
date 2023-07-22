@@ -50,6 +50,7 @@ const MatchingPage = () => {
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length ? allPages.length + 1 : undefined;
     },
+    staleTime: 1000*1
   });
 
   if (isLoading === true) {
