@@ -5,8 +5,8 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import COLORS from '../../../assets/color';
 import Slider from 'react-slick';
-import Tim from '../../../images/components/MatchPost/Tim.svg';
-import ProfileDefault from '../../../images/components/MatchPost/profileDefault.svg';
+// import Tim from '../../../images/components/MatchPost/Tim.svg';
+// import ProfileDefault from '../../../images/components/MatchPost/profileDefault.svg';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../../../assets/slick.css';
@@ -20,9 +20,12 @@ import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
 import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
 import ReplySectionComponent from '../PostReplySection';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
+import HttpClient from '../../../services/HttpClient';
+import { Axios, AxiosError } from 'axios';
+import MatchingAPI from '../../../api/MatchingAPI';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
-export default function MatchPostArticle({data,postIDX}:{data?:IMatchingPostPage, postIDX?:string}) {
-
+export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string }) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [isLikeStateOn, setIsLikeStateOn] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
@@ -258,8 +261,8 @@ export default function MatchPostArticle({data,postIDX}:{data?:IMatchingPostPage
         </s.ArticleTextSection>
         <s.InviteBoxWrapper>초대하기</s.InviteBoxWrapper>
 
-        <FsLightboxWrapper data={data}/>
-        <ReplySectionComponent postIDX={postIDX} ></ReplySectionComponent>
+        <FsLightboxWrapper data={data} />
+        <ReplySectionComponent postIDX={postIDX}></ReplySectionComponent>
       </s.MatchArticleWrapper>
     </div>
   );
@@ -290,17 +293,15 @@ export const ArticleImageSlider = styled(Slider)`
   border-radius: 10px;
 `;
 
-export const OptionComponent = ({
-  setIsModifyOn,
-  isModifyOn,
-  isReplyOptModalOpen,
-  setIsReplyOptModalOpen,
-}: {
+interface IOptionComponent {
+  idx?: number;
   setIsModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
   isModifyOn?: boolean;
   isReplyOptModalOpen?: boolean;
   setIsReplyOptModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+}
+
+export const OptionComponent = ({ idx, setIsModifyOn, isModifyOn, isReplyOptModalOpen, setIsReplyOptModalOpen }: IOptionComponent) => {
   //수정삭제신고 게시글 옵션
   const postOption1 = css({
     //수정
@@ -338,24 +339,30 @@ export const OptionComponent = ({
     '&:hover': { color: 'red', scale: '1.04' },
   });
   const options = ['수정', '삭제', '신고'];
+  const queryClient = useQueryClient();
+ 
+  const {mutate} = useMutation(MatchingAPI.handleReplyDelete, {
+    onSuccess: () => {queryClient.invalidateQueries(['reply-lists']);},
+  });
+
   return (
     <>
-      {options.map((opt, idx) => (
+      {options.map((opt, i) => (
         <button
-          onClick={
-            idx === 0 && setIsModifyOn
-              ? () => {
-                  //옵션모달꺼주기
-                  if (setIsReplyOptModalOpen) {
-                    setIsReplyOptModalOpen(!isReplyOptModalOpen);
-                  }
-                  //수정모드On
-                  setIsModifyOn(!isModifyOn);
-                }
-              : () => {}
-          }
-          key={idx}
-          css={idx === 0 ? postOption1 : idx === 1 ? postOption2 : postOption3}
+          onClick={() => {
+            //옵션모달꺼주기
+            if (setIsReplyOptModalOpen) {
+              setIsReplyOptModalOpen(!isReplyOptModalOpen);
+            }
+            //수정모드On(i==0)
+            if (i === 0 && setIsModifyOn) setIsModifyOn(!isModifyOn);
+            //삭제버튼인 경우에(i==1)
+            if (i === 1) {
+              mutate(idx)
+            }
+          }}
+          key={i}
+          css={i === 0 ? postOption1 : i === 1 ? postOption2 : postOption3}
         >
           {opt}
         </button>
@@ -364,7 +371,7 @@ export const OptionComponent = ({
   );
 };
 
-export const FsLightboxWrapper = ({data}:{data?:IMatchingPostPage}) => {
+export const FsLightboxWrapper = ({ data }: { data?: IMatchingPostPage }) => {
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   return (
     <>
@@ -381,11 +388,7 @@ export const FsLightboxWrapper = ({data}:{data?:IMatchingPostPage}) => {
       ></button>
       <FsLightbox
         toggler={toggler}
-        sources={[
-          <img src={data?.mainimg} alt="dd"/>,
-          <img src={data?.subimg[0]} alt="dd"/>,
-          <img src={data?.subimg[1]} alt="dd"/>,
-        ]}
+        sources={[<img src={data?.mainimg} alt="dd" />, <img src={data?.subimg[0]} alt="dd" />, <img src={data?.subimg[1]} alt="dd" />]}
       />
     </>
   );

@@ -198,7 +198,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
                 background: 'white',
               }}
             >
-              <OptionComponent
+              <OptionComponent idx={reply.idx}
                 isModifyOn={isModifyOn}
                 setIsModifyOn={setIsModifyOn}
                 isReplyOptModalOpen={isReplyOptModalOpen}
