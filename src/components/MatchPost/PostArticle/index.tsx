@@ -22,6 +22,7 @@ import ReplySectionComponent from '../PostReplySection';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
 
 export default function MatchPostArticle({data,postIDX}:{data?:IMatchingPostPage, postIDX?:string}) {
+
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [isLikeStateOn, setIsLikeStateOn] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
@@ -47,7 +48,6 @@ export default function MatchPostArticle({data,postIDX}:{data?:IMatchingPostPage
     ),
     dotsClass: 'dots_custom2',
   };
-  const dateOption = ['0000-00-00-오전', '0000-00-00-오후'];
   return (
     <div css={{ marginBottom: 100 }}>
       <s.MatchArticleWrapper>
@@ -79,7 +79,6 @@ export default function MatchPostArticle({data,postIDX}:{data?:IMatchingPostPage
                 position: 'relative',
                 bottom: 3,
               }}
-              // src={ProfileDefault}
               src={data?.writerImg}
               alt="writer-profile-img"
             />
@@ -153,9 +152,9 @@ export default function MatchPostArticle({data,postIDX}:{data?:IMatchingPostPage
           >
             관람희망날짜
           </div>
-          {dateOption.map((date, idx) => (
+          {data?.dateTime.map((time, idx) => (
             <div key={idx} css={ArticleDateCss}>
-              {date}
+              {time}
             </div>
           ))}
         </s.ArticleDateSection>
@@ -184,9 +183,9 @@ export default function MatchPostArticle({data,postIDX}:{data?:IMatchingPostPage
 
         <s.ArticleTextSection>
           <ArticleImageSlider {...settings}>
-            <img src={Tim} alt="tempo"></img>
-            <img src={Tim} alt="tempo"></img>
-            <img src={Tim} alt="tempo"></img>
+            <img src={data?.mainimg} alt="main-img"></img>
+            <img src={data?.subimg[0]} alt="sub-img1"></img>
+            <img src={data?.subimg[1]} alt="sub-img2"></img>
           </ArticleImageSlider>
           <s.ArticleArrowWrapper
             onClick={() => {
@@ -259,8 +258,8 @@ export default function MatchPostArticle({data,postIDX}:{data?:IMatchingPostPage
         </s.ArticleTextSection>
         <s.InviteBoxWrapper>초대하기</s.InviteBoxWrapper>
 
-        <FsLightboxWrapper />
-        <ReplySectionComponent></ReplySectionComponent>
+        <FsLightboxWrapper data={data}/>
+        <ReplySectionComponent postIDX={postIDX} ></ReplySectionComponent>
       </s.MatchArticleWrapper>
     </div>
   );
@@ -285,6 +284,7 @@ export const ArticleDateCss = css`
 
 export const ArticleImageSlider = styled(Slider)`
   box-sizing: border-box;
+  border: 1px solid ${COLORS.Gray2};
   width: 233px;
   height: 320px;
   border-radius: 10px;
@@ -364,7 +364,7 @@ export const OptionComponent = ({
   );
 };
 
-export const FsLightboxWrapper = (data:any) => {
+export const FsLightboxWrapper = ({data}:{data?:IMatchingPostPage}) => {
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   return (
     <>
@@ -382,7 +382,9 @@ export const FsLightboxWrapper = (data:any) => {
       <FsLightbox
         toggler={toggler}
         sources={[
-          <img src="https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/2.png" alt="dd"/>
+          <img src={data?.mainimg} alt="dd"/>,
+          <img src={data?.subimg[0]} alt="dd"/>,
+          <img src={data?.subimg[1]} alt="dd"/>,
         ]}
       />
     </>
