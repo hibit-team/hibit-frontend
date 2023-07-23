@@ -264,7 +264,11 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
         {/* 대댓글입력창 */}
         {isDaetgulOpen && (
           <div>
-            <SecondaryReplyInputComponent replyIDX={reply.idx} isDaetgulOpen={isDaetgulOpen} setIsDaetgulOpen={setIsDaetgulOpen}></SecondaryReplyInputComponent>
+            <SecondaryReplyInputComponent
+              replyIDX={reply.idx}
+              isDaetgulOpen={isDaetgulOpen}
+              setIsDaetgulOpen={setIsDaetgulOpen}
+            ></SecondaryReplyInputComponent>
           </div>
         )}
       </s.OriginalReplyWrapper>
@@ -278,7 +282,15 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
 };
 
 // 대댓글입력창(input)컴포넌트
-export const SecondaryReplyInputComponent = ({ replyIDX, isDaetgulOpen,setIsDaetgulOpen }: { replyIDX: number; isDaetgulOpen: boolean,setIsDaetgulOpen:React.Dispatch<SetStateAction<boolean>> }) => {
+export const SecondaryReplyInputComponent = ({
+  replyIDX,
+  isDaetgulOpen,
+  setIsDaetgulOpen,
+}: {
+  replyIDX: number;
+  isDaetgulOpen: boolean;
+  setIsDaetgulOpen: React.Dispatch<SetStateAction<boolean>>;
+}) => {
   const [secondaryReplyText, setSecondaryReplyText] = useState('');
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const handleSecondaryReplyTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -375,12 +387,16 @@ export const ReplyModifyOnComponent = ({
   setReplyTextState,
   isModifyOn,
   setIsModifyOn,
+  isSecondModifyOn,
+  setIsSecondModifyOn,
 }: {
   replyIDX?: number;
   replyTextState?: string;
   setReplyTextState?: React.Dispatch<React.SetStateAction<string>>;
   isModifyOn?: boolean;
   setIsModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
+  isSecondModifyOn?: boolean;
+  setIsSecondModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -459,6 +475,7 @@ export const ReplyModifyOnComponent = ({
         onClick={() => {
           if (setReplyTextState && replyTextAreaRef.current) setReplyTextState(replyTextAreaRef.current.value);
           if (setIsModifyOn) setIsModifyOn(false);
+          if (setIsSecondModifyOn) setIsSecondModifyOn(false);
           mutate({ replyIDX, body: replyTextState });
         }}
       >
@@ -471,12 +488,20 @@ export const ReplyModifyOnComponent = ({
 };
 
 //대댓글 컴포넌트
-export const SecondaryReplyComponent = ({ reReply, lineNumber,divisionLineNumber }: { reReply: IComments; lineNumber: number,divisionLineNumber:number }) => {
+export const SecondaryReplyComponent = ({
+  reReply,
+  lineNumber,
+  divisionLineNumber,
+}: {
+  reReply: IComments;
+  lineNumber: number;
+  divisionLineNumber: number;
+}) => {
   //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
-  const [replyTextState, setReplyTextState] = useState(reReply.content)
-  const [isModifyOn, setIsModifyOn] = useState(false);
+  const [replyTextState, setReplyTextState] = useState(reReply.content);
+  const [isSecondModifyOn, setIsSecondModifyOn] = useState(false);
   return (
     <div>
       <s.SecondaryReplyWrapper>
@@ -536,20 +561,26 @@ export const SecondaryReplyComponent = ({ reReply, lineNumber,divisionLineNumber
                 replyIDX={reReply.idx}
                 isReplyOptModalOpen={isReplyOptModalOpen}
                 setIsReplyOptModalOpen={setIsReplyOptModalOpen}
-                isModifyOn={isModifyOn}
-                setIsModifyOn={setIsModifyOn}
+                isModifyOn={isSecondModifyOn}
+                setIsModifyOn={setIsSecondModifyOn}
               ></OptionComponent>
             </div>
           )}
         </div>
-        {isModifyOn ? (
-          <ReplyModifyOnComponent replyTextState={replyTextState} setReplyTextState={setReplyTextState}></ReplyModifyOnComponent>
+        {isSecondModifyOn ? (
+          <ReplyModifyOnComponent
+            replyIDX={reReply.idx}
+            replyTextState={replyTextState}
+            setReplyTextState={setReplyTextState}
+            isSecondModifyOn={isSecondModifyOn}
+            setIsSecondModifyOn={setIsSecondModifyOn}
+          ></ReplyModifyOnComponent>
         ) : (
           <s.SecondaryReplyText>{replyTextState}</s.SecondaryReplyText>
         )}
       </s.SecondaryReplyWrapper>
       {/* 대댓글구분선 */}
-      {lineNumber === divisionLineNumber-1 ? (
+      {lineNumber === divisionLineNumber - 1 ? (
         <div
           css={{ margin: '0px auto', boxSizing: 'border-box', width: 860, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
         ></div>
