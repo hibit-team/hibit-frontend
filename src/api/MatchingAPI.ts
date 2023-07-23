@@ -55,13 +55,14 @@ const MatchingAPI = {
       return null;
     }
   },
-  handleReplyDelete: async (idx: number | undefined) => {
+  deleteMatchingReply: async (idx: number | undefined) => {
     try {
       const path = `/comment/delete/${idx}`;
       const res = await HttpClient.delete(path);
       return res;
     } catch (e) {
-      console.error(`오류로 인해 삭제 처리가 되지 않았습니다. ${(e as AxiosError).message}`);
+      console.error(`오류로 인해 삭제가 되지 않았습니다. ${(e as AxiosError).message}`);
+      return;
     }
   },
 };

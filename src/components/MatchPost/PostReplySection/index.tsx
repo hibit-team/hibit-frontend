@@ -4,7 +4,6 @@ import * as s from './styles';
 import COLORS from '../../../assets/color';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import ProfileDefault from '../../../images/components/MatchPost/profileDefault.svg';
 import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
 import EmptyRoundLike from '../../../images/components/MatchPost/EmptyRoundLike.png';
 import YellowRoundLike from '../../../images/components/MatchPost/YellowRoundLike.svg';
@@ -12,12 +11,12 @@ import ReplyArrow from '../../../images/components/MatchPost/replyArrow.svg';
 import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
 import EmptyReplyArrow from '../../../images/components/MatchPost/emptyReplyArrow.svg';
 import { OptionComponent } from '../PostArticle';
-import { useQuery, QueryFunction, QueryKey } from '@tanstack/react-query';
+import { useMutation, useQuery, MutationFunction, useQueryClient } from '@tanstack/react-query';
 import HttpClient from '../../../services/HttpClient';
-import MatchingPostAPI from '../../../api/MatchingPostAPI';
 import { AxiosError } from 'axios';
+
 //댓글(대댓글)리스트 인터페이스
-interface IComments {
+export interface IComments {
   idx: number;
   writer: string;
   writerImg: string;
@@ -27,6 +26,12 @@ interface IComments {
   time: string;
   likeUsers: string[];
 }
+//댓글입력창 MutationFn params
+interface IMutationParams {
+  postIDX: string | undefined;
+  userIDX: number | undefined;
+  body: string;
+}
 //댓글영역 컴포넌트
 export default function ReplySectionComponent({ postIDX }: { postIDX?: string }) {
   //OriginalReply:댓글
@@ -34,61 +39,91 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
   const queryKeys = {
     Rlists: ['reply-lists'],
   };
-  const getMatchingPostReplyLists = async () => {
+  //게시글데이터 불러오기
+  const getMatchingPostReplyList = async () => {
     const res = HttpClient.get(`comment/list/${postIDX}`);
     return res;
   };
-  const { data: replyData, error, isError, isFetching, isLoading } = useQuery<IComments[], AxiosError>(queryKeys.Rlists, getMatchingPostReplyLists);
-
+  const { data: replyData, error, isError, isFetching, isLoading } = useQuery<IComments[], AxiosError>(queryKeys.Rlists, getMatchingPostReplyList);
   if (isError) {
     console.error(`댓글리스트를 불러오지 못했습니다 :  ${error as AxiosError}`);
   }
-
   return (
     <div css={{ position: 'relative', paddingBottom: 100 }}>
       {/* 유저 댓글입력창 */}
-      <s.InputReplyWrapper>
-        <ImageBox width={32} height={32} source={PEPE} />
-        <textarea
-          defaultValue={''}
-          maxLength={250}
-          placeholder="댓글을 입력하세요"
-          css={{
-            boxSizing: 'border-box',
-            border: 'none',
-            appearance: 'none',
-            outline: 'none',
-            resize: 'none',
-            fontSize: 18,
-            color: COLORS.Gray3,
-            wordBreak: 'break-all',
-            position: 'relative',
-            top: 7,
-            right: 12,
-            overflow: 'hidden',
-            '&::placeholder': {
-              fontSize: 18,
-              color: COLORS.Gray3,
-            },
-            width: 760,
-            height: 100,
-          }}
-        ></textarea>
-        <div css={{ gridColumn: '2', display: 'flex', justifyContent: 'flex-end', position: 'relative', right: 10, top: 8 }}>
-          <ReplyButton right={0} bottom={10}>
-            작성하기
-          </ReplyButton>
-        </div>
-      </s.InputReplyWrapper>
+      <InputReplyWrapper postIDX={postIDX} userIDX={1} />
       {/* //댓글영역 */}
       <s.ReplySection>
-        {replyData?.map((reply, idx) => (
-          <OriginalReplyComponent reply={reply} key={replyData[idx].idx}></OriginalReplyComponent>
+        {replyData?.map((reply, index) => (
+          <OriginalReplyComponent reply={reply} key={replyData[index].idx}></OriginalReplyComponent>
         ))}
       </s.ReplySection>
     </div>
   );
 }
+
+export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; userIDX?: number }) => {
+  const [textState, setTextState] = useState('');
+  const postMatchingReplyInput = async (params: IMutationParams) => {
+    const { postIDX, userIDX, body } = params;
+    try {
+      const path = `comment/${postIDX}/${userIDX}`;
+      const response = await HttpClient.post(path, body);
+      return response;
+    } catch (e) {
+      console.error(`댓글 입력에 실패했습니다. Error: ${(e as AxiosError).message}`);
+      return;
+    }
+  };
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation<string, AxiosError, IMutationParams>(postMatchingReplyInput, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['reply-lists'])
+    },
+  });
+  //댓글입력창
+  return (
+    <div css={s.InputReplyWrapperCss}>
+      <ImageBox width={32} height={32} source={PEPE} />
+      <textarea
+        onChange={e => {
+          setTextState(e.target.value);
+        }}
+        defaultValue={textState}
+        maxLength={250}
+        placeholder="댓글을 입력하세요"
+        css={{
+          boxSizing: 'border-box',
+          border: 'none',
+          appearance: 'none',
+          outline: 'none',
+          resize: 'none',
+          fontSize: 18,
+          color: COLORS.Gray3,
+          wordBreak: 'break-all',
+          position: 'relative',
+          top: 7,
+          right: 12,
+          overflow: 'hidden',
+          '&::placeholder': {
+            fontSize: 18,
+            color: COLORS.Gray3,
+          },
+          width: 760,
+          height: 100,
+        }}
+      ></textarea>
+      <div css={{ gridColumn: '2', display: 'flex', justifyContent: 'flex-end', position: 'relative', right: 10, top: 8 }}>
+        <div onClick={()=>{mutate({postIDX, userIDX, body:textState})}}>
+          <ReplyButton right={0} bottom={10}>
+            작성하기
+          </ReplyButton>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 //댓글 컴포넌트
 export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   //선택옵션on-off
@@ -98,9 +133,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   //수정모드on-off여부
   const [isModifyOn, setIsModifyOn] = useState(false);
   const OriginalReplyTextRef = useRef<HTMLTextAreaElement>(null);
-  const [replyTextState, setReplyTextState] = useState(
-    '댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대'
-  );
+  const [replyTextState, setReplyTextState] = useState(reply.content)
 
   const handleOriginalReplyText = () => {
     if (OriginalReplyTextRef.current) {
@@ -141,7 +174,8 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
             <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>
               {/* 좋아요 수 */}
-              좋아요 {reply.liked}개</div>
+              좋아요 {reply.liked}개
+            </div>
             <div onClick={() => setIsReplyLikeOn(!isReplyLikeOn)}>
               <ReplyEmptyRoundLikeButton isReplyLikeOn={isReplyLikeOn} />
             </div>
@@ -198,7 +232,8 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
                 background: 'white',
               }}
             >
-              <OptionComponent idx={reply.idx}
+              <OptionComponent
+                idx={reply.idx}
                 isModifyOn={isModifyOn}
                 setIsModifyOn={setIsModifyOn}
                 isReplyOptModalOpen={isReplyOptModalOpen}
@@ -434,12 +469,14 @@ export const SecondaryReplyComponent = ({ reReply, lineNumber }: { reReply: ICom
             </div>
             <div css={{ color: COLORS.Gray3, padding: '0 12px', fontWeight: 500, fontSize: 20 }}>
               {/* 작성시간 */}
-              {reReply.time}</div>
+              {reReply.time}
+            </div>
           </div>
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
             <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>
               {/* 좋아요 수 */}
-              좋아요 {reReply.liked}개</div>
+              좋아요 {reReply.liked}개
+            </div>
             <div onClick={() => setIsReplyLikeOn(!isReplyLikeOn)}>
               <ReplyEmptyRoundLikeButton isReplyLikeOn={isReplyLikeOn} />
             </div>
