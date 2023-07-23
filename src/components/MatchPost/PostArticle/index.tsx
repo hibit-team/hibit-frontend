@@ -24,6 +24,8 @@ import HttpClient from '../../../services/HttpClient';
 import { Axios, AxiosError } from 'axios';
 import MatchingAPI from '../../../api/MatchingAPI';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteReplyMutation';
+
 
 export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string }) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
@@ -295,14 +297,14 @@ export const ArticleImageSlider = styled(Slider)`
 `;
 
 interface IOptionComponent {
-  idx?: number;
+  replyIDX?: number;
   setIsModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
   isModifyOn?: boolean;
   isReplyOptModalOpen?: boolean;
   setIsReplyOptModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const OptionComponent = ({ idx, setIsModifyOn, isModifyOn, isReplyOptModalOpen, setIsReplyOptModalOpen }: IOptionComponent) => {
+export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOptModalOpen, setIsReplyOptModalOpen }: IOptionComponent) => {
   //수정삭제신고 게시글 옵션
   const postOption1 = css({
     //수정
@@ -340,11 +342,11 @@ export const OptionComponent = ({ idx, setIsModifyOn, isModifyOn, isReplyOptModa
     '&:hover': { color: 'red', scale: '1.04' },
   });
   const options = ['수정', '삭제', '신고'];
-  const queryClient = useQueryClient();
- 
-  const {mutate} = useMutation(MatchingAPI.deleteMatchingReply, {
-    onSuccess: () => {queryClient.invalidateQueries(['reply-lists']);},
-  });
+  // const queryClient = useQueryClient();
+  // const {mutate} = useMutation(MatchingAPI.deleteMatchingReply, {
+  //   onSuccess: () => {queryClient.invalidateQueries(['reply-lists']);},
+  // });
+  const { mutate } = useDeleteReplyMutation(replyIDX);
 
   return (
     <>
@@ -359,7 +361,7 @@ export const OptionComponent = ({ idx, setIsModifyOn, isModifyOn, isReplyOptModa
             if (i === 0 && setIsModifyOn) setIsModifyOn(!isModifyOn);
             //삭제버튼인 경우에(i==1)
             if (i === 1) {
-              mutate(idx)
+              mutate(replyIDX)
             }
           }}
           key={i}
