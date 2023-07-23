@@ -8,7 +8,7 @@ interface ISecondaryReplyMutationParams {
   userIDX: number | undefined;
   body?: string;
 }
-export const useSecondaryReplyInputMutation = (replyIDX:number|undefined) => {
+export const usePostSecondaryReplyInputMutation = (replyIDX:number|undefined) => {
   const queryClient = useQueryClient();
   const secondaryReplyInputMutationFn = async ({ replyIDX, userIDX, body }:ISecondaryReplyMutationParams) => {
     try {

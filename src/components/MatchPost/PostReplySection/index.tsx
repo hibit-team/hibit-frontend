@@ -14,8 +14,8 @@ import { OptionComponent } from '../PostArticle';
 import { useMutation, useQuery, MutationFunction, useQueryClient } from '@tanstack/react-query';
 import HttpClient from '../../../services/HttpClient';
 import { AxiosError } from 'axios';
-import { useModifyingTextMutation } from '../../../hooks/MatchingPost/useModifyingTextMutation';
-import { useSecondaryReplyInputMutation } from '../../../hooks/MatchingPost/useSecondaryReplyInputMutation';
+import { useUpdateReplyTextMutation } from '../../../hooks/MatchingPost/useUpdateReplyTextMutation';
+import { usePostSecondaryReplyInputMutation } from '../../../hooks/MatchingPost/usePostSecondaryReplyInputMutation';
 
 //댓글(대댓글)리스트 인터페이스
 export interface IComments {
@@ -240,7 +240,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
               }}
             >
               <OptionComponent
-                idx={reply.idx}
+                replyIDX={reply.idx}
                 isModifyOn={isModifyOn}
                 setIsModifyOn={setIsModifyOn}
                 isReplyOptModalOpen={isReplyOptModalOpen}
@@ -314,7 +314,7 @@ export const SecondaryReplyInputComponent = ({ replyIDX, isDaetgulOpen,setIsDaet
     };
   }, [isDaetgulOpen]);
   //대댓글작성mutation (임시유저3 = b)
-  const { mutate } = useSecondaryReplyInputMutation(replyIDX);
+  const { mutate } = usePostSecondaryReplyInputMutation(replyIDX);
   return (
     <div
       css={{
@@ -416,7 +416,7 @@ export const ReplyModifyOnComponent = ({
     }
   };
   //댓글수정
-  const { mutate } = useModifyingTextMutation(replyIDX);
+  const { mutate } = useUpdateReplyTextMutation(replyIDX);
   return (
     <div
       css={{
@@ -533,6 +533,7 @@ export const SecondaryReplyComponent = ({ reReply, lineNumber,divisionLineNumber
               }}
             >
               <OptionComponent
+                replyIDX={reReply.idx}
                 isReplyOptModalOpen={isReplyOptModalOpen}
                 setIsReplyOptModalOpen={setIsReplyOptModalOpen}
                 isModifyOn={isModifyOn}

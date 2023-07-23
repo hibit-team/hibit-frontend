@@ -7,7 +7,7 @@ interface IModifyingMutationFnParams {
   replyIDX?: number | undefined;
   body?: string;
 }
-export const useModifyingTextMutation = (replyIDX: number | undefined) => {
+export const useUpdateReplyTextMutation = (replyIDX: number | undefined) => {
   const queryClient = useQueryClient();
   const modifyingTextMutationFn = async (params: IModifyingMutationFnParams) => {
     const { replyIDX, body } = params;
