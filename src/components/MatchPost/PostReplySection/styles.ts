@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import COLORS from '../../../assets/color';
 
-export const InputReplyWrapper = styled.div({
+export const InputReplyWrapperCss = css({
   boxSizing: 'border-box',
   width: 864,
   borderRadius: 10,

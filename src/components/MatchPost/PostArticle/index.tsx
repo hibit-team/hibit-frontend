@@ -288,6 +288,7 @@ export const ArticleDateCss = css`
 export const ArticleImageSlider = styled(Slider)`
   box-sizing: border-box;
   border: 1px solid ${COLORS.Gray2};
+  padding:20px;
   width: 233px;
   height: 320px;
   border-radius: 10px;
@@ -341,7 +342,7 @@ export const OptionComponent = ({ idx, setIsModifyOn, isModifyOn, isReplyOptModa
   const options = ['수정', '삭제', '신고'];
   const queryClient = useQueryClient();
  
-  const {mutate} = useMutation(MatchingAPI.handleReplyDelete, {
+  const {mutate} = useMutation(MatchingAPI.deleteMatchingReply, {
     onSuccess: () => {queryClient.invalidateQueries(['reply-lists']);},
   });
 
@@ -388,7 +389,7 @@ export const FsLightboxWrapper = ({ data }: { data?: IMatchingPostPage }) => {
       ></button>
       <FsLightbox
         toggler={toggler}
-        sources={[<img src={data?.mainimg} alt="dd" />, <img src={data?.subimg[0]} alt="dd" />, <img src={data?.subimg[1]} alt="dd" />]}
+        sources={[<img src={data?.mainimg} alt="main-img" />, <img src={data?.subimg[0]} alt="sub1-img" />, <img src={data?.subimg[1]} alt="sub2-img" />]}
       />
     </>
   );
