@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, SetStateAction } from 'react';
 import * as s from './styles';
 import COLORS from '../../../assets/color';
 import { css } from '@emotion/react';
@@ -14,6 +14,8 @@ import { OptionComponent } from '../PostArticle';
 import { useMutation, useQuery, MutationFunction, useQueryClient } from '@tanstack/react-query';
 import HttpClient from '../../../services/HttpClient';
 import { AxiosError } from 'axios';
+import { useModifyingTextMutation } from '../../../hooks/MatchingPost/useModifyingTextMutation';
+import { useSecondaryReplyInputMutation } from '../../../hooks/MatchingPost/useSecondaryReplyInputMutation';
 
 //댓글(대댓글)리스트 인터페이스
 export interface IComments {
@@ -78,7 +80,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
   const queryClient = useQueryClient();
   const { mutate } = useMutation<string, AxiosError, IMutationParams>(postMatchingReplyInput, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['reply-lists'])
+      queryClient.invalidateQueries(['reply-lists']);
     },
   });
   //댓글입력창
@@ -114,7 +116,11 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
         }}
       ></textarea>
       <div css={{ gridColumn: '2', display: 'flex', justifyContent: 'flex-end', position: 'relative', right: 10, top: 8 }}>
-        <div onClick={()=>{mutate({postIDX, userIDX, body:textState})}}>
+        <div
+          onClick={() => {
+            mutate({ postIDX, userIDX, body: textState });
+          }}
+        >
           <ReplyButton right={0} bottom={10}>
             작성하기
           </ReplyButton>
@@ -133,7 +139,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   //수정모드on-off여부
   const [isModifyOn, setIsModifyOn] = useState(false);
   const OriginalReplyTextRef = useRef<HTMLTextAreaElement>(null);
-  const [replyTextState, setReplyTextState] = useState(reply.content)
+  const [replyTextState, setReplyTextState] = useState(reply.content);
 
   const handleOriginalReplyText = () => {
     if (OriginalReplyTextRef.current) {
@@ -155,6 +161,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       setIsDaetgulOpen(false);
     }
   }, [isDaetgulOpen, isModifyOn]);
+
   return (
     <div css={{ paddingBottom: 10 }}>
       <s.OriginalReplyWrapper>
@@ -245,6 +252,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
         {/* 댓글텍스트 */}
         {isModifyOn ? (
           <ReplyModifyOnComponent
+            replyIDX={reply.idx}
             isModifyOn={isModifyOn}
             setIsModifyOn={setIsModifyOn}
             setReplyTextState={setReplyTextState}
@@ -256,21 +264,21 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
         {/* 대댓글입력창 */}
         {isDaetgulOpen && (
           <div>
-            <SecondaryReplyInputComponent isDaetgulOpen={isDaetgulOpen}></SecondaryReplyInputComponent>
+            <SecondaryReplyInputComponent replyIDX={reply.idx} isDaetgulOpen={isDaetgulOpen} setIsDaetgulOpen={setIsDaetgulOpen}></SecondaryReplyInputComponent>
           </div>
         )}
       </s.OriginalReplyWrapper>
       {/* 대댓글 컴포넌트 */}
 
       {reply.childComments.map((reReply, lineNumber) => (
-        <SecondaryReplyComponent reReply={reReply} lineNumber={lineNumber}></SecondaryReplyComponent>
+        <SecondaryReplyComponent divisionLineNumber={reply.childComments.length} reReply={reReply} lineNumber={lineNumber}></SecondaryReplyComponent>
       ))}
     </div>
   );
 };
 
 // 대댓글입력창(input)컴포넌트
-export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen: boolean }) => {
+export const SecondaryReplyInputComponent = ({ replyIDX, isDaetgulOpen,setIsDaetgulOpen }: { replyIDX: number; isDaetgulOpen: boolean,setIsDaetgulOpen:React.Dispatch<SetStateAction<boolean>> }) => {
   const [secondaryReplyText, setSecondaryReplyText] = useState('');
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const handleSecondaryReplyTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -305,6 +313,8 @@ export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen:
       if (currentTextAreaRef) currentTextAreaRef.value = '';
     };
   }, [isDaetgulOpen]);
+  //대댓글작성mutation (임시유저3 = b)
+  const { mutate } = useSecondaryReplyInputMutation(replyIDX);
   return (
     <div
       css={{
@@ -343,7 +353,13 @@ export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen:
           top: 5,
         }}
       ></textarea>
-      <div css={{ height: '100%' }}>
+      <div
+        onClick={() => {
+          setIsDaetgulOpen(false);
+          mutate({ replyIDX, userIDX: 3, body: secondaryReplyText });
+        }}
+        css={{ display: 'flex', alignItems: 'flex-end' }}
+      >
         <ReplyButton right={-20} bottom={0}>
           작성하기
         </ReplyButton>
@@ -354,17 +370,20 @@ export const SecondaryReplyInputComponent = ({ isDaetgulOpen }: { isDaetgulOpen:
 
 //댓글 수정모드 컴포넌트
 export const ReplyModifyOnComponent = ({
+  replyIDX,
   replyTextState,
   setReplyTextState,
   isModifyOn,
   setIsModifyOn,
 }: {
+  replyIDX?: number;
   replyTextState?: string;
   setReplyTextState?: React.Dispatch<React.SetStateAction<string>>;
   isModifyOn?: boolean;
   setIsModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
+
   const handleOriginalTextModifying = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = e.target.value;
     if (value.length <= 250) {
@@ -396,6 +415,8 @@ export const ReplyModifyOnComponent = ({
       if (setIsModifyOn) setIsModifyOn(false);
     }
   };
+  //댓글수정
+  const { mutate } = useModifyingTextMutation(replyIDX);
   return (
     <div
       css={{
@@ -437,6 +458,8 @@ export const ReplyModifyOnComponent = ({
         css={{ display: 'flex', alignItems: 'end' }}
         onClick={() => {
           if (setReplyTextState && replyTextAreaRef.current) setReplyTextState(replyTextAreaRef.current.value);
+          if (setIsModifyOn) setIsModifyOn(false);
+          mutate({ replyIDX, body: replyTextState });
         }}
       >
         <ReplyButton right={-24} bottom={0}>
@@ -448,13 +471,11 @@ export const ReplyModifyOnComponent = ({
 };
 
 //대댓글 컴포넌트
-export const SecondaryReplyComponent = ({ reReply, lineNumber }: { reReply: IComments; lineNumber: number }) => {
+export const SecondaryReplyComponent = ({ reReply, lineNumber,divisionLineNumber }: { reReply: IComments; lineNumber: number,divisionLineNumber:number }) => {
   //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
-  const [replyTextState, setReplyTextState] = useState(
-    '댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대 250자댓글최대'
-  );
+  const [replyTextState, setReplyTextState] = useState(reReply.content)
   const [isModifyOn, setIsModifyOn] = useState(false);
   return (
     <div>
@@ -527,7 +548,7 @@ export const SecondaryReplyComponent = ({ reReply, lineNumber }: { reReply: ICom
         )}
       </s.SecondaryReplyWrapper>
       {/* 대댓글구분선 */}
-      {lineNumber === 2 ? (
+      {lineNumber === divisionLineNumber-1 ? (
         <div
           css={{ margin: '0px auto', boxSizing: 'border-box', width: 860, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
         ></div>
