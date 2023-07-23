@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import HttpClient from '../../services/HttpClient';
 import { AxiosError } from 'axios';
 
-//댓글,대댓글의 코멘트idx넘기면 수정요청해줌
+//댓글,대댓글의 수정요청 (comment_idx)
 interface IModifyingMutationFnParams {
   replyIDX?: number | undefined;
   body?: string;
