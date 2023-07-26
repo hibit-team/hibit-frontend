@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 interface ISecondaryReplyMutationParams {
   replyIDX?: number | undefined;
   userIDX: number | undefined;
-  body?: string;
+  body?: string | undefined;
 }
 export const usePostSecondaryReplyInputMutation = (replyIDX:number|undefined) => {
   const queryClient = useQueryClient();

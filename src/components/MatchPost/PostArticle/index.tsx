@@ -5,8 +5,6 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import COLORS from '../../../assets/color';
 import Slider from 'react-slick';
-// import Tim from '../../../images/components/MatchPost/Tim.svg';
-// import ProfileDefault from '../../../images/components/MatchPost/profileDefault.svg';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../../../assets/slick.css';
@@ -17,15 +15,9 @@ import WhiteLike from '../../../images/components/MatchPost/whiteLike.png';
 import FsLightbox from 'fslightbox-react';
 import { useRecoilState } from 'recoil';
 import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
-import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
 import ReplySectionComponent from '../PostReplySection';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
-import HttpClient from '../../../services/HttpClient';
-import { Axios, AxiosError } from 'axios';
-import MatchingAPI from '../../../api/MatchingAPI';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteReplyMutation';
-
 
 export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string }) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
