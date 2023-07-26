@@ -3,38 +3,26 @@ import MatchingFilterButton from '../../components/Matching/FilterButton';
 import MatchingContainer from '../../components/Matching/MatchingContainer';
 import MatchingSearchBar from '../../components/Matching/SearchBar';
 import MatchingSlideBanner from '../../components/Matching/SlideBanner';
-import { useState } from 'react';
 import HttpClient from '../../services/HttpClient';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-
-export interface IPosts{
-  idx: number,
-  title: string, //글제목
-  exhibition: string,
-  status: string, //게시글상태
-  number_and_What: Array<string>, //라벨
-  mainimg: string,
-  liked: number, //게시글 좋아요수
-  comment_number: number, //댓글 수 
-  dateTime: string, //호버시 나오는 희망 관람시간
+import { useRecoilValue } from 'recoil';
+import { MatchingControllerState } from '../../recoil/atom/MatchingControllerState';
+import { useMatchingInfiniteQuery } from '../../hooks/MathchingMain/useMatchingInifiniteQuery';
+export interface IPosts {
+  idx: number;
+  title: string; //글제목
+  exhibition: string;
+  status: string; //게시글상태
+  number_and_What: Array<string>; //라벨
+  mainimg: string;
+  liked: number; //게시글 좋아요수
+  comment_number: number; //댓글 수
+  dateTime: string; //호버시 나오는 희망 관람시간
 }
 const MatchingPage = () => {
   //sortOption : ["allposts",'thisweek','like']
-  const [sortOption, setSortOption] = useState<string>('allposts');
-  const fetchPosts = async ({ pageParam = 1 }) => {
-    const res = await HttpClient.get(`/post/list/${sortOption}/${pageParam}`);
-    return res;
-  };
-
-  //sortOption변경함수
-  const handleSortOption = (opt: string) => {
-    console.log(opt);
-    setSortOption(opt);
-  };
-
   const {
-    // status,
     data,
     error,
     isError,
@@ -46,15 +34,9 @@ const MatchingPage = () => {
     // isFetchingPreviousPage,
     // fetchPreviousPage,
     // hasPreviousPage,
-  } = useInfiniteQuery<IPosts[], AxiosError>(['posts', sortOption], fetchPosts, {
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length ? allPages.length + 1 : undefined;
-    },
-    staleTime: 1000*1
-  });
-
+  } = useMatchingInfiniteQuery();
   if (isLoading === true) {
-    //초기 데이터fetch, nextPage fetch 로딩 플래그
+    //초기 데이터fetch, nextPage fetch 로딩 플래그 => 추후 로딩스피너로 대체
     return <p>Loading...</p>;
   }
   if (isError === true) {
@@ -65,13 +47,8 @@ const MatchingPage = () => {
       <LayoutTemplate>
         <MatchingSlideBanner></MatchingSlideBanner>
         <MatchingSearchBar></MatchingSearchBar>
-        <MatchingFilterButton sortOption={sortOption} handleSortOption={handleSortOption}></MatchingFilterButton>
-        <MatchingContainer
-          isFetchingNextPage={isFetchingNextPage}
-          sortOption={sortOption}
-          pages={data?.pages}
-          fetchNextPage={fetchNextPage}
-        ></MatchingContainer>
+        <MatchingFilterButton></MatchingFilterButton>
+        <MatchingContainer isFetchingNextPage={isFetchingNextPage} pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
       </LayoutTemplate>
     </div>
   );

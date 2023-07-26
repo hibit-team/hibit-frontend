@@ -7,9 +7,10 @@ import ReplyIcon from '../../../images/components/Matching/replyIcon.svg';
 import COLORS from '../../../assets/color';
 import { IPosts } from '../../../pages/Matching';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
 export interface IProps {
   isFetchingNextPage: boolean;
-  sortOption: string;
   pages: IPosts[][];
   fetchNextPage: any;
 }
@@ -139,8 +140,8 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
 };
 
 //매칭컨테이너(pages) - 매칭 그리드컨테이너(grid: eachPage)-매칭카드컴포넌트(eachData)
-const MatchingContainer = ({ isFetchingNextPage, sortOption, pages, fetchNextPage }: IProps) => {
-  console.log(`pages.length:${pages.length}`);
+const MatchingContainer = ({ isFetchingNextPage, pages, fetchNextPage }: IProps) => {
+  const sortOption = useRecoilValue<string>(MatchingControllerState);
   return (
     <div>
       <s.MatchingHeader>{ExhibitionText[sortOption]}</s.MatchingHeader>
