@@ -11,7 +11,7 @@ import ReplyArrow from '../../../images/components/MatchPost/replyArrow.svg';
 import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
 import EmptyReplyArrow from '../../../images/components/MatchPost/emptyReplyArrow.svg';
 import { OptionComponent } from '../PostArticle';
-import { useMutation, useQuery, MutationFunction, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import HttpClient from '../../../services/HttpClient';
 import { AxiosError } from 'axios';
 import { useUpdateReplyTextMutation } from '../../../hooks/MatchingPost/useUpdateReplyTextMutation';
@@ -46,7 +46,13 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
     const res = HttpClient.get(`comment/list/${postIDX}`);
     return res;
   };
-  const { data: replyData, error, isError, isFetching, isLoading } = useQuery<IComments[], AxiosError>(queryKeys.Rlists, getMatchingPostReplyList);
+  const {
+    data: replyData,
+    error,
+    isError,
+    isFetching,
+    isLoading,
+  } = useQuery<IComments[], AxiosError>(queryKeys.Rlists, getMatchingPostReplyList, { staleTime: 1000 });
   if (isError) {
     console.error(`댓글리스트를 불러오지 못했습니다 :  ${error as AxiosError}`);
   }
@@ -63,9 +69,10 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
     </div>
   );
 }
-
+//댓글입력창
 export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; userIDX?: number }) => {
   const [textState, setTextState] = useState('');
+  //댓글입력api
   const postMatchingReplyInput = async (params: IMutationParams) => {
     const { postIDX, userIDX, body } = params;
     try {
@@ -79,11 +86,16 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
   };
   const queryClient = useQueryClient();
   const { mutate } = useMutation<string, AxiosError, IMutationParams>(postMatchingReplyInput, {
+    onMutate: () => {
+      queryClient.cancelQueries();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(['reply-lists']);
     },
+    onError: e => {
+      console.error(`댓글 입력에 실패했습니다. Error: ${(e as AxiosError).message}`);
+    },
   });
-  //댓글입력창
   return (
     <div css={s.InputReplyWrapperCss}>
       <ImageBox width={32} height={32} source={PEPE} />
@@ -118,7 +130,9 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
       <div css={{ gridColumn: '2', display: 'flex', justifyContent: 'flex-end', position: 'relative', right: 10, top: 8 }}>
         <div
           onClick={() => {
-            mutate({ postIDX, userIDX, body: textState });
+            setTimeout(() => {
+              mutate({ postIDX, userIDX, body: textState });
+            }, 500);
           }}
         >
           <ReplyButton right={0} bottom={10}>
@@ -139,7 +153,8 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   //수정모드on-off여부
   const [isModifyOn, setIsModifyOn] = useState(false);
   const OriginalReplyTextRef = useRef<HTMLTextAreaElement>(null);
-  const [replyTextState, setReplyTextState] = useState(reply.content);
+  const [replyTextState, setReplyTextState] = useState(decodeURIComponent(reply.content));
+  console.log(`댓글 컨텐츠 : ${reply.content}`);
 
   const handleOriginalReplyText = () => {
     if (OriginalReplyTextRef.current) {

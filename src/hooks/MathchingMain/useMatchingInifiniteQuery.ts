@@ -15,6 +15,6 @@ export const useMatchingInfiniteQuery = ()=> {
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length ? allPages.length + 1 : undefined;
     },
-    staleTime: 1000 * 10,
+    staleTime: 1000 * 5,
   });
 }

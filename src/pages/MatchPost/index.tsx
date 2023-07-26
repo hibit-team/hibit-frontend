@@ -23,7 +23,7 @@ export interface IMatchingPostPage {
   mainimg: string; //메인이미지1장
   subimg:Array<string>;//서브이미지2장
   time: string; //게시글 작성시간
-  dateTime:Array<string>;
+  dateTime:Array<string>;//관람희망시간
 }
 
 export default function MatchingPostPage() {
@@ -46,7 +46,7 @@ export default function MatchingPostPage() {
   return (
     <LayoutTemplate>
       <s.Wrapper>
-        <MatchPostLabel data={data}></MatchPostLabel>
+        <MatchPostLabel postIDX={idx} data={data}></MatchPostLabel>
         <MatchPostArticle postIDX={idx} data={data}></MatchPostArticle>
       </s.Wrapper>
     </LayoutTemplate>
