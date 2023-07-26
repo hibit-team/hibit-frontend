@@ -1,15 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import * as s from './styles'
-// import { css } from '@emotion/react';
-
-interface MatchingFilterButtonProps {
-  sortOption:string ,
-  handleSortOption: (opt: string) => void;
-}
-
-const MatchingFilterButton = ({sortOption,handleSortOption}:MatchingFilterButtonProps) =>{
+import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
+import { useRecoilState } from 'recoil';
+const MatchingFilterButton = () =>{
   //전체게시글 'allposts' , 이번주 'thisweek' , 좋아요 'like'
-
+  //필터 전역으로 상태관리
+  const [sortOption,handleSortOption] = useRecoilState(MatchingControllerState);
   return(
     <>
     <s.FilterWrapper>

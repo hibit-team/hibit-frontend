@@ -142,7 +142,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 justifyContent: 'center',
               }}
             >
-              <OptionComponent></OptionComponent>
+              <PostOptionComponent></PostOptionComponent>
             </div>
           )}
         </s.ArticleTitleSection>
@@ -304,6 +304,59 @@ interface IOptionComponent {
   setIsReplyOptModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+//게시글 전용 option컴포넌트 분리
+export const PostOptionComponent = ()=>{
+  const postOption1 = css({
+    //수정
+    all: 'unset',
+    position: 'relative',
+    cursor: 'pointer',
+    top: 2,
+    fontSize: 18,
+    padding: '6px',
+    borderBottom: `1px solid ${COLORS.Gray2}`,
+    color: COLORS.Gray3,
+    '&:hover': { color: COLORS.main79, scale: '1.04' },
+  });
+  const postOption2 = css({
+    //삭제(idx=2)
+    all: 'unset',
+    position: 'relative',
+    cursor: 'pointer',
+    top: 2,
+    fontSize: 18,
+    padding: '6px',
+    borderBottom: `1px solid ${COLORS.Gray2}`,
+    color: COLORS.Gray3,
+    '&:hover': { color: COLORS.main79, scale: '1.04' },
+  });
+  const postOption3 = css({
+    //신고
+    all: 'unset',
+    position: 'relative',
+    cursor: 'pointer',
+    top: 2,
+    fontSize: 18,
+    padding: '6px',
+    color: COLORS.Gray3,
+    '&:hover': { color: 'red', scale: '1.04' },
+  });
+  const options = ['수정', '삭제', '신고'];
+    return (
+    <>
+      {options.map((opt, i) => (
+        <button
+        //수정모드 라우트 처리 , 게시글 삭제 API 연동 , 신고 라우트 처리
+          key={i}
+          css={i === 0 ? postOption1 : i === 1 ? postOption2 : postOption3}
+        >
+          {opt}
+        </button>
+      ))}
+    </>
+  );
+}
+
 export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOptModalOpen, setIsReplyOptModalOpen }: IOptionComponent) => {
   //수정삭제신고 게시글 옵션
   const postOption1 = css({
@@ -342,10 +395,6 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
     '&:hover': { color: 'red', scale: '1.04' },
   });
   const options = ['수정', '삭제', '신고'];
-  // const queryClient = useQueryClient();
-  // const {mutate} = useMutation(MatchingAPI.deleteMatchingReply, {
-  //   onSuccess: () => {queryClient.invalidateQueries(['reply-lists']);},
-  // });
   const { mutate } = useDeleteReplyMutation(replyIDX);
 
   return (
