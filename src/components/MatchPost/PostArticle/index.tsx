@@ -19,9 +19,10 @@ import ReplySectionComponent from '../PostReplySection';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
 import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteReplyMutation';
 import { useDeleteMatchingPostMutation } from '../../../hooks/MatchingPost/useDeleteMatchingPostMutation';
+import { usePostMatchingArticleLikeMutation } from '../../../hooks/MatchingPost/usePostMatchingArticleLikeMutation';
 export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
-  const [isLikeStateOn, setIsLikeStateOn] = useState(false);
+  // const [isLikeStateOn, setIsLikeStateOn] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   const settings = {
     dots: true,
@@ -45,6 +46,11 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
     ),
     dotsClass: 'dots_custom2',
   };
+  const { mutate: articleLikeMutate } = usePostMatchingArticleLikeMutation(postIDX);
+  const isLikeStateOn = data?.likeUsers?.find((item)=>{
+    return item.idx === 3
+  })
+  console.log(isLikeStateOn);
   return (
     <div css={{ marginBottom: 100 }}>
       <s.MatchArticleWrapper>
@@ -215,9 +221,11 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             {data?.content}
           </article>
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
+              //게시글좋아요버튼 
+              articleLikeMutate(postIDX);
               alert(isLikeStateOn ? '해당 게시글의 `좋아요`를 취소했습니다.' : '해당 게시글에 `좋아요`를 눌렀습니다.');
-              setIsLikeStateOn(!isLikeStateOn);
             }}
             css={{
               all: 'unset',
