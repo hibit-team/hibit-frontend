@@ -3,19 +3,16 @@ import MatchingFilterButton from '../../components/Matching/FilterButton';
 import MatchingContainer from '../../components/Matching/MatchingContainer';
 import MatchingSearchBar from '../../components/Matching/SearchBar';
 import MatchingSlideBanner from '../../components/Matching/SlideBanner';
-import HttpClient from '../../services/HttpClient';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { useRecoilValue } from 'recoil';
-import { MatchingControllerState } from '../../recoil/atom/MatchingControllerState';
-import { useMatchingInfiniteQuery } from '../../hooks/MathchingMain/useMatchingInifiniteQuery';
+import { useGetMatchingInfiniteQuery } from '../../hooks/MathchingMain/useGetMatchingInifiniteQuery';
+
 export interface IPosts {
-  idx: number;
-  title: string; //글제목
-  exhibition: string;
-  status: string; //게시글상태
+  idx: number; // 글 넘버 
+  title: string; // 게시글 제목 
+  exhibition: string; // 전시회 어디
+  status: string; // 게시글 모집 상태
   number_and_What: Array<string>; //라벨
-  mainimg: string;
+  mainimg: string; // 메인 이미지
   liked: number; //게시글 좋아요수
   comment_number: number; //댓글 수
   dateTime: string; //호버시 나오는 희망 관람시간
@@ -34,7 +31,8 @@ const MatchingPage = () => {
     // isFetchingPreviousPage,
     // fetchPreviousPage,
     // hasPreviousPage,
-  } = useMatchingInfiniteQuery();
+  } = useGetMatchingInfiniteQuery();
+
   if (isLoading === true) {
     //초기 데이터fetch, nextPage fetch 로딩 플래그 => 추후 로딩스피너로 대체
     return <p>Loading...</p>;
