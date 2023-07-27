@@ -58,10 +58,13 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
               </div>
               <div
                 onClick={() => {
-                  const confirmed = window.confirm(`모집 상태를 '모집완료'로 변경하시겠습니까?`);
-                  if (confirmed) {
-                    mutate(postIDX);
-                    setIsStatusModalOpen(false);
+                  if(data?.status === 'C') alert('이미 모집 완료된 상태입니다.') 
+                  else {
+                    const confirmed = window.confirm(`모집 상태를 '모집완료'로 변경하시겠습니까?`);
+                    if (confirmed) {
+                      mutate(postIDX);
+                      setIsStatusModalOpen(false);
+                    }
                   }
                 }}
                 css={{

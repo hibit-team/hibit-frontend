@@ -7,6 +7,12 @@ import { useQuery } from '@tanstack/react-query';
 import HttpClient from '../../services/HttpClient';
 import { useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
+
+export interface ILikeUsers {
+  idx: number;
+  id: string;
+  profileImg: string;
+}
 export interface IMatchingPostPage {
   idx: number; //게시글넘버
   writer: string; //게시글 작성자
@@ -21,9 +27,10 @@ export interface IMatchingPostPage {
   createdDate: string;
   number_and_What: Array<string>; //label
   mainimg: string; //메인이미지1장
-  subimg:Array<string>;//서브이미지2장
+  subimg: Array<string>; //서브이미지2장
   time: string; //게시글 작성시간
-  dateTime:Array<string>;//관람희망시간
+  dateTime: Array<string>; //관람희망시간
+  likeUsers: ILikeUsers[]; //게시글 좋아요 누른 인원
 }
 
 export default function MatchingPostPage() {
