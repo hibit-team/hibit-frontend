@@ -17,7 +17,7 @@ import GoogleRedirectHandler from "./components/Login/GoogleRedirectHandler";
 import { useEffect } from "react";
 import axios from "axios";
 import { axiosInstance } from "./services/HttpClient";
-
+import NotFound from "./pages/NotFound";
 function App() {
   const queryClient = new QueryClient();
   const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
@@ -54,7 +54,8 @@ function App() {
                 <Route path="/others/:userID" element={<OtherProfile />} />
                 <Route path="/posting" element={<Posting />} />
                 <Route path="/google-callback" element={<GoogleRedirectHandler />} />
-              </Routes>
+                <Route path="/*" element={<NotFound/>} />
+            </Routes>
             </Router>
           </Container>
         </QueryClientProvider>
