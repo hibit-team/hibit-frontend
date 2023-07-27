@@ -4,7 +4,7 @@ import { MatchingControllerState } from "../../recoil/atom/MatchingControllerSta
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { IPosts } from "../../pages/Matching";
 import { AxiosError } from "axios";
-export const useMatchingInfiniteQuery = ()=> {
+export const useGetMatchingInfiniteQuery = ()=> {
   const fetchPosts = async ({ pageParam = 1 ,sortOption ='allposts'}) => {
     const res = await HttpClient.get(`/post/list/${sortOption}/${pageParam}`);
     return res;

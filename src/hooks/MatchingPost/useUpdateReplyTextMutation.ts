@@ -7,6 +7,8 @@ interface IModifyingMutationFnParams {
   replyIDX?: number | undefined;
   body?: string;
 }
+
+//replyIDX = comment_idx (댓글-대댓글 idx)
 export const useUpdateReplyTextMutation = (replyIDX: number | undefined) => {
   const queryClient = useQueryClient();
   const modifyingTextMutationFn = async (params: IModifyingMutationFnParams) => {

@@ -18,8 +18,9 @@ import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
 import ReplySectionComponent from '../PostReplySection';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
 import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteReplyMutation';
+import { useDeleteMatchingPostMutation } from '../../../hooks/MatchingPost/useDeleteMatchingPostMutation';
 
-export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string }) {
+export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [isLikeStateOn, setIsLikeStateOn] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
@@ -134,7 +135,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 justifyContent: 'center',
               }}
             >
-              <PostOptionComponent></PostOptionComponent>
+              <PostOptionComponent postIDX={postIDX}></PostOptionComponent>
             </div>
           )}
         </s.ArticleTitleSection>
@@ -282,7 +283,7 @@ export const ArticleDateCss = css`
 export const ArticleImageSlider = styled(Slider)`
   box-sizing: border-box;
   border: 1px solid ${COLORS.Gray2};
-  padding:20px;
+  padding: 20px;
   width: 233px;
   height: 320px;
   border-radius: 10px;
@@ -297,7 +298,7 @@ interface IOptionComponent {
 }
 
 //게시글 전용 option컴포넌트 분리
-export const PostOptionComponent = ()=>{
+export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }) => {
   const postOption1 = css({
     //수정
     all: 'unset',
@@ -334,20 +335,31 @@ export const PostOptionComponent = ()=>{
     '&:hover': { color: 'red', scale: '1.04' },
   });
   const options = ['수정', '삭제', '신고'];
-    return (
+  //게시글 삭제
+  const { mutate } = useDeleteMatchingPostMutation(postIDX);
+  return (
     <>
       {options.map((opt, i) => (
         <button
-        //수정모드 라우트 처리 , 게시글 삭제 API 연동 , 신고 라우트 처리
+          //수정모드 라우트 처리 , 게시글 삭제 API 연동 , 신고 라우트 처리
           key={i}
           css={i === 0 ? postOption1 : i === 1 ? postOption2 : postOption3}
+          onClick={() => {
+            switch (i) {
+              //삭제
+              case 1: {
+                const confirm = window.confirm('게시글을 삭제하시겠습니까?')
+                if(confirm) mutate(postIDX);
+              }
+            }
+          }}
         >
           {opt}
         </button>
       ))}
     </>
   );
-}
+};
 
 export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOptModalOpen, setIsReplyOptModalOpen }: IOptionComponent) => {
   //수정삭제신고 게시글 옵션
@@ -402,7 +414,7 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
             if (i === 0 && setIsModifyOn) setIsModifyOn(!isModifyOn);
             //삭제버튼인 경우에(i==1)
             if (i === 1) {
-              mutate(replyIDX)
+              mutate(replyIDX);
             }
           }}
           key={i}
@@ -432,7 +444,11 @@ export const FsLightboxWrapper = ({ data }: { data?: IMatchingPostPage }) => {
       ></button>
       <FsLightbox
         toggler={toggler}
-        sources={[<img src={data?.mainimg} alt="main-img" />, <img src={data?.subimg[0]} alt="sub1-img" />, <img src={data?.subimg[1]} alt="sub2-img" />]}
+        sources={[
+          <img src={data?.mainimg} alt="main-img" />,
+          <img src={data?.subimg[0]} alt="sub1-img" />,
+          <img src={data?.subimg[1]} alt="sub2-img" />,
+        ]}
       />
     </>
   );

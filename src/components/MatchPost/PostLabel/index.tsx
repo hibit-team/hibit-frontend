@@ -10,6 +10,7 @@ import { useUpdateMatchingStatus } from '../../../hooks/MatchingPost/useUpdateMa
 export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPostPage; postIDX: string | undefined}) {
   const label = data?.number_and_What;
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
+  // 게시글 상태변경 커스텀훅
   const { mutate } = useUpdateMatchingStatus(postIDX);
   return (
     <div>

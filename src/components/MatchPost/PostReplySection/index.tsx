@@ -16,7 +16,6 @@ import HttpClient from '../../../services/HttpClient';
 import { AxiosError } from 'axios';
 import { useUpdateReplyTextMutation } from '../../../hooks/MatchingPost/useUpdateReplyTextMutation';
 import { usePostSecondaryReplyInputMutation } from '../../../hooks/MatchingPost/usePostSecondaryReplyInputMutation';
-
 //댓글(대댓글)리스트 인터페이스
 export interface IComments {
   idx: number;
@@ -32,7 +31,7 @@ export interface IComments {
 interface IMutationParams {
   postIDX: string | undefined;
   userIDX: number | undefined;
-  body: string;
+  body: string|undefined;
 }
 //댓글영역 컴포넌트
 export default function ReplySectionComponent({ postIDX }: { postIDX?: string }) {
@@ -77,7 +76,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
     const { postIDX, userIDX, body } = params;
     try {
       const path = `comment/${postIDX}/${userIDX}`;
-      const response = await HttpClient.post(path, body);
+      const response = await HttpClient.post(path,body, { 'Content-Type': 'application/json;charset=utf-8' });
       return response;
     } catch (e) {
       console.error(`댓글 입력에 실패했습니다. Error: ${(e as AxiosError).message}`);
@@ -131,7 +130,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
         <div
           onClick={() => {
             setTimeout(() => {
-              mutate({ postIDX, userIDX, body: textState });
+              mutate({ postIDX, userIDX, body:textState });
             }, 500);
           }}
         >
@@ -153,7 +152,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   //수정모드on-off여부
   const [isModifyOn, setIsModifyOn] = useState(false);
   const OriginalReplyTextRef = useRef<HTMLTextAreaElement>(null);
-  const [replyTextState, setReplyTextState] = useState(decodeURIComponent(reply.content));
+  const [replyTextState, setReplyTextState] = useState(reply.content);
   console.log(`댓글 컨텐츠 : ${reply.content}`);
 
   const handleOriginalReplyText = () => {
