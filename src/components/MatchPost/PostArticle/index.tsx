@@ -19,7 +19,6 @@ import ReplySectionComponent from '../PostReplySection';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
 import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteReplyMutation';
 import { useDeleteMatchingPostMutation } from '../../../hooks/MatchingPost/useDeleteMatchingPostMutation';
-
 export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [isLikeStateOn, setIsLikeStateOn] = useState(false);
@@ -348,8 +347,8 @@ export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }
             switch (i) {
               //삭제
               case 1: {
-                const confirm = window.confirm('게시글을 삭제하시겠습니까?')
-                if(confirm) mutate(postIDX);
+                const confirm = window.confirm('게시글을 삭제하시겠습니까?');
+                if (confirm) mutate(postIDX);
               }
             }
           }}

@@ -16,6 +16,15 @@ import HttpClient from '../../../services/HttpClient';
 import { AxiosError } from 'axios';
 import { useUpdateReplyTextMutation } from '../../../hooks/MatchingPost/useUpdateReplyTextMutation';
 import { usePostSecondaryReplyInputMutation } from '../../../hooks/MatchingPost/usePostSecondaryReplyInputMutation';
+import { usePostReplyLikeMutation } from '../../../hooks/MatchingPost/usePostReplyLikeMutation';
+
+//좋아요한 유저들
+export interface ILikeUsers {
+  idx: number;
+  id: string;
+  profileImg: string;
+}
+
 //댓글(대댓글)리스트 인터페이스
 export interface IComments {
   idx: number;
@@ -25,13 +34,13 @@ export interface IComments {
   childComments: IComments[];
   liked: number;
   time: string;
-  likeUsers: string[];
+  likeUsers: ILikeUsers[];
 }
 //댓글입력창 MutationFn params
 interface IMutationParams {
   postIDX: string | undefined;
   userIDX: number | undefined;
-  body: string|undefined;
+  body: string | undefined;
 }
 //댓글영역 컴포넌트
 export default function ReplySectionComponent({ postIDX }: { postIDX?: string }) {
@@ -58,7 +67,8 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
   return (
     <div css={{ position: 'relative', paddingBottom: 100 }}>
       {/* 유저 댓글입력창 */}
-      <InputReplyWrapper postIDX={postIDX} userIDX={1} />
+      {/* 3번유저 : b */}
+      <InputReplyWrapper postIDX={postIDX} userIDX={3} />
       {/* //댓글영역 */}
       <s.ReplySection>
         {replyData?.map((reply, index) => (
@@ -76,7 +86,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
     const { postIDX, userIDX, body } = params;
     try {
       const path = `comment/${postIDX}/${userIDX}`;
-      const response = await HttpClient.post(path,body, { 'Content-Type': 'application/json;charset=utf-8' });
+      const response = await HttpClient.post(path, body, { 'Content-Type': 'application/json;charset=utf-8' });
       return response;
     } catch (e) {
       console.error(`댓글 입력에 실패했습니다. Error: ${(e as AxiosError).message}`);
@@ -130,7 +140,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
         <div
           onClick={() => {
             setTimeout(() => {
-              mutate({ postIDX, userIDX, body:textState });
+              mutate({ postIDX, userIDX, body: textState });
             }, 500);
           }}
         >
@@ -147,7 +157,6 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
 export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   //선택옵션on-off
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
-  const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
   const [isDaetgulOpen, setIsDaetgulOpen] = useState(false);
   //수정모드on-off여부
   const [isModifyOn, setIsModifyOn] = useState(false);
@@ -176,6 +185,12 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
     }
   }, [isDaetgulOpen, isModifyOn]);
 
+  //댓글 좋아요
+  const { mutate } = usePostReplyLikeMutation(reply.idx);
+  const isInclude = reply.likeUsers.find(user => {
+    //3번아이디가 좋아요유저에 있다면
+    return user.idx === 3;
+  });
   return (
     <div css={{ paddingBottom: 10 }}>
       <s.OriginalReplyWrapper>
@@ -197,8 +212,13 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
               {/* 좋아요 수 */}
               좋아요 {reply.liked}개
             </div>
-            <div onClick={() => setIsReplyLikeOn(!isReplyLikeOn)}>
-              <ReplyEmptyRoundLikeButton isReplyLikeOn={isReplyLikeOn} />
+            <div
+              onClick={() => {
+                //댓글 좋아요
+                mutate(reply.idx);
+              }}
+            >
+              {isInclude ? <ReplyEmptyRoundLikeButton isReplyLikeOn={true} /> : <ReplyEmptyRoundLikeButton isReplyLikeOn={false} />}
             </div>
             {/* REPLY BUTTON */}
             <div
@@ -513,9 +533,14 @@ export const SecondaryReplyComponent = ({
 }) => {
   //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
-  const [isReplyLikeOn, setIsReplyLikeOn] = useState(false);
   const [replyTextState, setReplyTextState] = useState(reReply.content);
   const [isSecondModifyOn, setIsSecondModifyOn] = useState(false);
+
+  const { mutate } = usePostReplyLikeMutation(reReply.idx);
+  const isInclude = reReply.likeUsers.find(user => {
+    //3번아이디가 좋아요유저에 있다면
+    return user.idx === 3;
+  });
   return (
     <div>
       <s.SecondaryReplyWrapper>
@@ -537,8 +562,12 @@ export const SecondaryReplyComponent = ({
               {/* 좋아요 수 */}
               좋아요 {reReply.liked}개
             </div>
-            <div onClick={() => setIsReplyLikeOn(!isReplyLikeOn)}>
-              <ReplyEmptyRoundLikeButton isReplyLikeOn={isReplyLikeOn} />
+            <div
+              onClick={() => {
+                mutate(reReply.idx);
+              }}
+            >
+              {isInclude ? <ReplyEmptyRoundLikeButton isReplyLikeOn={true} /> : <ReplyEmptyRoundLikeButton isReplyLikeOn={false} />}
             </div>
             <img
               onClick={() => {

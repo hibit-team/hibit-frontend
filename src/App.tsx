@@ -13,7 +13,7 @@ import MatchingPostPage from "./pages/MatchPost";
 import OtherProfile from "./pages/OtherProfile";
 import Posting from "./pages/Posting";
 import 'react-day-picker/dist/style.css';
-
+import NotFound from "./pages/NotFound";
 function App() {
   const queryClient = new QueryClient();
   return (
@@ -32,6 +32,7 @@ function App() {
               <Route path="/matchPost/:idx" element={<MatchingPostPage />} />
               <Route path="/others/:userID" element={<OtherProfile />} />
               <Route path="/posting" element={<Posting />} />
+              <Route path="/*" element={<NotFound/>} />
             </Routes>
           </Router>
         </Container>
