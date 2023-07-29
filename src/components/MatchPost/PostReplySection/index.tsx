@@ -332,7 +332,12 @@ export const SecondaryReplyInputComponent = ({
   //대댓글
   const [secondaryReplyText, setSecondaryReplyText] = useState('');
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
-
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
+    if (e.key === 'Escape') {
+      //esc눌러서 대댓글입력창 켜져있으면 꺼주기
+      if (setIsDaetgulOpen) setIsDaetgulOpen(false);
+    }
+  };
   const handleSecondaryReplyTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = e.target.value;
     if (value.length <= 250) {
@@ -374,6 +379,7 @@ export const SecondaryReplyInputComponent = ({
       }}
     >
       <textarea
+        onKeyDown={handleKeyDown}
         maxLength={251}
         ref={replyTextAreaRef}
         defaultValue={secondaryReplyText}
@@ -460,6 +466,7 @@ export const ReplyModifyOnComponent = ({
     if (e.key === 'Escape') {
       //esc눌러서 댓글 켜져있으면 꺼주기
       if (setIsModifyOn) setIsModifyOn(false);
+      if (setIsSecondModifyOn) setIsSecondModifyOn(false);
     }
   };
   //댓글수정
