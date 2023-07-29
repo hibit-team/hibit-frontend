@@ -25,7 +25,6 @@ export const useUpdateReplyTextMutation = (replyIDX: number | undefined) => {
     onSuccess: () => {
       queryClient.invalidateQueries(['reply-lists']);
       queryClient.getQueryData(['reply-lists'])
-      console.log('댓글수정완료');
     },
     onError: e => {
       console.error(`${replyIDX}번 댓글 수정에 실패했습니다. error : ${(e as AxiosError).message}`);
