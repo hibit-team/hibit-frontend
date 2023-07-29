@@ -5,7 +5,7 @@ import { AxiosError } from 'axios';
 //댓글,대댓글의 수정요청 (comment_idx)
 interface IModifyingMutationFnParams {
   replyIDX?: number | undefined;
-  body?: string;
+  body: { content: string };
 }
 
 //replyIDX = comment_idx (댓글-대댓글 idx)
@@ -21,9 +21,11 @@ export const useUpdateReplyTextMutation = (replyIDX: number | undefined) => {
       console.error(`${replyIDX}번 댓글 수정에 실패했습니다. error : ${(e as AxiosError).message}`);
     }
   };
-  return useMutation<string, AxiosError, IModifyingMutationFnParams>(modifyingTextMutationFn, {
-    onSettled: () => {
+  return useMutation<{content: string}, AxiosError, IModifyingMutationFnParams>(modifyingTextMutationFn, {
+    onSuccess: () => {
       queryClient.invalidateQueries(['reply-lists']);
+      queryClient.getQueryData(['reply-lists'])
+      console.log('댓글수정완료');
     },
     onError: e => {
       console.error(`${replyIDX}번 댓글 수정에 실패했습니다. error : ${(e as AxiosError).message}`);

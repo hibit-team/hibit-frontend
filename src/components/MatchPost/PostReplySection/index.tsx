@@ -40,7 +40,7 @@ export interface IComments {
 interface IMutationParams {
   postIDX: string | undefined;
   userIDX: number | undefined;
-  body: string | undefined;
+  body: { content: string };
 }
 //댓글영역 컴포넌트
 export default function ReplySectionComponent({ postIDX }: { postIDX?: string }) {
@@ -140,7 +140,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
         <div
           onClick={() => {
             setTimeout(() => {
-              mutate({ postIDX, userIDX, body: textState });
+              mutate({ postIDX, userIDX, body: { content: textState } });
             }, 500);
           }}
         >
@@ -162,7 +162,6 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   const [isModifyOn, setIsModifyOn] = useState(false);
   const OriginalReplyTextRef = useRef<HTMLTextAreaElement>(null);
   const [replyTextState, setReplyTextState] = useState(reply.content);
-  console.log(`댓글 컨텐츠 : ${reply.content}`);
 
   const handleOriginalReplyText = () => {
     if (OriginalReplyTextRef.current) {
@@ -425,7 +424,7 @@ export const ReplyModifyOnComponent = ({
   setIsSecondModifyOn,
 }: {
   replyIDX?: number;
-  replyTextState?: string;
+  replyTextState: string;
   setReplyTextState?: React.Dispatch<React.SetStateAction<string>>;
   isModifyOn?: boolean;
   setIsModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -435,10 +434,8 @@ export const ReplyModifyOnComponent = ({
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleOriginalTextModifying = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    let value = e.target.value;
-    if (value.length <= 250) {
-      adjustTextareaHeight();
-    }
+    if(setReplyTextState) setReplyTextState(e.target.value)
+    adjustTextareaHeight();
   };
   //댓글 길이에 반응하는 댓글창 (auto:측정,scrollHeight:반응형높이추가)
   const adjustTextareaHeight = () => {
@@ -453,7 +450,6 @@ export const ReplyModifyOnComponent = ({
     }
   };
   useEffect(() => {
-    adjustTextareaHeight();
     if (replyTextAreaRef.current) {
       replyTextAreaRef.current.focus();
     }
@@ -461,7 +457,6 @@ export const ReplyModifyOnComponent = ({
   const handleKeyDown = (e: React.KeyboardEvent): void => {
     if (e.key === 'Escape') {
       //esc눌러서 댓글 켜져있으면 꺼주기
-      console.log('esc');
       if (setIsModifyOn) setIsModifyOn(false);
     }
   };
@@ -510,7 +505,7 @@ export const ReplyModifyOnComponent = ({
           if (setReplyTextState && replyTextAreaRef.current) setReplyTextState(replyTextAreaRef.current.value);
           if (setIsModifyOn) setIsModifyOn(false);
           if (setIsSecondModifyOn) setIsSecondModifyOn(false);
-          mutate({ replyIDX, body: replyTextState });
+          mutate({ replyIDX, body: { content: replyTextState } });
         }}
       >
         <ReplyButton right={-24} bottom={0}>
