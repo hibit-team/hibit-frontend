@@ -100,6 +100,8 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['reply-lists']);
+      const documentHeight = document.body.scrollHeight;
+      window.scrollTo({ top: documentHeight, behavior: 'smooth' });
     },
     onError: e => {
       console.error(`댓글 입력에 실패했습니다. Error: ${(e as AxiosError).message}`);
@@ -434,7 +436,7 @@ export const ReplyModifyOnComponent = ({
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleOriginalTextModifying = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if(setReplyTextState) setReplyTextState(e.target.value)
+    if (setReplyTextState) setReplyTextState(e.target.value);
     adjustTextareaHeight();
   };
   //댓글 길이에 반응하는 댓글창 (auto:측정,scrollHeight:반응형높이추가)
