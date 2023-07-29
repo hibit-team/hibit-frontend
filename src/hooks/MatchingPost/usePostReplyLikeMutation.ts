@@ -12,6 +12,7 @@ export const usePostReplyLikeMutation = (replyIDX:number|undefined) => {
       return res;
     } catch (e) {
       console.error(`${replyIDX}번 댓글의 좋아요에 실패했습니다. error : ${(e as AxiosError).message}`);
+      return;
     }
   };
   return useMutation(replyLikeMutationFn, {

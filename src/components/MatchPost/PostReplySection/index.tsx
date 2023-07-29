@@ -301,6 +301,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
           <div>
             <SecondaryReplyInputComponent
               replyIDX={reply.idx}
+              userIDX={3}
               isDaetgulOpen={isDaetgulOpen}
               setIsDaetgulOpen={setIsDaetgulOpen}
             ></SecondaryReplyInputComponent>
@@ -319,29 +320,28 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
 // 대댓글입력창(input)컴포넌트
 export const SecondaryReplyInputComponent = ({
   replyIDX,
+  userIDX,
   isDaetgulOpen,
   setIsDaetgulOpen,
 }: {
-  replyIDX: number;
+  replyIDX: number | undefined;
+  userIDX: number | undefined;
   isDaetgulOpen: boolean;
   setIsDaetgulOpen: React.Dispatch<SetStateAction<boolean>>;
 }) => {
+  //대댓글
   const [secondaryReplyText, setSecondaryReplyText] = useState('');
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
+
   const handleSecondaryReplyTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = e.target.value;
     if (value.length <= 250) {
-      value = value.slice(0, value.length - 1);
       setSecondaryReplyText(value);
       adjustTextareaHeight();
-    } else if (value.length > 250) {
-      value = value.slice(0, 250);
-      setSecondaryReplyText(value);
-      alert('250자를 넘을 수 없습니다.');
     }
   };
   //댓글 길이에 반응하는 댓글창 (auto:측정,scrollHeight:반응형높이추가)
-  const adjustTextareaHeight = () => {
+  function adjustTextareaHeight() {
     const textarea = replyTextAreaRef.current;
     if (textarea) {
       textarea.style.height = '24px';
@@ -351,7 +351,7 @@ export const SecondaryReplyInputComponent = ({
         textarea.style.height = textarea.scrollHeight + 'px';
       }
     }
-  };
+  }
   //모달 온오프 댓글초기화
   useEffect(() => {
     setSecondaryReplyText('');
@@ -361,7 +361,7 @@ export const SecondaryReplyInputComponent = ({
     };
   }, [isDaetgulOpen]);
   //대댓글작성mutation (임시유저3 = b)
-  const { mutate } = usePostSecondaryReplyInputMutation(replyIDX);
+  const { mutate } = usePostSecondaryReplyInputMutation({ replyIDX, userIDX, body: { content: secondaryReplyText } });
   return (
     <div
       css={{
@@ -378,7 +378,7 @@ export const SecondaryReplyInputComponent = ({
         ref={replyTextAreaRef}
         defaultValue={secondaryReplyText}
         onChange={handleSecondaryReplyTextChange}
-        placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다."
+        placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다 (최대 250자)"
         css={{
           boxSizing: 'content-box',
           padding: 0,
@@ -403,7 +403,7 @@ export const SecondaryReplyInputComponent = ({
       <div
         onClick={() => {
           setIsDaetgulOpen(false);
-          mutate({ replyIDX, userIDX: 3, body: secondaryReplyText });
+          mutate({ replyIDX, userIDX, body: { content: secondaryReplyText } });
         }}
         css={{ display: 'flex', alignItems: 'flex-end' }}
       >
@@ -415,7 +415,7 @@ export const SecondaryReplyInputComponent = ({
   );
 };
 
-//댓글 수정모드 컴포넌트
+//댓글(대댓글) 수정모드 컴포넌트
 export const ReplyModifyOnComponent = ({
   replyIDX,
   replyTextState,
