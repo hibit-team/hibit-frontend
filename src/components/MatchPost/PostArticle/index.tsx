@@ -50,7 +50,6 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
   const isLikeStateOn = data?.likeUsers?.find((item)=>{
     return item.idx === 3
   })
-  console.log(isLikeStateOn);
   return (
     <div css={{ marginBottom: 100 }}>
       <s.MatchArticleWrapper>
