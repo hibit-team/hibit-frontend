@@ -116,7 +116,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
         }}
         defaultValue={textState}
         maxLength={250}
-        placeholder="댓글을 입력하세요"
+        placeholder="댓글을 입력하세요 (최대 250자)"
         css={{
           boxSizing: 'border-box',
           border: 'none',
@@ -192,6 +192,8 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
     //3번아이디가 좋아요유저에 있다면
     return user.idx === 3;
   });
+  // 대댓글 unfold ==true면 펼치기
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div css={{ paddingBottom: 10 }}>
       <s.OriginalReplyWrapper>
@@ -309,10 +311,26 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
         )}
       </s.OriginalReplyWrapper>
       {/* 대댓글 컴포넌트 */}
-
-      {reply.childComments.map((reReply, lineNumber) => (
-        <SecondaryReplyComponent divisionLineNumber={reply.childComments.length} reReply={reReply} lineNumber={lineNumber}></SecondaryReplyComponent>
-      ))}
+      {reply.childComments.map((reReply, lineNumber) => {
+        if (isOpen === false && lineNumber >= 5 ) return <></>;
+        return (
+          <SecondaryReplyComponent
+            divisionLineNumber={reply.childComments.length}
+            reReply={reReply}
+            lineNumber={lineNumber}
+          ></SecondaryReplyComponent>
+        );
+      })}
+      {reply.childComments.length >= 5 ?
+        <p onClick={e => {
+          e.stopPropagation();
+          setIsOpen(!isOpen); //펼치기 false<->true
+        }}
+        css={{ display: 'flex', justifyContent: 'center', cursor: 'pointer', fontSize: 20,
+      color:COLORS.Gray3,marginTop:10 }}
+      >
+        {isOpen && reply.childComments.length >= 6 ? 'fold(접기)' : ` + 대댓글 ${reply.childComments.length - 5}개`}
+      </p> : undefined}
     </div>
   );
 };
