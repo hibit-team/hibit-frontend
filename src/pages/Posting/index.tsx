@@ -13,8 +13,12 @@ const tmpExhibitionData = [
   "로그아웃 전시회", "전시회2", "전시회3", "전시회4"
 ];
 
-const activityData = [
+const activityData_Imoji = [
   "맛집 가기😋", "카페 가기☕", "전시만 보기👓", "만나서 정해요!"
+];
+
+const activityData = [
+  "맛집 가기", "카페 가기", "전시만 보기", "만나서 정해요!"
 ];
 
 const testImgs: string[] = [
@@ -207,7 +211,7 @@ const Posting = () => {
               <s.Column>함께 하고싶은 활동</s.Column>
               <s.ActivityGrid>
                 {
-                  activityData.map((activity, idx) => 
+                  activityData_Imoji.map((activity, idx) => 
                     <s.Activity 
                       onClick={() => onClickActivity(idx)}
                       isSelected={isActivitySelect === idx ? true : false}
