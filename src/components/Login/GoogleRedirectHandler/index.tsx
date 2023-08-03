@@ -1,10 +1,20 @@
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { accessTokenState } from '../../../recoil/atom/AccessToken';
 
 const GoogleRedirectHandler = () => {
   const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
   const location = useLocation();
+  const [cookies, setCookies] = useCookies(['refreshToken']);
+  
+  const [accessTokenAtom, setAccessTokenAtom] = useRecoilState<string | null>(accessTokenState);
+
+  const handleSetAccessToken = (newAccessToken: string | null) => {
+    setAccessTokenAtom(newAccessToken);
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -20,17 +30,24 @@ const GoogleRedirectHandler = () => {
         "Content-Type": "application/json"
       }
     })
-      .then((data) => {
-        console.log({data});
-        // 브라우저에서 토큰 관리
+      .then((res) => {
+        console.log(res.data);
+        const accessToken = res.data.accessToken;
+        const refreshToken = res.data.refreshToken;
+
+        axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        handleSetAccessToken(accessToken);
+
+        setCookies('refreshToken', refreshToken, {path: '/', maxAge: 604800});
       })
       .catch((err) => {
         console.error({err});
       });
-
-    // window.location.href = '/'; // React Router를 사용하는 경우: history.push('/')
-  }, [location.search]);
-
+      
+      window.location.href = '/';
+    }, [location.search, redirectUri, setCookies]);
+    
+  console.log('accessTokenAtom', {accessTokenAtom});
   return (
     <div>
       Logging in...

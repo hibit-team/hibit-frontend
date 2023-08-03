@@ -27,6 +27,8 @@
     "fslightbox-react": "^1.7.6",
     "react": "^18.2.0",
     "react-calendar": "^4.4.0",
+    "react-cookie": "^4.1.1",
+    "react-cookies": "^0.1.1",
     "react-day-picker": "^8.8.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
@@ -66,6 +68,7 @@
   },
   "devDependencies": {
     "@types/fslightbox-react": "^1.7.3",
+    "@types/react-cookies": "^0.1.0",
     "@types/react-slick": "^0.23.10"
   }
 }

@@ -14,7 +14,8 @@ const GoogleLoginButton = () => {
       }
     })
       .then((res) => {
-        console.log(res.data);
+        const oAuthUri = res.data.oAuthUri;
+        console.log(oAuthUri);
       })
       .catch((err) => {
         console.log(err);
