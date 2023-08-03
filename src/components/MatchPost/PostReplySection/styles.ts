@@ -7,7 +7,7 @@ export const InputReplyWrapperCss = css({
   width: 864,
   borderRadius: 10,
   border: `1px solid ${COLORS.Gray2}`,
-  margin: '0px auto 0px auto',
+  margin: '0px auto 40px auto',
   display: 'grid',
   gridTemplateColumns: '67px auto',
   position: 'relative',
@@ -57,12 +57,16 @@ export const SecondaryReplyText = styled.div({
 
 export const OriginalReplyWrapper = styled.div({
   boxSizing: 'border-box',
-  margin: '28px 0px 28px 0px',
+  margin: '0px 0px 28px 0px',
   position: 'relative',
 });
 
 export const SecondaryReplyWrapper = styled.div({
   boxSizing: 'border-box',
-  margin: '28px auto 28px auto ',
+  margin: '24px',
   position: 'relative',
+  borderRadius:10,
+  border: `1px solid ${COLORS.Gray2}`,
+  padding:'16px 0px 32px 0px',
+  height: 'auto',
 });

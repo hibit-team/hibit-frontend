@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import * as s from './styles';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
@@ -20,10 +20,12 @@ import { IMatchingPostPage } from '../../../pages/MatchPost';
 import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteReplyMutation';
 import { useDeleteMatchingPostMutation } from '../../../hooks/MatchingPost/useDeleteMatchingPostMutation';
 import { usePostMatchingArticleLikeMutation } from '../../../hooks/MatchingPost/usePostMatchingArticleLikeMutation';
+import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
 export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   // const [isLikeStateOn, setIsLikeStateOn] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
+  const [isInviteModalOpen,setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
   const settings = {
     dots: true,
     infinite: true,
@@ -47,9 +49,14 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
     dotsClass: 'dots_custom2',
   };
   const { mutate: articleLikeMutate } = usePostMatchingArticleLikeMutation(postIDX);
-  const isLikeStateOn = data?.likeUsers?.find((item)=>{
-    return item.idx === 3
-  })
+  const isLikeStateOn = data?.likeUsers?.find(item => {
+    return item.idx === 3;
+  });
+  useEffect(()=>{
+    return ()=>{
+      //컴포넌트 언마운트시 모달 clear해주기
+      setIsInviteModalOpen(false);}
+  },[])
   return (
     <div css={{ marginBottom: 100 }}>
       <s.MatchArticleWrapper>
@@ -220,9 +227,9 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             {data?.content}
           </article>
           <button
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
-              //게시글좋아요버튼 
+              //게시글좋아요버튼
               articleLikeMutate(postIDX);
               alert(isLikeStateOn ? '해당 게시글의 `좋아요`를 취소했습니다.' : '해당 게시글에 `좋아요`를 눌렀습니다.');
             }}
@@ -260,7 +267,13 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             )}
           </button>
         </s.ArticleTextSection>
-        {/* <s.InviteBoxWrapper>초대하기</s.InviteBoxWrapper> */}
+        <div css={{width:874, height:1, background:COLORS.Gray2,margin:'auto'}}></div>
+        <div css={{ display: 'flex', justifyContent: 'center',padding:32}}>
+          <s.InviteBoxWrapper onClick={(e)=>{
+          e.stopPropagation();
+          setIsInviteModalOpen(!isInviteModalOpen);
+        }}>초대하기</s.InviteBoxWrapper>
+        </div>
 
         <FsLightboxWrapper data={data} />
         <ReplySectionComponent postIDX={postIDX}></ReplySectionComponent>

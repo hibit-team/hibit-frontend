@@ -47,7 +47,7 @@ export const ArticleTextSection = styled.div`
   display: grid;
   width: 864px;
   margin: 40px auto 0px auto;
-  border-bottom: 1px solid ${COLORS.Gray2};
+
   grid-template-columns: 233px 640px;
   &: nth-child(2) {
     grid-row: 2/3;
@@ -55,7 +55,6 @@ export const ArticleTextSection = styled.div`
   &: nth-child(3) {
     grid-column: 2/3;
   }
-  border-bottom: 1px solid ${COLORS.Gray2};
 `;
 
 export const ArticleArrowWrapper = styled.div`
@@ -82,22 +81,20 @@ export const ArticleArrowWrapper = styled.div`
 export const hoverAnimation = keyframes`
   0% {
     color: ${COLORS.main100};
-    box-shadow: none
+    box-shadow: none;
   }
   100% {
     background-color: ${COLORS.main100}
     color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 `;
 
 export const InviteBoxWrapper = styled.button({
-  position:'absolute',
   all: 'unset',
   border: `2px solid ${COLORS.main79}`,
   borderRadius: 16,
-  width: 120,
-  height: 50,
+  width: 150,
+  height: 55,
   background: COLORS.main24,
   color: COLORS.main79,
   fontWeight: 700,
