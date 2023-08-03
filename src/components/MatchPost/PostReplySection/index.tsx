@@ -187,10 +187,13 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   }, [isDaetgulOpen, isModifyOn]);
   //댓글 좋아요
   const { mutate } = usePostReplyLikeMutation(reply.idx);
-  const isInclude = reply.likeUsers.find(user => {
+  const isInclude = reply?.likeUsers?.find(user => {
     //3번아이디가 좋아요유저에 있다면
-    return user.idx === 3;
-  }); 
+    if (user.idx === 2) {
+      return true;
+    }
+    return false;
+  });
   // 대댓글 unfold ==true면 펼치기
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -316,7 +319,16 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             e.stopPropagation();
             setIsOpen(!isOpen); //펼치기 false<->true
           }}
-          css={{ display: 'inline-block ', fontWeight:600, justifyContent: 'start', cursor: 'pointer', fontSize: 20, color: COLORS.main79, marginTop: 10, marginLeft:32 }}
+          css={{
+            display: 'inline-block ',
+            fontWeight: 600,
+            justifyContent: 'start',
+            cursor: 'pointer',
+            fontSize: 20,
+            color: COLORS.main79,
+            marginTop: 10,
+            marginLeft: 32,
+          }}
         >
           {isOpen && reply.childComments.length > 2 ? <p css={{}}>접기</p> : `> 답글 +${reply.childComments.length - 2} 개`}
         </span>
@@ -326,11 +338,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       ></div> */}
       {reply.childComments.map((reReply, lineNumber) => {
         if (isOpen === false && lineNumber >= 2) return <></>;
-        return (
-          <SecondaryReplyComponent
-            reReply={reReply}
-          ></SecondaryReplyComponent>
-        );
+        return <SecondaryReplyComponent reReply={reReply}></SecondaryReplyComponent>;
       })}
       {/* <div
         css={{ margin: '0px auto', boxSizing: 'border-box', width: 820, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
@@ -549,24 +557,25 @@ export const ReplyModifyOnComponent = ({
 };
 
 //대댓글 컴포넌트
-export const SecondaryReplyComponent = ({
-  reReply,
-}: {
-  reReply: IComments;
-}) => {
+export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => {
   //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [replyTextState, setReplyTextState] = useState(reReply.content);
   const [isSecondModifyOn, setIsSecondModifyOn] = useState(false);
   const { mutate } = usePostReplyLikeMutation(reReply.idx);
-  const isInclude = reReply.likeUsers.find(user => {
+  const isInclude = reReply?.likeUsers?.find(user => {
     //3번아이디가 좋아요유저에 있다면
-    return user.idx === 3;
+    if (user.idx === 2) {
+      return true;
+    } else {
+      return false;
+    }
   });
+
   return (
     <div>
       <s.SecondaryReplyWrapper>
-        <div  css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 15px', justifyContent: 'space-between',}}>
+        <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 15px', justifyContent: 'space-between' }}>
           <img css={{ marginRight: 12 }} src={EmptyReplyArrow} alt="reply-arrow-empty" />
           <ImageBox width={32} height={32} source={reReply.writerImg} />
           <div css={{ display: 'flex', flex: '0 1 187px' }}>
@@ -607,8 +616,8 @@ export const SecondaryReplyComponent = ({
             <div
               css={{
                 position: 'absolute',
-                right: -35,
-                top: -5,
+                right: -55,
+                top: 10,
                 display: 'flex',
                 justifyContent: 'center',
                 width: 56,
@@ -726,8 +735,14 @@ export const ReplyButton = styled.button<{ right?: number; bottom?: number }>(({
   justifyContent: 'center',
   alignItems: 'center',
   fontSize: 20,
-  color: 'white',
-  background: COLORS.Gray3,
+  border: `1px solid ${COLORS.Gray3}`,
+  color: COLORS.Gray3,
+  '&:hover': {
+    color: COLORS.white,
+    background: COLORS.Gray3,
+  },
+  // color: COLORS.Gray3,
+  // background: COLORS.Gray3,
   borderRadius: 60,
   position: 'relative',
   right: right,

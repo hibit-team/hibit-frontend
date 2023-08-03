@@ -50,7 +50,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
   };
   const { mutate: articleLikeMutate } = usePostMatchingArticleLikeMutation(postIDX);
   const isLikeStateOn = data?.likeUsers?.find(item => {
-    return item.idx === 3;
+    return item.idx === 2;
   });
   useEffect(()=>{
     return ()=>{
@@ -132,8 +132,8 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             <div
               css={{
                 position: 'absolute',
-                top: '3.3rem',
-                right: '-0.4rem',
+                top: '1rem',
+                right: '-3.5rem',
                 border: `1.5px solid ${COLORS.Gray2}`,
                 borderRadius: '10px',
                 background: 'white',
@@ -258,7 +258,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 color: isLikeStateOn ? COLORS.main79 : COLORS.Gray3,
               }}
             >
-              좋아요
+              좋아요 
             </div>
             {isLikeStateOn ? (
               <img css={{ marginLeft: '4px', width: 13, height: 12 }} src={PurpleLike} alt="purple-like"></img>
