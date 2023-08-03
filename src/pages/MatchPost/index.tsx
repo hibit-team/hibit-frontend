@@ -8,6 +8,7 @@ import HttpClient from '../../services/HttpClient';
 import { useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import { InviteBoxWrapper } from '../../components/MatchPost/PostArticle/styles';
+import InviteModal from '../../components/MatchPost/InviteModal';
 
 export interface ILikeUsers {
   idx: number;
@@ -38,8 +39,15 @@ export default function MatchingPostPage() {
   //게시글정보
   const { idx } = useParams();
   const getPostInfoFn = async () => {
-    const res = await HttpClient.get(`/post/${idx}`);
-    return res;
+    try {
+      const res = await HttpClient.get(`/post/${idx}`)
+      return res;
+    }
+    catch(e){
+      console.error(`게시글 정보를 불러오지 못했습니다 : ${(e as AxiosError).message}`)
+      return;
+    }
+    ;
   };
   const { data, isError, error, isLoading, isFetching } = useQuery<IMatchingPostPage, AxiosError>(['post-info'], getPostInfoFn, {
     staleTime: 1000,
@@ -52,7 +60,7 @@ export default function MatchingPostPage() {
   }, []);
 
   if (isError) {
-    console.error(`MatchingPostPage data-fetching error: ${(error as AxiosError).message}`);
+    console.error(`게시글 정보를 불러오지 못했습니다 : ${(error as AxiosError).message}`)
   }
 
   return (
@@ -61,11 +69,12 @@ export default function MatchingPostPage() {
         <s.Wrapper>
           <MatchPostLabel postIDX={idx} data={data}></MatchPostLabel>
           <MatchPostArticle postIDX={idx} data={data}></MatchPostArticle>
+          <InviteModal postIDX={idx}></InviteModal>
         </s.Wrapper>
       </LayoutTemplate>
-      <div style={{ position: 'fixed', right: 100 , bottom: 5 }}>
+      {/* <div style={{ position: 'fixed', right: 100 , bottom: 5 }}>
         <InviteBoxWrapper>초대하기</InviteBoxWrapper>
-      </div>
+      </div> */}
     </div>
   );
 }

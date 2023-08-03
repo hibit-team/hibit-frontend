@@ -185,13 +185,12 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       setIsDaetgulOpen(false);
     }
   }, [isDaetgulOpen, isModifyOn]);
-  console.log(reply.childComments.length);
   //댓글 좋아요
   const { mutate } = usePostReplyLikeMutation(reply.idx);
   const isInclude = reply.likeUsers.find(user => {
     //3번아이디가 좋아요유저에 있다면
     return user.idx === 3;
-  });
+  }); 
   // 대댓글 unfold ==true면 펼치기
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -311,33 +310,31 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
         )}
       </s.OriginalReplyWrapper>
       {/* 대댓글 컴포넌트 */}
-      {reply.childComments.length >= 2 ? (
-        <p
+      {reply.childComments.length > 2 ? (
+        <span
           onClick={e => {
             e.stopPropagation();
             setIsOpen(!isOpen); //펼치기 false<->true
           }}
-          css={{ display: 'flex', justifyContent: 'start', cursor: 'pointer', fontSize: 20, color: COLORS.main100, marginTop: 10, marginLeft: 50 }}
+          css={{ display: 'inline-block ', fontWeight:600, justifyContent: 'start', cursor: 'pointer', fontSize: 20, color: COLORS.main79, marginTop: 10, marginLeft:32 }}
         >
-          {isOpen && reply.childComments.length >= 2 ? 'fold(접기)' : ` V 대댓글 +${reply.childComments.length - 2}개`}
-        </p>
+          {isOpen && reply.childComments.length > 2 ? <p css={{}}>접기</p> : `> 답글 +${reply.childComments.length - 2} 개`}
+        </span>
       ) : undefined}
-      <div
+      {/* <div
         css={{ margin: '0px auto', boxSizing: 'border-box', width: 820, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
-      ></div>
+      ></div> */}
       {reply.childComments.map((reReply, lineNumber) => {
         if (isOpen === false && lineNumber >= 2) return <></>;
         return (
           <SecondaryReplyComponent
-            divisionLineNumber={reply.childComments.length}
             reReply={reReply}
-            lineNumber={lineNumber}
           ></SecondaryReplyComponent>
         );
       })}
-      <div
+      {/* <div
         css={{ margin: '0px auto', boxSizing: 'border-box', width: 820, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
-      ></div>
+      ></div> */}
     </div>
   );
 };
@@ -554,18 +551,13 @@ export const ReplyModifyOnComponent = ({
 //대댓글 컴포넌트
 export const SecondaryReplyComponent = ({
   reReply,
-  lineNumber,
-  divisionLineNumber,
 }: {
   reReply: IComments;
-  lineNumber: number;
-  divisionLineNumber: number;
 }) => {
   //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [replyTextState, setReplyTextState] = useState(reReply.content);
   const [isSecondModifyOn, setIsSecondModifyOn] = useState(false);
-
   const { mutate } = usePostReplyLikeMutation(reReply.idx);
   const isInclude = reReply.likeUsers.find(user => {
     //3번아이디가 좋아요유저에 있다면
@@ -574,7 +566,7 @@ export const SecondaryReplyComponent = ({
   return (
     <div>
       <s.SecondaryReplyWrapper>
-        <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 30px', justifyContent: 'space-between' }}>
+        <div  css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 15px', justifyContent: 'space-between',}}>
           <img css={{ marginRight: 12 }} src={EmptyReplyArrow} alt="reply-arrow-empty" />
           <ImageBox width={32} height={32} source={reReply.writerImg} />
           <div css={{ display: 'flex', flex: '0 1 187px' }}>
@@ -653,10 +645,10 @@ export const SecondaryReplyComponent = ({
         )}
       </s.SecondaryReplyWrapper>
       {/* 대댓글구분선 */}
-      {lineNumber === divisionLineNumber - 1 ? (
+      {/* {lineNumber === divisionLineNumber - 1 ? (
         <div
           css={{
-            opacity: 0,
+            opacity: 1,
             margin: '0px auto',
             boxSizing: 'border-box',
             width: 860,
@@ -668,7 +660,7 @@ export const SecondaryReplyComponent = ({
       ) : (
         <div
           css={{
-            opacity: 0,
+            opacity: 1,
             margin: '0px auto',
             boxSizing: 'border-box',
             width: 820,
@@ -677,7 +669,7 @@ export const SecondaryReplyComponent = ({
             paddingTop: 18,
           }}
         ></div>
-      )}
+      )} */}
     </div>
   );
 };
@@ -714,7 +706,7 @@ export const ReplyEmptyRoundLikeButton = ({ isReplyLikeOn }: { isReplyLikeOn: bo
   return (
     <>
       {isReplyLikeOn ? (
-        <img css={{ width: 33, height: 32, cursor: 'pointer' }} src={YellowRoundLike} alt="empty-like" />
+        <img css={{ width: 33, height: 32, cursor: 'pointer' }} src={YellowRoundLike} alt="yellow-like" />
       ) : (
         <img css={{ width: 33, height: 32, cursor: 'pointer' }} src={EmptyRoundLike} alt="empty-like" />
       )}
