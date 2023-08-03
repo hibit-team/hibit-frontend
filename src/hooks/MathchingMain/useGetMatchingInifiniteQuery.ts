@@ -1,11 +1,11 @@
-import HttpClient from "../../services/HttpClient";
-import { useRecoilValue } from "recoil";
-import { MatchingControllerState } from "../../recoil/atom/MatchingControllerState";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { IPosts } from "../../pages/Matching";
-import { AxiosError } from "axios";
-export const useGetMatchingInfiniteQuery = ()=> {
-  const fetchPosts = async ({ pageParam = 1 ,sortOption ='allposts'}) => {
+import HttpClient from '../../services/HttpClient';
+import { useRecoilValue } from 'recoil';
+import { MatchingControllerState } from '../../recoil/atom/MatchingControllerState';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { IPosts } from '../../pages/Matching';
+import { AxiosError } from 'axios';
+export const useGetMatchingInfiniteQuery = () => {
+  const fetchPosts = async ({ pageParam = 1, sortOption = 'allposts' }) => {
     const res = await HttpClient.get(`/post/list/${sortOption}/${pageParam}`);
     return res;
   };
@@ -16,5 +16,6 @@ export const useGetMatchingInfiniteQuery = ()=> {
       return lastPage.length ? allPages.length + 1 : undefined;
     },
     staleTime: 1000 * 5,
+    refetchOnWindowFocus: false,
   });
-}
+};

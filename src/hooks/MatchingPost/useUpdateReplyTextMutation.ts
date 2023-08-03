@@ -21,13 +21,15 @@ export const useUpdateReplyTextMutation = (replyIDX: number | undefined) => {
       console.error(`${replyIDX}번 댓글 수정에 실패했습니다. error : ${(e as AxiosError).message}`);
     }
   };
-  return useMutation<{content: string}, AxiosError, IModifyingMutationFnParams>(modifyingTextMutationFn, {
+  return useMutation<{ content: string }, AxiosError, IModifyingMutationFnParams>(modifyingTextMutationFn, {
     onSuccess: () => {
       queryClient.invalidateQueries(['reply-lists']);
-      queryClient.getQueryData(['reply-lists'])
+      queryClient.getQueryData(['reply-lists']);
     },
     onError: e => {
       console.error(`${replyIDX}번 댓글 수정에 실패했습니다. error : ${(e as AxiosError).message}`);
     },
+    retry: 3,
+    retryDelay: 3000,
   });
 };

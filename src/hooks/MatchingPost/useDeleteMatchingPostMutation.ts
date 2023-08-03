@@ -32,5 +32,7 @@ export const useDeleteMatchingPostMutation = (postIDX: string | undefined) => {
       alert('오류로 인해 게시글이 삭제되지 않았습니다')
       navigate('/matching')
     },
+    retry: 3,
+    retryDelay:3000,
   })
 }
