@@ -60,7 +60,7 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
     isError,
     isFetching,
     isLoading,
-  } = useQuery<IComments[], AxiosError>(queryKeys.Rlists, getMatchingPostReplyList, { staleTime: 1000 });
+  } = useQuery<IComments[], AxiosError>(queryKeys.Rlists, getMatchingPostReplyList, { staleTime: 1000, retry: 3, retryDelay: 2000 });
   if (isError) {
     console.error(`댓글리스트를 불러오지 못했습니다 :  ${error as AxiosError}`);
   }
@@ -125,7 +125,6 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
           resize: 'none',
           fontSize: 18,
           color: COLORS.Gray3,
-          wordBreak: 'break-all',
           position: 'relative',
           top: 7,
           right: 12,
@@ -136,6 +135,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
           },
           width: 760,
           height: 100,
+          overflowWrap: 'break-word',
         }}
       ></textarea>
       <div css={{ gridColumn: '2', display: 'flex', justifyContent: 'flex-end', position: 'relative', right: 10, top: 8 }}>
@@ -185,7 +185,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       setIsDaetgulOpen(false);
     }
   }, [isDaetgulOpen, isModifyOn]);
-
+  console.log(reply.childComments.length);
   //댓글 좋아요
   const { mutate } = usePostReplyLikeMutation(reply.idx);
   const isInclude = reply.likeUsers.find(user => {
@@ -311,8 +311,22 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
         )}
       </s.OriginalReplyWrapper>
       {/* 대댓글 컴포넌트 */}
+      {reply.childComments.length >= 2 ? (
+        <p
+          onClick={e => {
+            e.stopPropagation();
+            setIsOpen(!isOpen); //펼치기 false<->true
+          }}
+          css={{ display: 'flex', justifyContent: 'start', cursor: 'pointer', fontSize: 20, color: COLORS.main100, marginTop: 10, marginLeft: 50 }}
+        >
+          {isOpen && reply.childComments.length >= 2 ? 'fold(접기)' : ` V 대댓글 +${reply.childComments.length - 2}개`}
+        </p>
+      ) : undefined}
+      <div
+        css={{ margin: '0px auto', boxSizing: 'border-box', width: 820, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
+      ></div>
       {reply.childComments.map((reReply, lineNumber) => {
-        if (isOpen === false && lineNumber >= 5 ) return <></>;
+        if (isOpen === false && lineNumber >= 2) return <></>;
         return (
           <SecondaryReplyComponent
             divisionLineNumber={reply.childComments.length}
@@ -321,16 +335,9 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
           ></SecondaryReplyComponent>
         );
       })}
-      {reply.childComments.length >= 5 ?
-        <p onClick={e => {
-          e.stopPropagation();
-          setIsOpen(!isOpen); //펼치기 false<->true
-        }}
-        css={{ display: 'flex', justifyContent: 'center', cursor: 'pointer', fontSize: 20,
-      color:COLORS.Gray3,marginTop:10 }}
-      >
-        {isOpen && reply.childComments.length >= 6 ? 'fold(접기)' : ` + 대댓글 ${reply.childComments.length - 5}개`}
-      </p> : undefined}
+      <div
+        css={{ margin: '0px auto', boxSizing: 'border-box', width: 820, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
+      ></div>
     </div>
   );
 };
@@ -418,6 +425,7 @@ export const SecondaryReplyInputComponent = ({
           resize: 'none',
           wordBreak: 'break-word',
           overflowWrap: 'break-word',
+          whiteSpace: 'pre-wrap',
           '&:placeholder': { color: COLORS.Gray3 },
           letterSpacing: -2,
           position: 'relative',
@@ -647,11 +655,27 @@ export const SecondaryReplyComponent = ({
       {/* 대댓글구분선 */}
       {lineNumber === divisionLineNumber - 1 ? (
         <div
-          css={{ margin: '0px auto', boxSizing: 'border-box', width: 860, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
+          css={{
+            opacity: 0,
+            margin: '0px auto',
+            boxSizing: 'border-box',
+            width: 860,
+            height: 1,
+            borderBottom: `1.5px solid ${COLORS.Gray2}`,
+            paddingTop: 18,
+          }}
         ></div>
       ) : (
         <div
-          css={{ margin: '0px auto', boxSizing: 'border-box', width: 820, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
+          css={{
+            opacity: 0,
+            margin: '0px auto',
+            boxSizing: 'border-box',
+            width: 820,
+            height: 1,
+            borderBottom: `1.5px solid ${COLORS.Gray2}`,
+            paddingTop: 18,
+          }}
         ></div>
       )}
     </div>

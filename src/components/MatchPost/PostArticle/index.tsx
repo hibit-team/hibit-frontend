@@ -260,7 +260,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             )}
           </button>
         </s.ArticleTextSection>
-        <s.InviteBoxWrapper>초대하기</s.InviteBoxWrapper>
+        {/* <s.InviteBoxWrapper>초대하기</s.InviteBoxWrapper> */}
 
         <FsLightboxWrapper data={data} />
         <ReplySectionComponent postIDX={postIDX}></ReplySectionComponent>

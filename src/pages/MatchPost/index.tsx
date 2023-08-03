@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import HttpClient from '../../services/HttpClient';
 import { useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import { InviteBoxWrapper } from '../../components/MatchPost/PostArticle/styles';
 
 export interface ILikeUsers {
   idx: number;
@@ -40,7 +41,11 @@ export default function MatchingPostPage() {
     const res = await HttpClient.get(`/post/${idx}`);
     return res;
   };
-  const { data, isError, error, isLoading, isFetching } = useQuery<IMatchingPostPage, AxiosError>(['post-info'], getPostInfoFn);
+  const { data, isError, error, isLoading, isFetching } = useQuery<IMatchingPostPage, AxiosError>(['post-info'], getPostInfoFn, {
+    staleTime: 1000,
+    retry: 3,
+    retryDelay: 2000,
+  });
 
   useEffect(() => {
     window.scrollTo(0, 100); // x축은 0, y축은 0으로 설정하여 상단으로 스크롤
@@ -51,11 +56,16 @@ export default function MatchingPostPage() {
   }
 
   return (
-    <LayoutTemplate>
-      <s.Wrapper>
-        <MatchPostLabel postIDX={idx} data={data}></MatchPostLabel>
-        <MatchPostArticle postIDX={idx} data={data}></MatchPostArticle>
-      </s.Wrapper>
-    </LayoutTemplate>
+    <div style={{ position: 'relative' }}>
+      <LayoutTemplate>
+        <s.Wrapper>
+          <MatchPostLabel postIDX={idx} data={data}></MatchPostLabel>
+          <MatchPostArticle postIDX={idx} data={data}></MatchPostArticle>
+        </s.Wrapper>
+      </LayoutTemplate>
+      <div style={{ position: 'fixed', right: 100 , bottom: 5 }}>
+        <InviteBoxWrapper>초대하기</InviteBoxWrapper>
+      </div>
+    </div>
   );
 }

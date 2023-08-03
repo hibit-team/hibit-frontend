@@ -21,8 +21,9 @@ export const OriginalReplyText = styled.div({
   fontSize: 20,
   fontWeight: 500,
   margin: '12px auto 0px auto',
-  overFlow: 'hidden',
+  wordWrap:'break-word',
   overflowWrap: 'break-word',
+  whiteSpace: 'pre-wrap',
 });
 export const OriginalReplyModifiedTextCss = css({
   borderRadius: 10,

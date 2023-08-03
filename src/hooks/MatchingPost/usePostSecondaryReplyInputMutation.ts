@@ -8,13 +8,13 @@ interface ISecondaryReplyMutationParams {
   userIDX: number | undefined;
   body: { content: string };
 }
-export const usePostSecondaryReplyInputMutation = (params:ISecondaryReplyMutationParams) => {
+export const usePostSecondaryReplyInputMutation = (params: ISecondaryReplyMutationParams) => {
   const { replyIDX, userIDX, body } = params;
   const queryClient = useQueryClient();
   const secondaryReplyInputMutationFn = async () => {
-    try { 
+    try {
       const path = `/comment/replies/${replyIDX}/${userIDX}`;
-      const res = HttpClient.post(path, body,{ 'Content-Type': 'application/json;charset=utf-8'});
+      const res = HttpClient.post(path, body, { 'Content-Type': 'application/json;charset=utf-8' });
       return res;
     } catch (e) {
       console.error(`${replyIDX}번 댓글의 대댓글 작성에 실패했습니다. error : ${(e as AxiosError).message}`);
@@ -27,7 +27,9 @@ export const usePostSecondaryReplyInputMutation = (params:ISecondaryReplyMutatio
     },
     onError: e => {
       console.error(`${replyIDX}번 댓글의 대댓글 작성에 실패했습니다. error : ${(e as AxiosError).message}`);
-      alert('댓글 작성에 실패했습니다.')
+      alert('댓글 작성에 실패했습니다.');
     },
+    retry: 3,
+    retryDelay: 3000,
   });
 };

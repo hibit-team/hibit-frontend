@@ -92,11 +92,12 @@ export const hoverAnimation = keyframes`
 `;
 
 export const InviteBoxWrapper = styled.button({
+  position:'absolute',
   all: 'unset',
   border: `2px solid ${COLORS.main79}`,
-  borderRadius: 20,
-  width: 190,
-  height: 72,
+  borderRadius: 16,
+  width: 120,
+  height: 50,
   background: COLORS.main24,
   color: COLORS.main79,
   fontWeight: 700,
@@ -104,7 +105,7 @@ export const InviteBoxWrapper = styled.button({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  margin: '40px auto 40px auto',
+  // margin: '40px auto 40px auto',
   cursor: 'pointer',
   '&:hover': {
     fontWeight: 700,
