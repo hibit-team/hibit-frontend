@@ -4,6 +4,7 @@ import { MatchingControllerState } from '../../recoil/atom/MatchingControllerSta
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { IPosts } from '../../pages/Matching';
 import { AxiosError } from 'axios';
+//매칭메인페이지 칩게시물 fetching hook
 export const useGetMatchingInfiniteQuery = () => {
   const fetchPosts = async ({ pageParam = 1, sortOption = 'allposts' }) => {
     const res = await HttpClient.get(`/post/list/${sortOption}/${pageParam}`);

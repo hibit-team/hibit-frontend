@@ -1,5 +1,5 @@
 import { atom } from "recoil";
 export const InviteModalSwitchState = atom({
-  key: ' InviteModalSwitchState',
+  key: 'InviteModalSwitchState',
   default: false,
 });

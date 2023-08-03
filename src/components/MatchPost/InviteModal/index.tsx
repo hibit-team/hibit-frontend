@@ -2,22 +2,56 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Modal from 'react-modal';
 import { css } from '@emotion/react';
-import styled from '@emotion/styled';
 import { useRecoilState } from 'recoil';
 import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
+import { InviteModalUserList } from '../../../recoil/atom/InviteModalUserList';
 import COLORS from '../../../assets/color';
 import * as s from './style';
 import NoCheck from '../../../images/components/MatchPost/InviteModal/NoCheck.svg';
 import OnCheck from '../../../images/components/MatchPost/InviteModal/OnCheck.svg';
-import ProfileImg from '../../../images/components/MatchPost/profileDefault.svg';
 import { hoverAnimation } from '../PostArticle/styles';
+import { useQuery } from '@tanstack/react-query';
+import HttpClient from '../../../services/HttpClient';
+import { AxiosError } from 'axios';
 
+// React-lazy 코드스플리팅
+interface IInvitationProps {
+  idx: number;
+  id: string;
+  profileImg: string;
+}
 const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
   const [modalIsOpen, setModalIsOpen] = useRecoilState(InviteModalSwitchState);
   const [Fold, setFold] = useState(false);
   const closeModal = () => {
     setModalIsOpen(false);
   };
+  const invitationQueryFn = async () => {
+    try {
+      const res = await HttpClient.get(`/matching/${postIDX}/list`);
+      return res;
+    } catch (e) {
+      console.error(`초대리스트를 불러오지 못했습니다 .${(e as AxiosError).message}`);
+      return;
+    }
+  };
+  const {
+    isFetching,
+    isLoading,
+    isError,
+    data: invitationList,
+  } = useQuery<IInvitationProps[], AxiosError>(['invitation-list'], invitationQueryFn, {
+    staleTime: 1000 * 10,
+    refetchOnWindowFocus: false,
+    retry: 2,
+  });
+  if (isLoading) {
+    return <>fetching..</>;
+  }
+  if (isError) {
+    return <>error!</>;
+  }
+
   const modalCss: ReactModal.Styles = {
     overlay: {
       position: 'fixed',
@@ -27,28 +61,27 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
       bottom: 0,
       backgroundColor: 'rgba(0, 0, 0, 0.05)',
       zIndex: 10,
-      overflowX: 'hidden',
       borderRadius: '1rem',
     },
     content: {
+      background: Fold ? 'transparent' : 'white',
       border: 'none',
       display: 'flex',
       flexDirection: 'column',
       boxSizing: 'border-box',
-      width: '329px',
-      height: Fold ? '54px' : '406px',
+      width: 329,
+      height: Fold ? '54px' : '460px',
       top: '150px',
       left: 0,
       right: 0,
       bottom: 0,
       zIndex: 10,
-      borderRadius: '1rem',
       padding: '0',
       margin: '0 auto',
       maxWidth: '100vw',
-      overflowX: 'hidden',
-      overflowY: 'hidden',
-      transition: `height 0.2s linear`,
+      overflow: 'auto',
+      borderRadius: Fold ? 0 : '1rem',
+      transition: `height 0.1s linear`,
     },
   };
 
@@ -56,7 +89,7 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
     <div>
       <Modal style={modalCss} isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Invite-Modal">
         <s.InviteModalHeader>
-          <p css={{ fontSize: 18, fontWeight: 900 }}>참여자 리스트</p>
+          <div css={{ userSelect: 'none', fontSize: 18, fontWeight: 900 }}>참여자 리스트</div>
           {Fold ? (
             <svg
               css={{ cursor: 'pointer' }}
@@ -91,12 +124,9 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
         </s.InviteModalHeader>
         {/* 컨텐츠영역 */}
         <s.InviteModalContentsWrapper css={{ display: Fold ? 'none' : 'flex' }}>
-          <InviteModalContent></InviteModalContent>
-          <InviteModalContent></InviteModalContent>
-          <InviteModalContent></InviteModalContent>
-          <InviteModalContent></InviteModalContent>
-          <InviteModalContent></InviteModalContent>
-          <InviteModalContent></InviteModalContent>
+          {invitationList?.map(list => {
+            return <InviteModalContent key={list.idx} list={list}></InviteModalContent>;
+          })}
         </s.InviteModalContentsWrapper>
         {/* 초대하기버튼  */}
         <div
@@ -106,6 +136,7 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
             alignItems: 'center',
             height: 75,
             boxShadow: `0px 0px 15px 0px rgba(36, 36, 36, 0.25)`,
+            marginTop: 'auto',
           }}
         >
           <div
@@ -126,17 +157,13 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
               letterSpacing: '-0.36px',
               color: COLORS.main100,
               fontWeight: 600,
-              boxShadow:'none',
+              boxShadow: 'none',
               '&:hover': {
                 fontWeight: 700,
                 animation: `${hoverAnimation} 0.3s ease-out`,
                 border: `1px solid ${COLORS.Gray3}`,
                 background: COLORS.main100,
                 color: COLORS.white,
-                fontSize: '18px',
-                fontStyle: 'normal',
-                lineHeight: 'normal',
-                letterSpacing: '-0.36px',
               },
             }}
           >
@@ -150,10 +177,33 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
 
 export default InviteModal;
 
-//queryData.map =>
-const InviteModalContent = () => {
+const InviteModalContent = ({ list }: { list?: IInvitationProps }) => {
+  //post body에 userList담아서 요청
+  const [userList, setUserList] = useRecoilState(InviteModalUserList);
+  const [checkState, setCheckState] = useState(false);
+  useEffect(() => {
+    //언마운트시 리스트 클리어
+    return () => {
+      setUserList([]);
+      setCheckState(false);
+    };
+  }, []);
   return (
     <div
+      onClick={() => {
+        if (checkState === false && list) {
+          setCheckState(true);
+          setUserList(prev => [...prev, list]);
+        } else if (checkState === true && list) {
+          //checkState true인경우 다시 체크한 요소를 제외한 요소만 반환
+          setCheckState(false);
+          setUserList(prev =>
+            prev.filter(item => {
+              return item !== list;
+            })
+          );
+        }
+      }}
       css={{
         minWidth: 259,
         minHeight: 56,
@@ -161,19 +211,18 @@ const InviteModalContent = () => {
         display: 'flex',
         alignItems: 'center',
         borderRadius: 10,
-        border: `1px solid ${COLORS.Gray2}`,
+        border: checkState ? `2px solid ${COLORS.main79}` : `1px solid ${COLORS.Gray2}`,
         margin: '6px 0px',
         color: COLORS.main100,
         fontSize: 14,
         fontWeight: 800,
         padding: '0px 16px 0px 12px',
         cursor: 'pointer',
-        '&:hover': { border: `2px solid ${COLORS.main79}`, transition: 'border-color 0.3s ease' },
       }}
     >
-      <img src={ProfileImg} alt="default-profile"></img>
-      <div css={{ marginLeft: 10, display: 'flex', flex: '1 1 auto' }}>유저닉네임8자리12</div>
-      <img src={NoCheck} alt="no-check"></img>
+      <img style={{ width: 32, height: 32, borderRadius: '50%' }} src={list?.profileImg} alt="list-profile-img"></img>
+      <div css={{ marginLeft: 10, display: 'flex', flex: '1 1 auto' }}>{list?.id}</div>
+      {checkState ? <img src={OnCheck} alt="no-check"></img> : <img src={NoCheck} alt="no-check"></img>}
     </div>
   );
 };
