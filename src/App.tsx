@@ -13,6 +13,7 @@ import MatchingPostPage from "./pages/MatchPost";
 import OtherProfile from "./pages/OtherProfile";
 import Posting from "./pages/Posting";
 import 'react-day-picker/dist/style.css';
+import GoogleRedirectHandler from "./components/Login/GoogleRedirectHandler";
 
 function App() {
   const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ function App() {
               <Route path="/match-post" element={<MatchingPostPage />} />
               <Route path="/others/:userID" element={<OtherProfile />} />
               <Route path="/posting" element={<Posting />} />
+              <Route path="/google-callback" element={<GoogleRedirectHandler />} />
             </Routes>
           </Router>
         </Container>
