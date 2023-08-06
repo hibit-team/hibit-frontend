@@ -1,21 +1,25 @@
 import axios from 'axios';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { accessTokenState } from '../../../recoil/atom/AccessToken';
+import { accessTokenState, isLoggedInState } from '../../../recoil/atom/AccessToken';
 
 const GoogleRedirectHandler = () => {
   const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
   const location = useLocation();
-  const [cookies, setCookies] = useCookies(['refreshToken']);
+  const [refreshCookies, setRefreshCookies] = useCookies(['refreshToken']);
   
-  const [accessTokenAtom, setAccessTokenAtom] = useRecoilState<string | null>(accessTokenState);
+  const accessTokenAtom = useRecoilValue(accessTokenState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
+  const setAccessToken = useSetRecoilState(accessTokenState);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
-  const handleSetAccessToken = (newAccessToken: string | null) => {
-    setAccessTokenAtom(newAccessToken);
+  const handleSetAccessToken = (newAccessToken: string) => {
+    setAccessToken(newAccessToken);
   };
-
+  
+  const navigate = useNavigate();
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const code = params.get('code');
@@ -36,21 +40,22 @@ const GoogleRedirectHandler = () => {
         const refreshToken = res.data.refreshToken;
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-        handleSetAccessToken(accessToken);
+        setAccessToken(accessToken);
+        setIsLoggedIn(true);
+        localStorage.setItem('isLoggedIn', 'true');
 
-        setCookies('refreshToken', refreshToken, {path: '/', maxAge: 604800});
+        setRefreshCookies('refreshToken', refreshToken, {path: '/', maxAge: 604800});
+        navigate('/');
       })
       .catch((err) => {
         console.error({err});
       });
-      
-      window.location.href = '/';
-    }, [location.search, redirectUri, setCookies]);
+
+    }, [location.search, redirectUri]);
     
-  console.log('accessTokenAtom', {accessTokenAtom});
   return (
     <div>
-      Logging in...
+      Logging in Google...
     </div>
   );
 };

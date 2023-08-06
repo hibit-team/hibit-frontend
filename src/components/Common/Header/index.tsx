@@ -7,6 +7,9 @@ import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
 import CustomModalAlarm from '../../Alarm';
 import * as s from "./styles";
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { accessTokenState, isLoggedInState } from '../../../recoil/atom/AccessToken';
+import useIsLogin from '../../../hooks/useIsLogin';
 
 const CATEGORIES: IHeaderCategory[] = [
   { title: "서비스 소개", link: "/intro" },
@@ -18,12 +21,33 @@ const Header = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [selectedCategory, setSelectedCategory] = useState<string>("메인");
-  const [isLogin, setIsLogin] = useState<boolean>(true);
+
+  // Log in
+  const accessTokenAtom = useRecoilValue(accessTokenState);
+  const isLoggedIn = useRecoilValue(isLoggedInState);
+  const resetAccessToken = useResetRecoilState(accessTokenState);
+  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
+  useEffect(() => {
+    const isloggedin = localStorage.getItem('isLoggedIn');
+    setIsLoggedIn(isloggedin === 'true');
+  }, [setIsLoggedIn]);
+  const onClickLogin = () => {
+    openModal();
+  };
+  // const test = useIsLogin();
+  // console.log(test);
+
+  // Log out
+  const onClickLogout = () => {
+    alert("로그아웃 되었습니다.");
+    resetAccessToken();
+    setIsLoggedIn(false);
+    localStorage.setItem('isLoggedIn', 'false');
+  };
+
   const [hasAlarm, setHasAlarm] = useState<boolean>(true);
   const [alarmCount, setAlarmCount] = useState<number>(14);
-  
-  // const [alarmState, setAlarmState] = useRecoilState<boolean>(AlarmSwitchState);
-  // const onAlarmState = ()=>setAlarmState(!alarmState)
+
   const [isAlarmOpen, setIsAlarmOpen] = useState<boolean>(false);
   const onClickAlarm = () => {
     setIsAlarmOpen(!isAlarmOpen);
@@ -44,16 +68,6 @@ const Header = () => {
     if (alarmCount === 0) setHasAlarm(false);
     else setHasAlarm(true);
   }, [alarmCount]);
-
-  const onClickLogin = () => {
-    // setIsLogin(true);
-    openModal();
-  };
-
-  const onClickLogout = () => {
-    alert("로그아웃 되었습니다.");
-    setIsLogin(false);
-  };
 
   const onClickSignup = () => {
     navigate("/signup");
@@ -103,7 +117,7 @@ const Header = () => {
             )
           })}
       </s.LeftContainer>
-      {isLogin ?
+      {isLoggedIn ?
         <s.RightContainer>
           <s.AlarmLogoContainer>
             <img onClick={onClickAlarm} src={AlarmIcon} alt='alarm-icon' />
