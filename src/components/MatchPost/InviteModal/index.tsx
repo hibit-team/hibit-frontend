@@ -1,56 +1,28 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState, useRef } from 'react';
-import Modal from 'react-modal';
+import React, { useEffect, useState } from 'react';
+import * as s from './style';
 import { css } from '@emotion/react';
+import Modal from 'react-modal';
+import COLORS from '../../../assets/color';
+import NoCheck from '../../../images/components/MatchPost/InviteModal/NoCheck.svg';
+import OnCheck from '../../../images/components/MatchPost/InviteModal/OnCheck.svg';
 import { useRecoilState } from 'recoil';
 import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
 import { InviteModalUserList } from '../../../recoil/atom/InviteModalUserList';
-import COLORS from '../../../assets/color';
-import * as s from './style';
-import NoCheck from '../../../images/components/MatchPost/InviteModal/NoCheck.svg';
-import OnCheck from '../../../images/components/MatchPost/InviteModal/OnCheck.svg';
 import { hoverAnimation } from '../PostArticle/styles';
-import { useQuery } from '@tanstack/react-query';
-import HttpClient from '../../../services/HttpClient';
-import { AxiosError } from 'axios';
+import { useGetInviteModalList } from '../../../hooks/MatchingPost/useGetInviteModalList';
+import { IInvitationProps } from '../../../hooks/MatchingPost/useGetInviteModalList';
 
 // React-lazy 코드스플리팅
-interface IInvitationProps {
-  idx: number;
-  id: string;
-  profileImg: string;
-}
 const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
   const [modalIsOpen, setModalIsOpen] = useRecoilState(InviteModalSwitchState);
   const [Fold, setFold] = useState(false);
   const closeModal = () => {
     setModalIsOpen(false);
   };
-  const invitationQueryFn = async () => {
-    try {
-      const res = await HttpClient.get(`/matching/${postIDX}/list`);
-      return res;
-    } catch (e) {
-      console.error(`초대리스트를 불러오지 못했습니다 .${(e as AxiosError).message}`);
-      return;
-    }
-  };
-  const {
-    isFetching,
-    isLoading,
-    isError,
-    data: invitationList,
-  } = useQuery<IInvitationProps[], AxiosError>(['invitation-list'], invitationQueryFn, {
-    staleTime: 1000 * 10,
-    refetchOnWindowFocus: false,
-    retry: 2,
-  });
-  if (isLoading) {
-    return <>fetching..</>;
-  }
-  if (isError) {
-    return <>error!</>;
-  }
+
+  const { isFetching, isLoading, data: invitationList } = useGetInviteModalList(postIDX);
+  if (isFetching || isLoading) return <>idLoading...</>;
 
   const modalCss: ReactModal.Styles = {
     overlay: {
@@ -61,7 +33,7 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
       bottom: 0,
       backgroundColor: 'rgba(0, 0, 0, 0.05)',
       zIndex: 10,
-      borderRadius: '1rem',
+      overflow: 'hidden',
     },
     content: {
       background: Fold ? 'transparent' : 'white',
@@ -70,7 +42,7 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
       flexDirection: 'column',
       boxSizing: 'border-box',
       width: 329,
-      height: Fold ? '54px' : '460px',
+      maxHeight: Fold ? '54px' : '460px',
       top: '150px',
       left: 0,
       right: 0,
@@ -80,15 +52,14 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
       margin: '0 auto',
       maxWidth: '100vw',
       overflow: 'auto',
-      borderRadius: Fold ? 0 : '1rem',
-      transition: `height 0.1s linear`,
+      borderRadius: '16px 16px 16px 16px',
     },
   };
 
   return (
     <div>
       <Modal style={modalCss} isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Invite-Modal">
-        <s.InviteModalHeader>
+        <s.InviteModalHeader Fold={Fold}>
           <div css={{ userSelect: 'none', fontSize: 18, fontWeight: 900 }}>참여자 리스트</div>
           {Fold ? (
             <svg
@@ -130,6 +101,7 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
         </s.InviteModalContentsWrapper>
         {/* 초대하기버튼  */}
         <div
+          data-id="invite-button"
           css={{
             display: Fold ? 'none' : 'flex',
             justifyContent: 'center',
@@ -221,7 +193,7 @@ const InviteModalContent = ({ list }: { list?: IInvitationProps }) => {
       }}
     >
       <img style={{ width: 32, height: 32, borderRadius: '50%' }} src={list?.profileImg} alt="list-profile-img"></img>
-      <div css={{ marginLeft: 10, display: 'flex', flex: '1 1 auto' }}>{list?.id}</div>
+      <div css={{ userSelect: 'none', marginLeft: 10, display: 'flex', flex: '1 1 auto' }}>{list?.id}</div>
       {checkState ? <img src={OnCheck} alt="no-check"></img> : <img src={NoCheck} alt="no-check"></img>}
     </div>
   );
