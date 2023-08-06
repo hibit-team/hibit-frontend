@@ -81,6 +81,7 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
 //댓글입력창
 export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; userIDX?: number }) => {
   const [textState, setTextState] = useState('');
+  const textRef = useRef<HTMLTextAreaElement>(null);
   //댓글입력api
   const postMatchingReplyInput = async (params: IMutationParams) => {
     const { postIDX, userIDX, body } = params;
@@ -93,6 +94,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
       return;
     }
   };
+  if (textState.length > 250) setTextState(prev => prev.slice(0, 250));
   const queryClient = useQueryClient();
   const { mutate } = useMutation<string, AxiosError, IMutationParams>(postMatchingReplyInput, {
     onMutate: () => {
@@ -114,9 +116,10 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
         onChange={e => {
           setTextState(e.target.value);
         }}
+        ref={textRef}
         defaultValue={textState}
         maxLength={250}
-        placeholder="댓글을 입력하세요 (최대 250자)"
+        placeholder="댓글을 입력하세요"
         css={{
           boxSizing: 'border-box',
           border: 'none',
@@ -127,7 +130,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
           color: COLORS.Gray3,
           position: 'relative',
           top: 7,
-          right: 12,
+          right: 20,
           overflow: 'hidden',
           '&::placeholder': {
             fontSize: 18,
@@ -138,7 +141,8 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
           overflowWrap: 'break-word',
         }}
       ></textarea>
-      <div css={{ gridColumn: '2', display: 'flex', justifyContent: 'flex-end', position: 'relative', right: 10, top: 8 }}>
+      <div css={{ position: 'absolute', left: '78.5%', top: '78%', color: COLORS.Gray3 }}>{textState.length} / 250</div>
+      <div css={{ gridColumn: '2', display: 'flex', justifyContent: 'flex-end', position: 'relative', right: 0, top: 12 }}>
         <div
           onClick={() => {
             setTimeout(() => {
@@ -146,7 +150,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
             }, 500);
           }}
         >
-          <ReplyButton right={0} bottom={10}>
+          <ReplyButton right={0} bottom={5}>
             작성하기
           </ReplyButton>
         </div>
@@ -313,7 +317,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
         )}
       </s.OriginalReplyWrapper>
       {/* 대댓글 컴포넌트 */}
-      {reply.childComments.length > 2 ? (
+      {reply.childComments.length > 3 ? (
         <span
           onClick={e => {
             e.stopPropagation();
@@ -330,14 +334,14 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             marginLeft: 32,
           }}
         >
-          {isOpen && reply.childComments.length > 2 ? <p css={{}}>접기</p> : `> 답글 +${reply.childComments.length - 2} 개`}
+          {isOpen && reply.childComments.length > 3 ? <p css={{}}>접기</p> : `> 답글 +${reply.childComments.length - 3} 개`}
         </span>
       ) : undefined}
       {/* <div
         css={{ margin: '0px auto', boxSizing: 'border-box', width: 820, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
       ></div> */}
       {reply.childComments.map((reReply, lineNumber) => {
-        if (isOpen === false && lineNumber >= 2) return <></>;
+        if (isOpen === false && lineNumber >= 3) return <></>;
         return <SecondaryReplyComponent reReply={reReply}></SecondaryReplyComponent>;
       })}
       {/* <div
@@ -414,7 +418,7 @@ export const SecondaryReplyInputComponent = ({
         ref={replyTextAreaRef}
         defaultValue={secondaryReplyText}
         onChange={handleSecondaryReplyTextChange}
-        placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다 (최대 250자)"
+        placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다 [최대 250자]"
         css={{
           boxSizing: 'content-box',
           padding: 0,
