@@ -21,22 +21,22 @@ function App() {
     <>
       <RecoilRoot>
         <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen/>
-        <Global styles={globalStyles}/>
-        <Container>
-          <Router>
-            <Routes>
-              <Route path="/" element={<MainPage />} />
-              <Route path='/matching' element={<MatchingPage></MatchingPage>}/>
-              <Route path="/user/kakao-oauth" element={<KaKao />} />
-              <Route path="/profile" element={<MyProfile />} />
-              <Route path="/match-post" element={<MatchingPostPage />} />
-              <Route path="/others/:userID" element={<OtherProfile />} />
-              <Route path="/posting" element={<Posting />} />
-              <Route path="/google-callback" element={<GoogleRedirectHandler />} />
-            </Routes>
-          </Router>
-        </Container>
+          <ReactQueryDevtools initialIsOpen/>
+          <Global styles={globalStyles}/>
+          <Container>
+            <Router>
+              <Routes>
+                <Route path="/" element={<MainPage />} />
+                <Route path='/matching' element={<MatchingPage></MatchingPage>}/>
+                <Route path="/user/kakao-oauth" element={<KaKao />} />
+                <Route path="/profile" element={<MyProfile />} />
+                <Route path="/match-post" element={<MatchingPostPage />} />
+                <Route path="/others/:userID" element={<OtherProfile />} />
+                <Route path="/posting" element={<Posting />} />
+                <Route path="/google-callback" element={<GoogleRedirectHandler />} />
+              </Routes>
+            </Router>
+          </Container>
         </QueryClientProvider>
       </RecoilRoot>
     </>

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { accessTokenState } from '../../../recoil/atom/AccessToken';
 
 const GoogleRedirectHandler = () => {
@@ -44,7 +44,7 @@ const GoogleRedirectHandler = () => {
         console.error({err});
       });
       
-      window.location.href = '/';
+      // window.location.href = '/';
     }, [location.search, redirectUri, setCookies]);
     
   console.log('accessTokenAtom', {accessTokenAtom});

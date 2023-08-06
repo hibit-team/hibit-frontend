@@ -7,6 +7,8 @@ import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
 import CustomModalAlarm from '../../Alarm';
 import * as s from "./styles";
+import { useRecoilValue } from 'recoil';
+import { accessTokenState } from '../../../recoil/atom/AccessToken';
 
 const CATEGORIES: IHeaderCategory[] = [
   { title: "서비스 소개", link: "/intro" },
@@ -18,12 +20,20 @@ const Header = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [selectedCategory, setSelectedCategory] = useState<string>("메인");
+  
   const [isLogin, setIsLogin] = useState<boolean>(true);
+  const accessToken = useRecoilValue(accessTokenState);
+  useEffect(() => {
+    if(accessToken){
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  }, [accessToken]);
+
   const [hasAlarm, setHasAlarm] = useState<boolean>(true);
   const [alarmCount, setAlarmCount] = useState<number>(14);
-  
-  // const [alarmState, setAlarmState] = useRecoilState<boolean>(AlarmSwitchState);
-  // const onAlarmState = ()=>setAlarmState(!alarmState)
+
   const [isAlarmOpen, setIsAlarmOpen] = useState<boolean>(false);
   const onClickAlarm = () => {
     setIsAlarmOpen(!isAlarmOpen);
@@ -46,7 +56,6 @@ const Header = () => {
   }, [alarmCount]);
 
   const onClickLogin = () => {
-    // setIsLogin(true);
     openModal();
   };
 
