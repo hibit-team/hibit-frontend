@@ -9,6 +9,7 @@ import CustomModalAlarm from '../../Alarm';
 import * as s from "./styles";
 import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { accessTokenState, isLoggedInState } from '../../../recoil/atom/AccessToken';
+import useIsLogin from '../../../hooks/useIsLogin';
 
 const CATEGORIES: IHeaderCategory[] = [
   { title: "서비스 소개", link: "/intro" },
@@ -33,6 +34,8 @@ const Header = () => {
   const onClickLogin = () => {
     openModal();
   };
+  // const test = useIsLogin();
+  // console.log(test);
 
   // Log out
   const onClickLogout = () => {
