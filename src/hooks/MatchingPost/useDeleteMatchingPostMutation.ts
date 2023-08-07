@@ -31,6 +31,7 @@ export const useDeleteMatchingPostMutation = (postIDX: string | undefined) => {
       console.error(`${postIDX}번 게시글이 삭제되지 않았습니다. ${(e as AxiosError).message}`);
       alert('오류로 인해 게시글이 삭제되지 않았습니다')
       navigate('/matching')
+      return;
     },
     retry: 3,
     retryDelay:3000,

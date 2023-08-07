@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as s from './styles';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
@@ -21,17 +21,19 @@ import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteRep
 import { useDeleteMatchingPostMutation } from '../../../hooks/MatchingPost/useDeleteMatchingPostMutation';
 import { usePostMatchingArticleLikeMutation } from '../../../hooks/MatchingPost/usePostMatchingArticleLikeMutation';
 import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
+import { relative } from 'path';
 export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
-  // const [isLikeStateOn, setIsLikeStateOn] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
-  const [isInviteModalOpen,setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
   const settings = {
     dots: true,
     infinite: true,
+    arrows: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    autoplay: true,
     appendDots: (dots: any) => (
       <div
         style={{
@@ -52,13 +54,15 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
   const isLikeStateOn = data?.likeUsers?.find(item => {
     return item.idx === 2;
   });
-  useEffect(()=>{
-    return ()=>{
+  useEffect(() => {
+    return () => {
       //컴포넌트 언마운트시 모달 clear해주기
-      setIsInviteModalOpen(false);}
-  },[])
+      setIsInviteModalOpen(false);
+    };
+  }, []);
   return (
     <div css={{ marginBottom: 100 }}>
+      
       <s.MatchArticleWrapper>
         <s.ArticleTitleSection css={{ position: 'relative' }}>
           <div
@@ -192,9 +196,8 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
 
         <s.ArticleTextSection>
           <ArticleImageSlider {...settings}>
+            <img css={{ display: 'flex', justifyContent: 'center' }} src={data?.subimg[0]} alt="main-img"></img>
             <img src={data?.mainimg} alt="main-img"></img>
-            <img src={data?.subimg[0]} alt="sub-img1"></img>
-            <img src={data?.subimg[1]} alt="sub-img2"></img>
           </ArticleImageSlider>
           <s.ArticleArrowWrapper
             onClick={() => {
@@ -214,7 +217,10 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             />
           </s.ArticleArrowWrapper>
           <article
+            data-id="article-text"
             css={{
+              position: 'relative',
+              left: 16,
               color: COLORS.Gray3,
               fontSize: 20,
               margin: '-3px 1.6rem',
@@ -258,7 +264,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 color: isLikeStateOn ? COLORS.main79 : COLORS.Gray3,
               }}
             >
-              좋아요 
+              좋아요
             </div>
             {isLikeStateOn ? (
               <img css={{ marginLeft: '4px', width: 13, height: 12 }} src={PurpleLike} alt="purple-like"></img>
@@ -267,12 +273,16 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             )}
           </button>
         </s.ArticleTextSection>
-        <div css={{width:874, height:1, background:COLORS.Gray2,margin:'auto'}}></div>
-        <div css={{ display: 'flex', justifyContent: 'center',padding:32}}>
-          <s.InviteBoxWrapper onClick={(e)=>{
-          e.stopPropagation();
-          setIsInviteModalOpen(!isInviteModalOpen);
-        }}>초대하기</s.InviteBoxWrapper>
+        <div css={{ width: 874, height: 1, background: COLORS.Gray2, margin: 'auto' }}></div>
+        <div css={{ display: 'flex', justifyContent: 'center', padding: 32 }}>
+          <s.InviteBoxWrapper
+            onClick={e => {
+              e.stopPropagation();
+              setIsInviteModalOpen(!isInviteModalOpen);
+            }}
+          >
+            초대하기
+          </s.InviteBoxWrapper>
         </div>
 
         <FsLightboxWrapper data={data} />
@@ -302,7 +312,6 @@ export const ArticleDateCss = css`
 export const ArticleImageSlider = styled(Slider)`
   box-sizing: border-box;
   border: 1px solid ${COLORS.Gray2};
-  padding: 20px;
   width: 233px;
   height: 320px;
   border-radius: 10px;

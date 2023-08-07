@@ -47,14 +47,17 @@ export const ArticleTextSection = styled.div`
   display: grid;
   width: 864px;
   margin: 40px auto 0px auto;
-
   grid-template-columns: 233px 640px;
-  &: nth-child(2) {
-    grid-row: 2/3;
-  }
-  &: nth-child(3) {
-    grid-column: 2/3;
-  }
+  // &: nth-child(1){
+  //   display:flex;
+  //   justify-content:center;
+  // }
+  // &: nth-child(2) {
+  //   grid-row: 2/3;
+  // }
+  // &: nth-child(3) {
+  //   grid-column: 2/3;
+  // }
 `;
 
 export const ArticleArrowWrapper = styled.div`
@@ -63,7 +66,7 @@ export const ArticleArrowWrapper = styled.div`
   display: flex;
   grid-row: 2/3;
   position: relative;
-  left: 190px;
+  left: 200px;
   bottom: 50px;
   justify-content: center;
   align-items: center;
@@ -113,3 +116,19 @@ export const InviteBoxWrapper = styled.button({
     cursor: 'pointer',
   },
 });
+
+
+
+export const StyledSliderWrapper = styled.div`
+  box-sizing: border-box;
+  border: 1px solid ${COLORS.Gray2};
+  padding-left: 16px;
+  margin: 10px;
+  width: 233px;
+  height: 320px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f1f1f1;
+`;

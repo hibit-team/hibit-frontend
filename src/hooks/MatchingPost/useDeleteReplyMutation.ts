@@ -21,6 +21,7 @@ export const useDeleteReplyMutation = (replyIDX: number | undefined) => {
     },
     onError: e => {
       console.error(`오류로 인해 삭제가 되지 않았습니다. ${(e as AxiosError).message}`);
+      return;
     },
     retry: 3,
     retryDelay: 3000,
