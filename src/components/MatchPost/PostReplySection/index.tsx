@@ -71,8 +71,8 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
       <InputReplyWrapper postIDX={postIDX} userIDX={3} />
       {/* //댓글영역 */}
       <s.ReplySection>
-        {replyData?.map((reply, index) => (
-          <OriginalReplyComponent reply={reply} key={replyData[index].idx}></OriginalReplyComponent>
+        {replyData?.map((reply) => (
+          <OriginalReplyComponent key={reply.idx} reply={reply}></OriginalReplyComponent>
         ))}
       </s.ReplySection>
     </div>
@@ -168,7 +168,8 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   const [isModifyOn, setIsModifyOn] = useState(false);
   const OriginalReplyTextRef = useRef<HTMLTextAreaElement>(null);
   const [replyTextState, setReplyTextState] = useState(reply.content);
-
+  //좋아요 누른 인원 모달 open
+  const [isLikeModalOpen, setIsLikeModalOpen] = useState(false);
   const handleOriginalReplyText = () => {
     if (OriginalReplyTextRef.current) {
       OriginalReplyTextRef.current.style.height = 'auto';
@@ -180,7 +181,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       handleOriginalReplyText();
       OriginalReplyTextRef.current.focus();
     }
-  });
+  },[replyTextState]);
   useEffect(() => {
     if (isDaetgulOpen === true) {
       setIsModifyOn(false);
@@ -216,10 +217,45 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             </div>
           </div>
           {/* LIKE BUTTON */}
+
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>
+            <div
+              onClick={() => {
+                setIsLikeModalOpen(!isLikeModalOpen);
+              }}
+              css={{ userSelect: 'none', cursor: 'pointer', fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}
+            >
               {/* 좋아요 수 */}
-              좋아요 {reply.liked}개
+              좋아요 {reply.liked}명{/* 좋아요리스트 => 컴포넌트화 하기(유저 로그인여부에 따라 ui 포지션 변경 (댓글-대댓글 케밥버튼여부에 따라)*/}
+              {isLikeModalOpen && (
+                <div
+                  data-id="likeuser-list"
+                  css={{
+                    display: reply.liked === 0 ? 'none' : 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '10px 10px',
+                    position: 'absolute',
+                    width: 128,
+                    height: 'auto',
+                    background: COLORS.Gray2,
+                    zIndex: 20,
+                    borderRadius: 16,
+                    marginTop: 10,
+                    top: 30,
+                  }}
+                >
+                  {reply.likeUsers.map((likeuser) => (
+                    <div key={likeuser.id} css={{ color: 'white', fontSize: 16, fontWeight: 700, padding: 6 }}>{likeuser.id}</div>
+                  ))}
+                  {reply.likeUsers.length > 4 ? (
+                    <div css={{ display: 'flex', color: COLORS.Gray3, fontSize: 16, fontWeight: 900, padding: 6 }}>
+                      이외 {reply.likeUsers.length - 4}명
+                    </div>
+                  ) : undefined}
+                </div>
+              )}
             </div>
             <div
               onClick={() => {
@@ -337,16 +373,10 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
           {isOpen && reply.childComments.length > 3 ? <p css={{}}>접기</p> : `> 답글 +${reply.childComments.length - 3} 개`}
         </span>
       ) : undefined}
-      {/* <div
-        css={{ margin: '0px auto', boxSizing: 'border-box', width: 820, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
-      ></div> */}
       {reply.childComments.map((reReply, lineNumber) => {
         if (isOpen === false && lineNumber >= 3) return <></>;
-        return <SecondaryReplyComponent reReply={reReply}></SecondaryReplyComponent>;
+        return <SecondaryReplyComponent key={reReply.idx} reReply={reReply}></SecondaryReplyComponent>;
       })}
-      {/* <div
-        css={{ margin: '0px auto', boxSizing: 'border-box', width: 820, height: 1, borderBottom: `1.5px solid ${COLORS.Gray2}`, paddingTop: 18 }}
-      ></div> */}
     </div>
   );
 };
@@ -477,7 +507,7 @@ export const ReplyModifyOnComponent = ({
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleOriginalTextModifying = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (setReplyTextState) setReplyTextState(e.target.value);
+    if (setReplyTextState) setReplyTextState((prevState) => e.target.value);
     adjustTextareaHeight();
   };
   //댓글 길이에 반응하는 댓글창 (auto:측정,scrollHeight:반응형높이추가)
@@ -657,32 +687,6 @@ export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => 
           <s.SecondaryReplyText>{replyTextState}</s.SecondaryReplyText>
         )}
       </s.SecondaryReplyWrapper>
-      {/* 대댓글구분선 */}
-      {/* {lineNumber === divisionLineNumber - 1 ? (
-        <div
-          css={{
-            opacity: 1,
-            margin: '0px auto',
-            boxSizing: 'border-box',
-            width: 860,
-            height: 1,
-            borderBottom: `1.5px solid ${COLORS.Gray2}`,
-            paddingTop: 18,
-          }}
-        ></div>
-      ) : (
-        <div
-          css={{
-            opacity: 1,
-            margin: '0px auto',
-            boxSizing: 'border-box',
-            width: 820,
-            height: 1,
-            borderBottom: `1.5px solid ${COLORS.Gray2}`,
-            paddingTop: 18,
-          }}
-        ></div>
-      )} */}
     </div>
   );
 };
@@ -719,7 +723,7 @@ export const ReplyEmptyRoundLikeButton = ({ isReplyLikeOn }: { isReplyLikeOn: bo
   return (
     <>
       {isReplyLikeOn ? (
-        <img css={{ width: 33, height: 32, cursor: 'pointer' }} src={YellowRoundLike} alt="yellow-like" />
+        <img css={{ userSelect: 'none', width: 33, height: 32, cursor: 'pointer' }} src={YellowRoundLike} alt="yellow-like" />
       ) : (
         <img css={{ width: 33, height: 32, cursor: 'pointer' }} src={EmptyRoundLike} alt="empty-like" />
       )}

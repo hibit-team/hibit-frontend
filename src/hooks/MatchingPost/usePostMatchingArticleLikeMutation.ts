@@ -20,6 +20,7 @@ export const usePostMatchingArticleLikeMutation = (postIDX: string | undefined) 
     },
     onError: e => {
       console.error(`${postIDX}번 게시글의 좋아요에 실패했습니다. error : ${(e as AxiosError).message}`);
+      return;
     },
     retry: 3,
     retryDelay: 3000,

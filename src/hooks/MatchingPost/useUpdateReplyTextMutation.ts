@@ -28,6 +28,7 @@ export const useUpdateReplyTextMutation = (replyIDX: number | undefined) => {
     },
     onError: e => {
       console.error(`${replyIDX}번 댓글 수정에 실패했습니다. error : ${(e as AxiosError).message}`);
+      return;
     },
     retry: 3,
     retryDelay: 3000,

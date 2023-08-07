@@ -27,9 +27,9 @@ export const usePostSecondaryReplyInputMutation = (params: ISecondaryReplyMutati
     },
     onError: e => {
       console.error(`${replyIDX}번 댓글의 대댓글 작성에 실패했습니다. error : ${(e as AxiosError).message}`);
-      alert('댓글 작성에 실패했습니다.');
+      return;
     },
-    retry: 3,
+    retry: 2,
     retryDelay: 3000,
   });
 };

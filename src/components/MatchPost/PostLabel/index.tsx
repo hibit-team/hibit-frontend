@@ -6,14 +6,18 @@ import COLORS from '../../../assets/color';
 import ArrownDown from '../../../images/components/MatchPost/ArrowDown.svg';
 import ArrowUp from '../../../images/components/MatchPost/ArrowUp.svg';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
-import { useUpdateMatchingStatus } from '../../../hooks/MatchingPost/useUpdateMatchingStatus';
+
+import PostStateModal from '../PostStateModal';
+import {useSetRecoilState} from 'recoil';
+import { PostStateModalAtom } from '../../../recoil/atom/PostStateModal';
 export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPostPage; postIDX: string | undefined}) {
   const label = data?.number_and_What;
+  const setIsPostStateModalOpen = useSetRecoilState(PostStateModalAtom);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
-  // 게시글 상태변경 커스텀훅
-  const { mutate } = useUpdateMatchingStatus(postIDX);
+  
   return (
     <div>
+      <PostStateModal postIDX={postIDX}></PostStateModal>
       <s.MatchPostContainer>
         <s.MatchPostLabelSection>
           <s.MatchPostLabel>
@@ -60,11 +64,9 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                 onClick={() => {
                   if(data?.status === 'C') alert('이미 모집 완료된 상태입니다.') 
                   else {
-                    const confirmed = window.confirm(`모집 상태를 '모집완료'로 변경하시겠습니까?`);
-                    if (confirmed) {
-                      mutate(postIDX);
-                      setIsStatusModalOpen(false);
-                    }
+                    //모집완료클릭 -> 모달오픈 -> 선택하기 클릭 -> 
+                    setIsPostStateModalOpen(true);
+                    setIsStatusModalOpen(false);
                   }
                 }}
                 css={{
