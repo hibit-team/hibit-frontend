@@ -29,7 +29,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
   const settings = {
     dots: true,
     infinite: true,
-    arrows: true,
+    arrows: false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -62,7 +62,6 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
   }, []);
   return (
     <div css={{ marginBottom: 100 }}>
-      
       <s.MatchArticleWrapper>
         <s.ArticleTitleSection css={{ position: 'relative' }}>
           <div
@@ -196,8 +195,26 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
 
         <s.ArticleTextSection>
           <ArticleImageSlider {...settings}>
-            <img css={{ display: 'flex', justifyContent: 'center' }} src={data?.subimg[0]} alt="main-img"></img>
-            <img src={data?.mainimg} alt="main-img"></img>
+            <div
+              css={css`
+                width:250px;
+                height:320px;
+                background-image: url(${data?.mainimg});
+                background-size:cover;
+                background-position: center;
+                background-repeat: no-repeat;
+              `}
+            ></div>
+            <div
+              css={css`
+                width:250px;
+                height:320px;
+                background-image: url(${data?.subimg[0]});
+                background-size:cover;
+                background-position: center;
+                background-repeat: no-repeat;
+              `}
+            ></div>
           </ArticleImageSlider>
           <s.ArticleArrowWrapper
             onClick={() => {
@@ -230,7 +247,8 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
               overflowWrap: 'break-word',
             }}
           >
-            {data?.content}
+            내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ
+            {/* {data?.content} */}
           </article>
           <button
             onClick={e => {
@@ -312,8 +330,9 @@ export const ArticleDateCss = css`
 export const ArticleImageSlider = styled(Slider)`
   box-sizing: border-box;
   border: 1px solid ${COLORS.Gray2};
-  width: 233px;
-  height: 320px;
+  width: 250px;
+  overflow: hidden;
+  height: 300px;
   border-radius: 10px;
 `;
 
