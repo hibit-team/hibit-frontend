@@ -46,18 +46,9 @@ export const ArticleTextSection = styled.div`
   box-sizing: border-box;
   display: grid;
   width: 864px;
-  margin: 40px auto 0px auto;
-  grid-template-columns: 233px 640px;
-  // &: nth-child(1){
-  //   display:flex;
-  //   justify-content:center;
-  // }
-  // &: nth-child(2) {
-  //   grid-row: 2/3;
-  // }
-  // &: nth-child(3) {
-  //   grid-column: 2/3;
-  // }
+  margin: 40px auto 0px 0px;
+  padding-left:24px;
+  grid-template-columns: 250px 640px;
 `;
 
 export const ArticleArrowWrapper = styled.div`

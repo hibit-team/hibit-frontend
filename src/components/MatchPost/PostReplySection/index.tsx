@@ -421,7 +421,7 @@ export const SecondaryReplyInputComponent = ({
         ref={replyTextAreaRef}
         defaultValue={secondaryReplyText}
         onChange={handleSecondaryReplyTextChange}
-        placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다 [최대 250자]"
+        placeholder="대댓글을 입력하세요. 입력이 길어지면 그에 맞춰 입력창이 늘어납니다."
         css={{
           boxSizing: 'content-box',
           padding: 0,
@@ -544,6 +544,7 @@ export const ReplyModifyOnComponent = ({
           letterSpacing: -2,
           position: 'relative',
           top: 2,
+          width:'95%'
         }}
       ></textarea>
       <div
@@ -555,7 +556,7 @@ export const ReplyModifyOnComponent = ({
           mutate({ replyIDX, body: { content: replyTextState } });
         }}
       >
-        <ReplyButton right={-24} bottom={0}>
+        <ReplyButton right={28} bottom={0}>
           수정하기
         </ReplyButton>
       </div>
