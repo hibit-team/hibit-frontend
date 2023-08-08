@@ -35,7 +35,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
               }}
               css={{ display: 'flex', padding: '6px 0px 6px 12px' }}
             >
-              <button css={{ all: 'unset' }}>{data?.status == 'N' ? '모집 중' : '모집 완료 '}</button>
+              <button css={{ all: 'unset' }}>{data?.status === 'N' ? '모집 중' : '모집 완료 '}</button>
               {!isStatusModalOpen ? (
                 <img css={{ position: 'relative', left: 5, bottom: 1 }} src={ArrownDown} alt="modalOpen-arrow"></img>
               ) : (
@@ -45,7 +45,8 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
             <div css={{ display: isStatusModalOpen ? 'block' : 'none' }}>
               <div
                 onClick={() => {
-                  if(data?.status == 'C') alert('이미 모집 완료된 게시글은 상태를 변경할 수 없습니다.')
+                  console.log(data?.status)
+                  if(data?.status === 'C') alert('이미 모집 완료된 게시글은 상태를 변경할 수 없습니다.')
                 }}
                 css={{
                   '&:hover': {
@@ -64,7 +65,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                 onClick={() => {
                   if(data?.status === 'C') alert('이미 모집 완료된 상태입니다.') 
                   else {
-                    //모집완료클릭 -> 모달오픈 -> 선택하기 클릭 -> 
+                    //N(모집중)상태 => 모집완료클릭 -> 모달오픈 -> 선택하기 클릭
                     setIsPostStateModalOpen(true);
                     setIsStatusModalOpen(false);
                   }

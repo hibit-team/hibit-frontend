@@ -15,10 +15,7 @@ export const useUpdateMatchingStatus = (postIDX: string | undefined) => {
     }
   };
   return useMutation(postStatusMutationFn, {
-    onMutate: () => {
-      queryClient.cancelQueries();
-    },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries(['post-info']);
       window.alert(`게시글의 상태가 모집완료로 변경되었습니다.`)
     },
@@ -26,7 +23,5 @@ export const useUpdateMatchingStatus = (postIDX: string | undefined) => {
       console.error(`${postIDX}번 게시글의 모집상태 변경에 실패했습니다. error : ${(e as AxiosError).message}`);
       return;
     },
-    retry: 3,
-    retryDelay: 3000,
   });
 };
