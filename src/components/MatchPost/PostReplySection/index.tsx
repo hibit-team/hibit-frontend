@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useRef, useEffect, SetStateAction } from 'react';
+import React, { useState, useRef, useEffect, SetStateAction, useCallback } from 'react';
 import * as s from './styles';
 import COLORS from '../../../assets/color';
 import { css } from '@emotion/react';
@@ -220,7 +220,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
 
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
             <div
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation();
                 setIsLikeModalOpen(!isLikeModalOpen);
               }}
@@ -228,7 +228,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             >
               {/* 좋아요 수 */}
               좋아요 {reply.liked}명{/* 좋아요리스트 => 컴포넌트화 하기(유저 로그인여부에 따라 ui 포지션 변경 (댓글-대댓글 케밥버튼여부에 따라)*/}
-              {isLikeModalOpen && reply && <LikeUserModal reply={reply}marginTop={10}/>}
+              {isLikeModalOpen && reply && <LikeUserModal reply={reply} marginTop={10} setIsLikeModalOpen={setIsLikeModalOpen} />}
             </div>
             <div
               onClick={() => {
@@ -603,10 +603,11 @@ export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => 
                 e.stopPropagation();
                 setIsLikeModalOpen(!isLikeModalOpen);
               }}
-              css={{ userSelect:'none',cursor:'pointer',fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}
+              css={{ userSelect: 'none', cursor: 'pointer', fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}
             >
               {/* 좋아요 수 */}
-              좋아요 {reReply.liked}명{isLikeModalOpen ? <LikeUserModal reply={reReply} marginTop={26} /> : undefined}
+              좋아요 {reReply.liked}명
+              {isLikeModalOpen ? <LikeUserModal reply={reReply} marginTop={26} setIsLikeModalOpen={setIsLikeModalOpen} /> : undefined}
             </div>
             <div
               onClick={() => {
@@ -730,18 +731,44 @@ export const ReplyButton = styled.button<{ right?: number; bottom?: number }>(({
     color: COLORS.white,
     background: COLORS.Gray3,
   },
-  // color: COLORS.Gray3,
-  // background: COLORS.Gray3,
   borderRadius: 60,
   position: 'relative',
   right: right,
   bottom: bottom,
 }));
 
-//유저 좋아요 리스트 모달 
-function LikeUserModal({ reply,marginTop}: { reply: IComments,marginTop:number }) {
+//유저 좋아요 리스트 모달
+function LikeUserModal({
+  reply,
+  marginTop,
+  setIsLikeModalOpen,
+}: {
+  reply: IComments;
+  marginTop: number;
+  setIsLikeModalOpen: React.Dispatch<SetStateAction<boolean>>;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const handleClickOutside = useCallback((e: MouseEvent) => {
+    // ref를 사용하여 컴포넌트의 레퍼런스를 가져옵니다.
+    // ref.current는 컴포넌트의 레퍼런스를 나타냅니다.
+    if (ref.current && !ref?.current.contains(e.target as Node)) {
+      // 외부 클릭이 발생한 경우, isOpen 상태를 변경합니다.
+      setIsLikeModalOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 외부 클릭 이벤트를 감지하는 이벤트 리스너를 추가합니다.
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      // 컴포넌트가 언마운트되거나 업데이트될 때 이벤트 리스너를 제거합니다.
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [setIsLikeModalOpen, handleClickOutside]);
+
   return (
     <div
+      ref={ref}
       data-id="likeuser-list"
       css={{
         display: reply?.liked === 0 ? 'none' : 'flex',
