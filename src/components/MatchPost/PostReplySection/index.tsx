@@ -71,7 +71,7 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
       <InputReplyWrapper postIDX={postIDX} userIDX={3} />
       {/* //댓글영역 */}
       <s.ReplySection>
-        {replyData?.map((reply) => (
+        {replyData?.map(reply => (
           <OriginalReplyComponent key={reply.idx} reply={reply}></OriginalReplyComponent>
         ))}
       </s.ReplySection>
@@ -181,7 +181,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       handleOriginalReplyText();
       OriginalReplyTextRef.current.focus();
     }
-  },[replyTextState]);
+  }, [replyTextState]);
   useEffect(() => {
     if (isDaetgulOpen === true) {
       setIsModifyOn(false);
@@ -220,42 +220,15 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
 
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
             <div
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setIsLikeModalOpen(!isLikeModalOpen);
               }}
               css={{ userSelect: 'none', cursor: 'pointer', fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}
             >
               {/* 좋아요 수 */}
               좋아요 {reply.liked}명{/* 좋아요리스트 => 컴포넌트화 하기(유저 로그인여부에 따라 ui 포지션 변경 (댓글-대댓글 케밥버튼여부에 따라)*/}
-              {isLikeModalOpen && (
-                <div
-                  data-id="likeuser-list"
-                  css={{
-                    display: reply.liked === 0 ? 'none' : 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    padding: '10px 10px',
-                    position: 'absolute',
-                    width: 128,
-                    height: 'auto',
-                    background: COLORS.Gray2,
-                    zIndex: 20,
-                    borderRadius: 16,
-                    marginTop: 10,
-                    top: 30,
-                  }}
-                >
-                  {reply.likeUsers.map((likeuser) => (
-                    <div key={likeuser.id} css={{ color: 'white', fontSize: 16, fontWeight: 700, padding: 6 }}>{likeuser.id}</div>
-                  ))}
-                  {reply.likeUsers.length > 4 ? (
-                    <div css={{ display: 'flex', color: COLORS.Gray3, fontSize: 16, fontWeight: 900, padding: 6 }}>
-                      이외 {reply.likeUsers.length - 4}명
-                    </div>
-                  ) : undefined}
-                </div>
-              )}
+              {isLikeModalOpen && reply && <LikeUserModal reply={reply}marginTop={10}/>}
             </div>
             <div
               onClick={() => {
@@ -507,7 +480,7 @@ export const ReplyModifyOnComponent = ({
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleOriginalTextModifying = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (setReplyTextState) setReplyTextState((prevState) => e.target.value);
+    if (setReplyTextState) setReplyTextState(prevState => e.target.value);
     adjustTextareaHeight();
   };
   //댓글 길이에 반응하는 댓글창 (auto:측정,scrollHeight:반응형높이추가)
@@ -597,6 +570,8 @@ export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => 
   const [replyTextState, setReplyTextState] = useState(reReply.content);
   const [isSecondModifyOn, setIsSecondModifyOn] = useState(false);
   const { mutate } = usePostReplyLikeMutation(reReply.idx);
+  //좋아요 누른 인원 모달 open
+  const [isLikeModalOpen, setIsLikeModalOpen] = useState(false);
   const isInclude = reReply?.likeUsers?.find(user => {
     //3번아이디가 좋아요유저에 있다면
     if (user.idx === 2) {
@@ -623,9 +598,15 @@ export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => 
             </div>
           </div>
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
-            <div css={{ fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}>
+            <div
+              onClick={e => {
+                e.stopPropagation();
+                setIsLikeModalOpen(!isLikeModalOpen);
+              }}
+              css={{ userSelect:'none',cursor:'pointer',fontSize: 18, fontWeight: 500, color: COLORS.Gray3, padding: '0 12px' }}
+            >
               {/* 좋아요 수 */}
-              좋아요 {reReply.liked}개
+              좋아요 {reReply.liked}명{isLikeModalOpen ? <LikeUserModal reply={reReply} marginTop={26} /> : undefined}
             </div>
             <div
               onClick={() => {
@@ -756,3 +737,36 @@ export const ReplyButton = styled.button<{ right?: number; bottom?: number }>(({
   right: right,
   bottom: bottom,
 }));
+
+//유저 좋아요 리스트 모달 
+function LikeUserModal({ reply,marginTop}: { reply: IComments,marginTop:number }) {
+  return (
+    <div
+      data-id="likeuser-list"
+      css={{
+        display: reply?.liked === 0 ? 'none' : 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '10px 10px',
+        position: 'absolute',
+        width: 128,
+        height: 'auto',
+        background: COLORS.Gray2,
+        zIndex: 20,
+        borderRadius: 16,
+        marginTop: marginTop,
+        top: 30,
+      }}
+    >
+      {reply?.likeUsers.map(likeuser => (
+        <div key={likeuser.id} css={{ color: 'white', fontSize: 16, fontWeight: 700, padding: 6 }}>
+          {likeuser.id}
+        </div>
+      ))}
+      {reply.likeUsers.length > 4 ? (
+        <div css={{ display: 'flex', color: COLORS.Gray3, fontSize: 16, fontWeight: 900, padding: 6 }}>이외 {reply?.likeUsers.length - 4}명</div>
+      ) : undefined}
+    </div>
+  );
+}

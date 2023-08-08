@@ -6,7 +6,7 @@ import Modal from 'react-modal';
 import COLORS from '../../../assets/color';
 import NoCheck from '../../../images/components/MatchPost/InviteModal/NoCheck.svg';
 import OnCheck from '../../../images/components/MatchPost/InviteModal/OnCheck.svg';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState} from 'recoil';
 import { hoverAnimation } from '../PostArticle/styles';
 import { useUpdateMatchingStatus } from '../../../hooks/MatchingPost/useUpdateMatchingStatus';
 import { useGetInviteModalList } from '../../../hooks/MatchingPost/useGetInviteModalList';
@@ -26,7 +26,7 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
   useEffect(() => {
     return ()=> setModalIsOpen(false);
   },[setModalIsOpen]);
-
+  //함께간 인원 리스트 get
   const { isFetching, isLoading, data: invitationList } = useGetInviteModalList(postIDX);
   if (isFetching || isLoading) return <>idLoading...</>;
 
@@ -118,7 +118,8 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
           }}
         >
           <div
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               const confirmed = window.confirm(`함께한 유저를 선택하면 게시글의 상태가 '모집완료'로 변경됩니다.`);
               if (confirmed) {
                 mutate(postIDX);
