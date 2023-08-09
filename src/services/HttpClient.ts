@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 import { useCookies } from "react-cookie";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_SERVER_BASE_URL,
+  baseURL: process.env.REACT_APP_SERVER_BASE_URL,
   withCredentials: true,
 });
 
