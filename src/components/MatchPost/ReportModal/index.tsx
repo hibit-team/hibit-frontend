@@ -12,8 +12,12 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { ReportSelectOptionAtom } from '../../../recoil/atom/ReportSelectOptionAtom';
 import { motion } from 'framer-motion';
 export default function ReportModal() {
-  const { params } = useParams();
-  const queryStrings = useSearchParams();
+  const params = useParams();
+  //게시글넘버
+  const postIdx = params.idx;
+  const [searchParams] = useSearchParams();
+  //댓글넘버 from qs
+  const commentIdx = searchParams.get('reply');
 
   const [selectedOpt, setSelectedOpt] = useRecoilState(ReportSelectOptionAtom);
   //신고텍스트
@@ -115,6 +119,7 @@ export default function ReportModal() {
                 },
               }}
             >
+              {/* onClick post요청  */}
               신고서 제출하기
             </div>
           </s.ReportModalContentsWrapper>
