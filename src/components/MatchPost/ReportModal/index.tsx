@@ -8,12 +8,12 @@ import OnCheck from '../../../images/components/MatchPost/InviteModal/OnCheck.sv
 import NoCheck from '../../../images/components/MatchPost/InviteModal/NoCheck.svg';
 import { TbArrowBackUp } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { ReportSelectOptionAtom } from '../../../recoil/atom/ReportSelectOptionAtom';
 
 export default function ReportModal() {
-  const [selectedOpt, setSelectedOpt] = useState('');
-  const handleSelection = (opt: string) => {
-    setSelectedOpt(opt);
-  };
+  const [selectedOpt, setSelectedOpt] = useRecoilState(ReportSelectOptionAtom);
+  //신고텍스트
   const [reportText, setReportText] = useState('');
   const navigate = useNavigate();
   const reportOption = [
@@ -57,10 +57,13 @@ export default function ReportModal() {
           </div>
           {reportOption.map((opt, idx) => {
             return (
-              <ReportModalContent key={idx} idx={idx}>
-                {opt}
-                <img src={OnCheck} alt="oncheck" />
-              </ReportModalContent>
+              <div
+                onClick={() => {
+                  setSelectedOpt(idx);
+                }}
+              >
+                <ReportModalContent opt={opt} key={idx} idx={idx}></ReportModalContent>
+              </div>
             );
           })}
           <div
@@ -83,42 +86,46 @@ export default function ReportModal() {
               setReportText(e.target.value);
             }}
             placeholder="신고 내용을 입력 하세요."
+            css={textareaCss}
+          ></textarea>
+          <div
             css={{
-             
-              color: COLORS.Gray3,
-              fontSize: 18,
+              margin: '16px auto 0px auto',
               boxSizing: 'border-box',
-              width: '100%',
-              resize: 'none',
-              minHeight: 150,
-              border: `1px solid ${COLORS.Gray2}`,
+              minWidth: 170,
+              minHeight: 58,
+              background: COLORS.main24,
               borderRadius: 10,
-              padding: 16,
-              '&:focus': {
-                outline: 'none',
-                border: `1px solid ${COLORS.Gray2}`,
-              },
-              '@media (max-width:600px)': {
-                fontSize:16,
-                minHeight: 100,
-
+              border: `1px solid ${COLORS.main100}`,
+              display: 'flex',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              alignItems: 'center',
+              color: COLORS.main100,
+              fontSize: 20,
+              fontWeight: 500,
+              '@media (max-width: 600px)': {
+                fontSize: 16,
+                minWidth: 150,
+                minHeight: 50,
               },
             }}
-          ></textarea>
+          >
+            신고서 제출하기
+          </div>
         </s.ReportModalContentsWrapper>
       </s.ReportModalWrapper>
     </div>
   );
 }
 
-export function ReportModalContent({ children, idx }: { children: ReactNode; idx: number }) {
+export function ReportModalContent({ idx, opt }: { idx: number; opt: string }) {
+  const selectedOpt = useRecoilValue(ReportSelectOptionAtom);
   return (
     <div
-      //선택지선택 : atom
-      // onClick={() => {
-      //   handleSelection
-      // }}
       css={{
+        userSelect:'none',
+        cursor:'pointer',
         boxSizing: 'border-box',
         margin: '6px',
         width: 'auto',
@@ -129,16 +136,38 @@ export function ReportModalContent({ children, idx }: { children: ReactNode; idx
         padding: '16px 18px',
         color: COLORS.main79,
         fontSize: 18,
-        fontWeight: 800,
+        fontWeight: selectedOpt === idx ? 800 : 700,
         borderRadius: 10,
-        border: `1px solid ${COLORS.main79}`,
+        border: selectedOpt === idx ?  `2px solid ${COLORS.main79}` :  `1px solid ${COLORS.main24}`,
         '@media (max-width: 600px)': {
           height: 50,
           fontSize: 16,
         },
       }}
     >
-      {children}
+      {opt}
+      {selectedOpt === idx ? <img src={OnCheck} alt="oncheck" /> :<img src={NoCheck} alt="nocheck" /> }
     </div>
   );
 }
+
+const textareaCss = css({
+  margin: '10px auto 0px auto',
+  color: COLORS.Gray3,
+  fontSize: 18,
+  boxSizing: 'border-box',
+  width: '96%',
+  resize: 'none',
+  minHeight: 150,
+  border: `1px solid ${COLORS.Gray2}`,
+  borderRadius: 10,
+  padding: 16,
+  '&:focus': {
+    outline: 'none',
+    border: `1px solid ${COLORS.Gray2}`,
+  },
+  '@media (max-width:600px)': {
+    fontSize: 16,
+    minHeight: 110,
+  },
+});

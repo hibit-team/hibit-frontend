@@ -23,12 +23,15 @@ export const ReportModalHeader = styled.div({
   alignItems: 'center',
   fontSize: 24,
   fontWeight: 800,
+  '@media (max-width:600px)': {
+    fontSize: 22,
+  },
 });
 export const ReportModalContentsWrapper = styled.div({
   boxSizing: 'border-box',
-  overflowY:'auto',
+  overflowY: 'auto',
   width: '100%',
-  height:720,
+  height: 720,
   '@media (max-width: 600px)': {
     height: 400,
     overflowY: 'auto',
