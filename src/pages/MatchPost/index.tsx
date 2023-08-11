@@ -7,9 +7,9 @@ import { useQuery } from '@tanstack/react-query';
 import HttpClient from '../../services/HttpClient';
 import { useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
-import { InviteBoxWrapper } from '../../components/MatchPost/PostArticle/styles';
 import InviteModal from '../../components/MatchPost/InviteModal';
-
+import { PostIDXAtom } from '../../recoil/atom/PostIDXAtom';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 export interface ILikeUsers {
   idx: number;
   id: string;
@@ -38,6 +38,11 @@ export interface IMatchingPostPage {
 export default function MatchingPostPage() {
   //게시글정보
   const { idx } = useParams();
+  const setIdxAtom = useSetRecoilState(PostIDXAtom);
+  useEffect(()=>{
+    if(idx) setIdxAtom(idx);
+  },[idx,setIdxAtom])
+
   const getPostInfoFn = async () => {
     try {
       const res = await HttpClient.get(`/post/${idx}`)

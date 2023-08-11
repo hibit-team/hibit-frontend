@@ -13,7 +13,7 @@ import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
 import PurpleLike from '../../../images/components/MatchPost/purpleLike.png';
 import WhiteLike from '../../../images/components/MatchPost/whiteLike.png';
 import FsLightbox from 'fslightbox-react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
 import ReplySectionComponent from '../PostReplySection';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
@@ -21,7 +21,8 @@ import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteRep
 import { useDeleteMatchingPostMutation } from '../../../hooks/MatchingPost/useDeleteMatchingPostMutation';
 import { usePostMatchingArticleLikeMutation } from '../../../hooks/MatchingPost/usePostMatchingArticleLikeMutation';
 import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
-import { relative } from 'path';
+import { useNavigate } from 'react-router-dom';
+import { PostIDXAtom } from '../../../recoil/atom/PostIDXAtom';
 export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
@@ -197,20 +198,20 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
           <ArticleImageSlider {...settings}>
             <div
               css={css`
-                width:250px;
-                height:320px;
+                width: 250px;
+                height: 320px;
                 background-image: url(${data?.mainimg});
-                background-size:cover;
+                background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
               `}
             ></div>
             <div
               css={css`
-                width:250px;
-                height:320px;
+                width: 250px;
+                height: 320px;
                 background-image: url(${data?.subimg[0]});
-                background-size:cover;
+                background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
               `}
@@ -346,6 +347,7 @@ interface IOptionComponent {
 
 //게시글 전용 option컴포넌트 분리
 export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }) => {
+  const navigate = useNavigate();
   const postOption1 = css({
     //수정
     all: 'unset',
@@ -397,6 +399,10 @@ export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }
               case 1: {
                 const confirm = window.confirm('게시글을 삭제하시겠습니까?');
                 if (confirm) mutate(postIDX);
+                break;
+              }
+              case 2: {
+                navigate(`/report/${postIDX}?replyIDX=null`);
               }
             }
           }}
@@ -447,7 +453,8 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
   });
   const options = ['수정', '삭제', '신고'];
   const { mutate } = useDeleteReplyMutation(replyIDX);
-
+  const navigate = useNavigate();
+  const postIDX = useRecoilValue(PostIDXAtom);
   return (
     <>
       {options.map((opt, i) => (
@@ -462,6 +469,9 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
             //삭제버튼인 경우에(i==1)
             if (i === 1) {
               mutate(replyIDX);
+            }
+            if (i === 2) {
+              navigate(`/report/${postIDX}?reply=${replyIDX}`)
             }
           }}
           key={i}

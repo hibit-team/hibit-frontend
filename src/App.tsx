@@ -56,7 +56,7 @@ function App() {
                 <Route path="/others/:userID" element={<OtherProfile />} />
                 <Route path="/posting" element={<Posting />} />
                 <Route path="/google-callback" element={<GoogleRedirectHandler />} />
-                <Route path="/report" element={<ReportModal />} />
+                <Route path="/report/:idx" element={<ReportModal />} />
                 <Route path="/*" element={<NotFound />} />
               </Routes>
             </Router>

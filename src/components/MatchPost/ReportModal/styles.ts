@@ -25,6 +25,7 @@ export const ReportModalHeader = styled.div({
   fontWeight: 800,
   '@media (max-width:600px)': {
     fontSize: 22,
+      height: 65,
   },
 });
 export const ReportModalContentsWrapper = styled.div({
