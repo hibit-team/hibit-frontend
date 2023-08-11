@@ -20,6 +20,12 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
   const closeModal = () => {
     setModalIsOpen(false);
   };
+  useEffect(()=>{
+    return ()=>{
+      //초대모달 언마운트시 클리어
+      setModalIsOpen(false)
+    }
+  },[setModalIsOpen])
 
   const { isFetching, isLoading, data: invitationList } = useGetInviteModalList(postIDX);
   if (isFetching || isLoading) return <>idLoading...</>;

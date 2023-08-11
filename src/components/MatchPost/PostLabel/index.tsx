@@ -6,15 +6,15 @@ import COLORS from '../../../assets/color';
 import ArrownDown from '../../../images/components/MatchPost/ArrowDown.svg';
 import ArrowUp from '../../../images/components/MatchPost/ArrowUp.svg';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
-
+import { useNavigate } from 'react-router-dom';
 import PostStateModal from '../PostStateModal';
-import {useSetRecoilState} from 'recoil';
+import { useRecoilState } from 'recoil';
 import { PostStateModalAtom } from '../../../recoil/atom/PostStateModal';
-export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPostPage; postIDX: string | undefined}) {
+export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPostPage; postIDX: string | undefined }) {
   const label = data?.number_and_What;
-  const setIsPostStateModalOpen = useSetRecoilState(PostStateModalAtom);
+  const [isPostStateModalOpen, setIsPostStateModalOpen] = useRecoilState(PostStateModalAtom);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
-  
+  const navigate =useNavigate();
   return (
     <div>
       <PostStateModal postIDX={postIDX}></PostStateModal>
@@ -45,8 +45,8 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
             <div css={{ display: isStatusModalOpen ? 'block' : 'none' }}>
               <div
                 onClick={() => {
-                  console.log(data?.status)
-                  if(data?.status === 'C') alert('이미 모집 완료된 게시글은 상태를 변경할 수 없습니다.')
+                  console.log(data?.status);
+                  if (data?.status === 'C') alert('이미 모집 완료된 게시글은 상태를 변경할 수 없습니다.');
                 }}
                 css={{
                   '&:hover': {
@@ -63,10 +63,10 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
               </div>
               <div
                 onClick={() => {
-                  if(data?.status === 'C') alert('이미 모집 완료된 상태입니다.') 
+                  if (data?.status === 'C') alert('이미 모집 완료된 상태입니다.');
                   else {
                     //N(모집중)상태 => 모집완료클릭 -> 모달오픈 -> 선택하기 클릭
-                    setIsPostStateModalOpen(true);
+                    if (!isPostStateModalOpen) setIsPostStateModalOpen(true);
                     setIsStatusModalOpen(false);
                   }
                 }}
@@ -77,11 +77,33 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                   },
                   padding: '6px 0px 7px 12px',
                   boxSizing: 'border-box',
-                  borderBottomLeftRadius: 8,
-                  borderBottomRightRadius: 8,
+                  borderBottom: `1px solid ${COLORS.main79}`,
+                  // borderBottomLeftRadius: 8,
+                  // borderBottomRightRadius: 8,
                 }}
               >
                 모집 완료
+              </div>
+              <div
+                onClick={() => {
+                  const confirm = window.confirm(`게시글 모집을 취소하시겠습니까? 모집 취소시 게시글 리스트에서 해당 게시글이 삭제됩니다.`);
+                  if (confirm) {setIsStatusModalOpen(false)
+                    navigate('/matching',{replace:true})
+                  };
+                  setIsStatusModalOpen(false)
+                }}
+                css={{
+                  '&:hover': {
+                    backgroundColor: `${COLORS.main42}`,
+                    color: 'white',
+                  },
+                  padding: '6px 0px 7px 12px',
+                  boxSizing: 'border-box',
+                  // borderBottomLeftRadius: 16,
+                  // borderBottomRightRadius: 16,
+                }}
+              >
+                모집 취소
               </div>
             </div>
           </s.MatchPostStatusContainer>

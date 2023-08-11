@@ -24,11 +24,22 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
   // 게시글 상태변경 커스텀훅
   const { mutate } = useUpdateMatchingStatus(postIDX);
   useEffect(() => {
-    return ()=> setModalIsOpen(false);
-  },[setModalIsOpen]);
+    return () => {
+      setModalIsOpen(false);
+    };
+  }, [setModalIsOpen]);
+
   //함께간 인원 리스트 get
-  const { isFetching, isLoading, data: invitationList } = useGetInviteModalList(postIDX);
-  if (isFetching || isLoading) return <>idLoading...</>;
+  const companyListQueryFn = async () => {
+    try {
+      const res = await HttpClient.get(`/matching/${postIDX}/oklist`);
+      return res;
+    } catch (e) {
+      console.error(`초대리스트를 불러오지 못했습니다 .${(e as AxiosError).message}`);
+      return;
+    }
+  };
+  const { data: companionList } = useQuery<IInvitationProps[]>(['company-list'], companyListQueryFn);
 
   const modalCss: ReactModal.Styles = {
     overlay: {
@@ -121,7 +132,8 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
             onClick={(e) => {
               e.stopPropagation();
               const confirmed = window.confirm(`함께한 유저를 선택하면 게시글의 상태가 '모집완료'로 변경됩니다.`);
-              if (confirmed) {
+              setModalIsOpen(false);
+              if (confirmed === true) {
                 mutate(postIDX);
               }
             }}
@@ -172,7 +184,7 @@ const InviteModalContent = ({ list }: { list?: IInvitationProps }) => {
       setUserList([]);
       setCheckState(false);
     };
-  }, []);
+  }, [setUserList, setCheckState]);
   return (
     <div
       onClick={() => {
