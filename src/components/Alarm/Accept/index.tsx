@@ -1,3 +1,4 @@
+import accept from "../../../images/components/Alarm/Imoji/accept.svg";
 import * as s from "./styles";
 
 const Accept = ({nickname, imglink, time}: any) => {
@@ -9,7 +10,7 @@ const Accept = ({nickname, imglink, time}: any) => {
           alt="profile"
         />
         <s.Imoji 
-          src={imglink}
+          src={accept}
           alt="imoji"
         />
       </s.ProfileImgWrapper>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { IHeaderCategory } from '../../../interfaces/IHeaderCategories';
 import { useNavigate, useLocation } from "react-router-dom";
 import HibitLogo from "../../../images/components/HibitLogo.svg";
@@ -7,9 +7,10 @@ import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
 import CustomModalAlarm from '../../Alarm';
 import * as s from "./styles";
-import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilValueLoadable, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { accessTokenState, isLoggedInState } from '../../../recoil/atom/AccessToken';
 import useIsLogin from '../../../hooks/useIsLogin';
+import { alarmCountState } from '../../../recoil/atom/AlarmCount';
 
 const CATEGORIES: IHeaderCategory[] = [
   { title: "서비스 소개", link: "/intro" },
@@ -30,6 +31,7 @@ const Header = () => {
   useEffect(() => {
     const isloggedin = localStorage.getItem('isLoggedIn');
     setIsLoggedIn(isloggedin === 'true');
+    setIsLoggedIn(true); // 코드 작업 끝나고 삭제해야됨
   }, [setIsLoggedIn]);
   const onClickLogin = () => {
     openModal();
@@ -46,7 +48,9 @@ const Header = () => {
   };
 
   const [hasAlarm, setHasAlarm] = useState<boolean>(true);
-  const [alarmCount, setAlarmCount] = useState<number>(14);
+  
+  const alarmCount = useRecoilValue(alarmCountState);
+  console.log(alarmCount);
 
   const [isAlarmOpen, setIsAlarmOpen] = useState<boolean>(false);
   const onClickAlarm = () => {
@@ -64,10 +68,7 @@ const Header = () => {
     console.log({modalOpen});
   };
 
-  useEffect(() => {
-    if (alarmCount === 0) setHasAlarm(false);
-    else setHasAlarm(true);
-  }, [alarmCount]);
+
 
   const onClickSignup = () => {
     navigate("/signup");
@@ -123,7 +124,9 @@ const Header = () => {
             <img onClick={onClickAlarm} src={AlarmIcon} alt='alarm-icon' />
             {
               hasAlarm ?
-              <s.AlarmCountWrapper>{alarmCount}</s.AlarmCountWrapper>
+              <Suspense fallback={<div>0</div>}>
+                <s.AlarmCountWrapper>{alarmCount!}</s.AlarmCountWrapper>
+              </Suspense>
               : <></>
             }
             

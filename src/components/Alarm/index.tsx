@@ -13,27 +13,8 @@ import Accept from './Accept';
 import Refuse from './Refuse';
 import Report from './Report';
 import Event from './Event';
-
-const tmpAlarmData = [
-  {nickname: "애옹이", type: "COMMENT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "개죽이", type: "RECOMMENT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "시면준", type: "COMMENTHEART", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "망고조아", type: "INVITATION", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "애옹이", type: "OPENCHAT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전", link: "https://naver.com"},
-  {nickname: "시면준아프지마", type: "ACCEPT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "재모기", type: "REFUSE", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "", type: "REPORT", imglink: "", time: "1시간 전"},
-  {nickname: "", type: "EVENT", imglink: "", time: "1시간 전"},
-  {nickname: "애옹이", type: "COMMENT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "개죽이", type: "RECOMMENT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "시면준", type: "COMMENTHEART", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "망고조아", type: "INVITATION", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "애옹이", type: "OPENCHAT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전", link: "https://naver.com"},
-  {nickname: "시면준아프지마", type: "ACCEPT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "재모기", type: "REFUSE", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "", type: "REPORT", imglink: "", time: "2시간 전"},
-  {nickname: "", type: "EVENT", imglink: "", time: "2시간 전"},
-];
+import Status from './Status';
+import tmpAlarmData from '../../assets/data/alarm/tmpAlarmData';
 
 const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }) => {
 
@@ -117,6 +98,9 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
                       if(data.type === "REFUSE"){
                         return <Refuse nickname={data.nickname} imglink={data.imglink} time={data.time}/>
                       }
+                      if(data.type === "STATUS"){
+                        return <Status content={data.content} time={data.time}/>
+                      }
                       return null;
                     })
                   }
@@ -130,12 +114,12 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
                 <s.AlarmList>
                   {
                     tmpAlarmData.map((data) => {
-                      // if(data.type === "REPORT"){
-                      //   return <Report nickname={data.nickname} imglink={data.imglink} time={data.time}/>
-                      // }
-                      // if(data.type === "EVENT"){
-                      //   return <Event nickname={data.nickname} imglink={data.imglink} time={data.time}/>
-                      // }
+                      if(data.type === "REPORT"){
+                        return <Report content={data.content} imglink={data.imglink} time={data.time}/>
+                      }
+                      if(data.type === "EVENT"){
+                        return <Event content={data.content} imglink={data.imglink} time={data.time}/>
+                      }
                       return null;
                     })
                   }

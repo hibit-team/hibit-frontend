@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import matchingCTA from "../../../images/components/Alarm/Imoji/matchingCTA.svg";
 import * as s from "./styles";
 
 const Openchat = ({nickname, imglink, time, link}: any) => {
@@ -11,7 +12,7 @@ const Openchat = ({nickname, imglink, time, link}: any) => {
           alt="profile"
         />
         <s.Imoji 
-          src={imglink}
+          src={matchingCTA}
           alt="imoji"
         />
       </s.ProfileImgWrapper>
