@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MainPage from "./pages/Main";
 import styled from "@emotion/styled";
 import { Global } from "@emotion/react";
@@ -18,6 +18,8 @@ import { useEffect } from "react";
 import axios from "axios";
 import { axiosInstance } from "./services/HttpClient";
 import NotFound from "./pages/NotFound";
+import ReportModal from './components/MatchPost/ReportModal';
+
 function App() {
   const queryClient = new QueryClient();
   const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
@@ -54,8 +56,9 @@ function App() {
                 <Route path="/others/:userID" element={<OtherProfile />} />
                 <Route path="/posting" element={<Posting />} />
                 <Route path="/google-callback" element={<GoogleRedirectHandler />} />
-                <Route path="/*" element={<NotFound/>} />
-            </Routes>
+                <Route path="/report" element={<ReportModal />} />
+                <Route path="/*" element={<NotFound />} />
+              </Routes>
             </Router>
           </Container>
         </QueryClientProvider>
@@ -66,4 +69,4 @@ function App() {
 
 export default App;
 
-const Container = styled.div``;
+const Container = styled.div``
