@@ -2,7 +2,7 @@ import heart from "../../../images/components/Alarm/Imoji/heart.svg";
 import defaultProfile from "../../../images/components/defaultProfile.svg";
 import * as s from "./styles";
 
-const Status = ({content, imglink, time}: any) => {
+const Remind = ({content, imglink, time}: any) => {
   return (
     <s.Wrapper>
     <s.ProfileImgWrapper>
@@ -26,4 +26,4 @@ const Status = ({content, imglink, time}: any) => {
   )
 };
 
-export default Status;
+export default Remind;

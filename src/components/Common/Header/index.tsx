@@ -48,9 +48,18 @@ const Header = () => {
   };
 
   const [hasAlarm, setHasAlarm] = useState<boolean>(true);
-  
   const alarmCount = useRecoilValue(alarmCountState);
-  console.log(alarmCount);
+
+  useEffect(() => {
+    if (alarmCount > 0) {
+      setHasAlarm(true);
+      return;
+    }
+    else {
+      setHasAlarm(false);
+    }
+  }, [alarmCount]);
+  
 
   const [isAlarmOpen, setIsAlarmOpen] = useState<boolean>(false);
   const onClickAlarm = () => {
