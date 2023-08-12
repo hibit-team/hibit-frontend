@@ -402,7 +402,7 @@ export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }
                 break;
               }
               case 2: {
-                navigate(`/report/${postIDX}?replyIDX=null`);
+                navigate(`/report/${postIDX}`);
               }
             }
           }}
@@ -471,7 +471,12 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
               mutate(replyIDX);
             }
             if (i === 2) {
-              navigate(`/report/${postIDX}?reply=${replyIDX}`)
+              // const openInNewTab = (url:string) => {
+              //   const newTab = window.open(url, '_blank');
+              //   newTab?.focus();
+              // };
+              // openInNewTab(`/report/${postIDX}?reply=${replyIDX}`)
+              navigate(`/report/${postIDX}?reply=${replyIDX}`);
             }
           }}
           key={i}

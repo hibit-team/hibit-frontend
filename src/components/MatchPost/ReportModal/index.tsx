@@ -2,7 +2,6 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import * as s from './styles';
 import { css } from '@emotion/react';
-import Modal from 'react-modal';
 import COLORS from '../../../assets/color';
 import OnCheck from '../../../images/components/MatchPost/InviteModal/OnCheck.svg';
 import NoCheck from '../../../images/components/MatchPost/InviteModal/NoCheck.svg';
@@ -18,6 +17,7 @@ export default function ReportModal() {
   const [searchParams] = useSearchParams();
   //댓글넘버 from qs
   const commentIdx = searchParams.get('reply');
+  console.log(commentIdx);
 
   const [selectedOpt, setSelectedOpt] = useRecoilState(ReportSelectOptionAtom);
   //신고텍스트
@@ -35,7 +35,7 @@ export default function ReportModal() {
     '기타',
   ];
   return (
-    <div css={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', background: COLORS.Gray1 }}>
+    <div css={{ padding:'16px 0px',minWidth: '100vw', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', background: COLORS.Gray1 }}>
       <motion.div initial={{ x: -1000, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -1000, opacity: 0 }} transition={{ duration: 0.6 }}>
         <s.ReportModalWrapper>
           <s.ReportModalHeader>
@@ -83,7 +83,7 @@ export default function ReportModal() {
                 color: COLORS.Gray3,
                 '@media (max-width:600px)': {
                   fontSize: 17,
-                  marginBottom:4,
+                  marginBottom: 4,
                 },
               }}
             >
@@ -119,7 +119,13 @@ export default function ReportModal() {
                 },
               }}
             >
-              {/* onClick post요청  */}
+              {/* onClick post요청: 
+  "userId": "a", 사용자
+  "reportId": "b", 신고대상
+  "postIdx": 123, 신고게시글
+  "commentIdx": 456, 신고댓글넘버
+  "declarationType": "COMMENT", 신고유형
+  "content": "댓글 작성 과정에서 욕설이 포함되어 있었음" */}
               신고서 제출하기
             </div>
           </s.ReportModalContentsWrapper>
