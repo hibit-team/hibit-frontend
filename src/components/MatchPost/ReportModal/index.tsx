@@ -10,6 +10,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ReportSelectOptionAtom } from '../../../recoil/atom/ReportSelectOptionAtom';
 import { motion } from 'framer-motion';
+import { usePostReport } from '../../../hooks/MatchingPost/usePostReport';
 export default function ReportModal() {
   const params = useParams();
   //게시글넘버
@@ -17,12 +18,17 @@ export default function ReportModal() {
   const [searchParams] = useSearchParams();
   //댓글넘버 from qs
   const commentIdx = searchParams.get('reply');
-  console.log(commentIdx);
-
+  //선택옵션 전역상태관리
   const [selectedOpt, setSelectedOpt] = useRecoilState(ReportSelectOptionAtom);
   //신고텍스트
   const [reportText, setReportText] = useState('');
   const navigate = useNavigate();
+  useEffect(()=>{
+    //신고하기페이지 언마운트시 null초기화
+    return ()=>{setSelectedOpt(null)}
+  },[])
+
+  const declarationType = ['PRIVATE', 'PURPOSE', 'THREATS', 'SEXUALLY', 'RELIGION', 'SUSPECTED', 'COMMERCIAL', 'POLITICAL', 'ETC'];
   const reportOption = [
     '개인 연락처 또는 1:1 만남 강요',
     '히빗 취지에 반하는 만남 유도',
@@ -34,8 +40,27 @@ export default function ReportModal() {
     '과도한 정치적 견해 표출',
     '기타',
   ];
+
+  const { mutate } = usePostReport({
+    userId: 'a', //str
+    reportId: 'b', //str
+    postIdx: !postIdx ? null : Number.parseInt(postIdx),
+    commentIdx: !commentIdx ? null : Number.parseInt(commentIdx),
+    declarationType: !selectedOpt ? null : declarationType[selectedOpt],
+    content: reportText,
+  });
   return (
-    <div css={{ padding:'16px 0px',minWidth: '100vw', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', background: COLORS.Gray1 }}>
+    <div
+      css={{
+        padding: '16px 0px',
+        minWidth: '100vw',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: COLORS.Gray1,
+      }}
+    >
       <motion.div initial={{ x: -1000, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -1000, opacity: 0 }} transition={{ duration: 0.6 }}>
         <s.ReportModalWrapper>
           <s.ReportModalHeader>
@@ -118,14 +143,19 @@ export default function ReportModal() {
                   minHeight: 50,
                 },
               }}
+              onClick={() => {
+                //selectedOpt = null이면 
+                if(!selectedOpt) {
+                  alert('신고 유형을 선택해주세요')
+                  }
+                  //null아니면서 20자 이하인 경우 
+                if(selectedOpt){
+                  if(reportText.length <20) alert('신고 사유를 20자 이상 작성해주세요')
+                }
+                // 옵션있고 텍스트 20자 이상인 경우 
+                if(selectedOpt && reportText.length >=20) { mutate(); }
+              }}
             >
-              {/* onClick post요청: 
-  "userId": "a", 사용자
-  "reportId": "b", 신고대상
-  "postIdx": 123, 신고게시글
-  "commentIdx": 456, 신고댓글넘버
-  "declarationType": "COMMENT", 신고유형
-  "content": "댓글 작성 과정에서 욕설이 포함되어 있었음" */}
               신고서 제출하기
             </div>
           </s.ReportModalContentsWrapper>
