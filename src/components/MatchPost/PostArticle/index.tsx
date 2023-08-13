@@ -474,7 +474,7 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
               // const openInNewTab = (url:string) => {
               //   const newTab = window.open(url, '_blank');
               //   newTab?.focus();
-              // };
+              // }; 
               // openInNewTab(`/report/${postIDX}?reply=${replyIDX}`)
               navigate(`/report/${postIDX}?reply=${replyIDX}`);
             }

@@ -18,27 +18,22 @@ export interface IPosts {
   dateTime: string; //호버시 나오는 희망 관람시간
 }
 const MatchingPage = () => {
-  //sortOption : ["allposts",'thisweek','like']
   const {
     data,
     error,
     isError,
-    isLoading,
+    // isLoading,
     isFetchingNextPage,
     fetchNextPage,
     // isFetching,
-    // hasNextPage,
+    hasNextPage,
     // isFetchingPreviousPage,
     // fetchPreviousPage,
     // hasPreviousPage,
   } = useGetMatchingInfiniteQuery();
 
-  if (isLoading === true) {
-    //초기 데이터fetch, nextPage fetch 로딩 플래그 => 추후 로딩스피너로 대체
-    return <p>Loading...</p>;
-  }
   if (isError === true) {
-    return <p>Error: {(error as AxiosError)?.message}</p>;
+    return <p>Page Error: {(error as AxiosError)?.message}</p>;
   }
   return (
     <div>
@@ -46,7 +41,7 @@ const MatchingPage = () => {
         <MatchingSlideBanner></MatchingSlideBanner>
         <MatchingSearchBar></MatchingSearchBar>
         <MatchingFilterButton></MatchingFilterButton>
-        <MatchingContainer isFetchingNextPage={isFetchingNextPage} pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
+        <MatchingContainer hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
       </LayoutTemplate>
     </div>
   );

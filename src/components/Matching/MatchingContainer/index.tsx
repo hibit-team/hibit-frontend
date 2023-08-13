@@ -9,9 +9,11 @@ import { IPosts } from '../../../pages/Matching';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
+import { motion } from 'framer-motion';
 export interface IProps {
+  hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
-  pages: IPosts[][];
+  pages: IPosts[][] | undefined;
   fetchNextPage: any;
 }
 export interface IEachPost {
@@ -26,12 +28,17 @@ const ExhibitionText: {
   allposts: '게시글 전체보기',
 };
 
+const cardVariants = {
+  hidden: { y: 100, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+  exit: { y: -100, opacity: 0, transition: { duration: 0.5 } },
+};
 //매칭카드컴포넌트
 const MatchingCardComponent = ({ eachData }: IEachPost) => {
   const navigate = useNavigate();
   const [timeVisibleState, setTimeVisibleState] = useState(false);
   return (
-    <div
+    <motion.div variants={cardVariants} initial="hidden" animate="visible" exit="exit"
       onMouseEnter={() => {
         if (timeVisibleState === false) setTimeVisibleState(!timeVisibleState);
       }}
@@ -135,15 +142,16 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
           {eachData.dateTime}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
 //매칭컨테이너(pages) - 매칭 그리드컨테이너(grid: eachPage)-매칭카드컴포넌트(eachData)
-const MatchingContainer = ({ isFetchingNextPage, pages, fetchNextPage }: IProps) => {
+const MatchingContainer = ({ hasNextPage, isFetchingNextPage, pages, fetchNextPage }: IProps) => {
+  
   const sortOption = useRecoilValue<string>(MatchingControllerState);
   return (
-    <div>
+    <div >
       <s.MatchingHeader>{ExhibitionText[sortOption]}</s.MatchingHeader>
       <s.MatchingGridContainer>
         {/* pages: page 1 ,2 ,3 ...  각페이지의 데이터가 eachPage파라미터로 ..*/}
@@ -153,10 +161,10 @@ const MatchingContainer = ({ isFetchingNextPage, pages, fetchNextPage }: IProps)
         })}
       </s.MatchingGridContainer>
       {/* 로딩인디케이터 추가 예정 */}
-      {!isFetchingNextPage ? <div css={s.LoadingIndicatorCss}>loading indicator</div> : undefined}
       <s.LoadMoreButton onClick={fetchNextPage}>게시글 더보기</s.LoadMoreButton>
     </div>
   );
 };
 
 export default MatchingContainer;
+

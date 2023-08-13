@@ -145,6 +145,7 @@ const hoverAnimation = keyframes`
 
 export const LoadMoreButton  =styled.div`
 font-size:18px;
+user-select:'none';
 color:${COLORS.main100};
 border: 2px solid ${COLORS.main100};
 box-sizing:border-box;
