@@ -119,6 +119,7 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
         >
           <div
             css={{
+              userSelect:'none',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -169,14 +170,18 @@ const InviteModalContent = ({ list }: { list?: IInvitationProps }) => {
   return (
     <div
       onClick={() => {
+        //받아온 리스트 목록이 존재하고, uncheck일떄
         if (checkState === false && list) {
+          //true로바꾸고 
           setCheckState(true);
+          //기존 리스트에 체크유저(list) 추가 
           setUserList(prev => [...prev, list]);
         } else if (checkState === true && list) {
-          //checkState true인경우 다시 체크한 요소를 제외한 요소만 반환
+          //checkState true인경우 false로 바꾸고 다시 체크한 리스트 제외한 요소만 반환
           setCheckState(false);
           setUserList(prev =>
             prev.filter(item => {
+              //해당 리스트 제외 요소들만 반환
               return item !== list;
             })
           );

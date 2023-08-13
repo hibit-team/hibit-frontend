@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as s from './styles';
 import { css } from '@emotion/react';
 import COLORS from '../../../assets/color';
@@ -11,6 +11,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { ReportSelectOptionAtom } from '../../../recoil/atom/ReportSelectOptionAtom';
 import { motion } from 'framer-motion';
 import { usePostReport } from '../../../hooks/MatchingPost/usePostReport';
+
 export default function ReportModal() {
   const params = useParams();
   //게시글넘버
@@ -23,12 +24,16 @@ export default function ReportModal() {
   //신고텍스트
   const [reportText, setReportText] = useState('');
   const navigate = useNavigate();
-  useEffect(()=>{
-    //신고하기페이지 언마운트시 null초기화
-    return ()=>{setSelectedOpt(null)}
-  },[])
 
-  const declarationType = ['PRIVATE', 'PURPOSE', 'THREATS', 'SEXUALLY', 'RELIGION', 'SUSPECTED', 'COMMERCIAL', 'POLITICAL', 'ETC'];
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    return () => {
+      setSelectedOpt(null);
+    };
+  }, [setSelectedOpt]);
+
+  const declarationTypeArray = ['PRIVATE', 'PURPOSE', 'THREATS', 'SEXUALLY', 'RELIGION', 'SUSPECTED', 'COMMERCIAL', 'POLITICAL', 'ETC'];
+
   const reportOption = [
     '개인 연락처 또는 1:1 만남 강요',
     '히빗 취지에 반하는 만남 유도',
@@ -46,7 +51,7 @@ export default function ReportModal() {
     reportId: 'b', //str
     postIdx: !postIdx ? null : Number.parseInt(postIdx),
     commentIdx: !commentIdx ? null : Number.parseInt(commentIdx),
-    declarationType: !selectedOpt ? null : declarationType[selectedOpt],
+    declarationType: selectedOpt!== null ? declarationTypeArray[selectedOpt] : null,
     content: reportText,
   });
   return (
@@ -144,16 +149,18 @@ export default function ReportModal() {
                 },
               }}
               onClick={() => {
-                //selectedOpt = null이면 
-                if(!selectedOpt) {
-                  alert('신고 유형을 선택해주세요')
-                  }
-                  //null아니면서 20자 이하인 경우 
-                if(selectedOpt){
-                  if(reportText.length <20) alert('신고 사유를 20자 이상 작성해주세요')
+                //selectedOpt = null이면
+                if (selectedOpt === null) {
+                  alert('신고 유형을 선택해주세요');
                 }
-                // 옵션있고 텍스트 20자 이상인 경우 
-                if(selectedOpt && reportText.length >=20) { mutate(); }
+                //null아니면서 20자 이하인 경우
+                if (selectedOpt) {
+                  if (reportText.length < 20) alert('신고 사유를 20자 이상 작성해주세요');
+                }
+                // 옵션있고 텍스트 20자 이상인 경우
+                if (selectedOpt && reportText.length >= 20) {
+                  mutate();
+                }
               }}
             >
               신고서 제출하기

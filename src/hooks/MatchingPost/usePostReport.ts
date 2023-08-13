@@ -18,7 +18,9 @@ export const usePostReport = (body: IReportBody) => {
   const matchingArticleLikeMutationFn = async () => {
     try {
       const path = `/declaration/report`;
-      const res = await HttpClient.post(path, body);
+      const res = HttpClient.post(path, body,{
+        'Content-Type': 'application/json',
+      });
       return res;
     } catch (e) {
       console.error(`게시글 및 유저 신고에 실패했습니다. error : ${(e as AxiosError).message}`);

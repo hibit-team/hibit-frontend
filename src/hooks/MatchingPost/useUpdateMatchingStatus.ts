@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import HttpClient from '../../services/HttpClient';
 import { AxiosError } from 'axios';
-//게시글 모집상태 변경 hook
+//게시글 모집상태 변경 hook (complete)
+//(게시글작성자인 경우에만 가능하도록 제한 필요)
 export const useUpdateMatchingStatus = (postIDX: string | undefined) => {
   const queryClient = useQueryClient();
   const postStatusMutationFn = async (postIDX: string | undefined) => {

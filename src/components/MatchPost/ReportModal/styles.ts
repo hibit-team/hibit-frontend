@@ -32,7 +32,6 @@ export const ReportModalContentsWrapper = styled.div({
   boxSizing: 'border-box',
   overflowY: 'auto',
   width: '100%',
-  // height: 720,
   '@media (max-width: 600px)': {
     height: 480,
     overflowY: 'auto',

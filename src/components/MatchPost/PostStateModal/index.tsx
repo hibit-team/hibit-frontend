@@ -14,22 +14,22 @@ import { IInvitationProps } from '../../../hooks/MatchingPost/useGetInviteModalL
 import { PostStateModalAtom } from '../../../recoil/atom/PostStateModal';
 import { PostStateUserList } from '../../../recoil/atom/PostStateUserList';
 
-// React-lazy 코드스플리팅 (초대모달 & )
 const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
   const [modalIsOpen, setModalIsOpen] = useRecoilState(PostStateModalAtom);
   const [Fold, setFold] = useState(false);
   const closeModal = () => {
     setModalIsOpen(false);
   };
-  // 게시글 상태변경 커스텀훅
-  const { mutate } = useUpdateMatchingStatus(postIDX);
+  // 게시글 상태변경 커스텀훅 (update)
+  const { mutate: updateMutate } = useUpdateMatchingStatus(postIDX);
+  //언마운트 모달 클리어 
   useEffect(() => {
     return () => {
       setModalIsOpen(false);
     };
   }, [setModalIsOpen]);
 
-  //함께간 인원 리스트 get
+  //초대수락 인원(함께한 인원) 리스트 Query
   const companyListQueryFn = async () => {
     try {
       const res = await HttpClient.get(`/matching/${postIDX}/oklist`);
@@ -134,7 +134,8 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
               const confirmed = window.confirm(`함께한 유저를 선택하면 게시글의 상태가 '모집완료'로 변경됩니다.`);
               setModalIsOpen(false);
               if (confirmed === true) {
-                mutate(postIDX);
+                //게시글 상태 업데이트 put
+                updateMutate(postIDX);
               }
             }}
             css={{
@@ -202,6 +203,7 @@ const InviteModalContent = ({ list }: { list?: IInvitationProps }) => {
         }
       }}
       css={{
+        userSelect: 'none',
         minWidth: 259,
         minHeight: 56,
         boxSizing: 'border-box',
