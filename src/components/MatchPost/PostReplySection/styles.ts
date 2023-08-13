@@ -16,14 +16,15 @@ export const InputReplyWrapperCss = css({
 
 export const ReplySection = styled.div({});
 export const OriginalReplyText = styled.div({
-  width: 855,
+  width: 847,
   color: COLORS.Gray3,
   fontSize: 20,
   fontWeight: 500,
-  margin: '12px auto 0px auto',
+  margin: '22px auto 0px auto',
   wordWrap:'break-word',
   overflowWrap: 'break-word',
   whiteSpace: 'pre-wrap',
+  lineHeight: '120%',
 });
 export const OriginalReplyModifiedTextCss = css({
   borderRadius: 10,
@@ -43,14 +44,15 @@ export const OriginalReplyModifiedTextCss = css({
 });
 
 export const SecondaryReplyText = styled.div({
-  width: 820,
+  width: 790,
   color: COLORS.Gray3,
   fontSize: 20,
   fontWeight: 500,
-  margin: '12px auto -18px auto',
+  margin: '1rem auto -18px 22px',
   overFlow: 'hidden',
-  wordBreak: 'break-word',
-  overflowWrap: 'break-word',
+  whiteSpace:'pre-wrap',
+  wordBreak: 'break-all',
+  // overflowWrap: 'break-word',
   position: 'relative',
   left: 8,
 });
@@ -61,12 +63,14 @@ export const OriginalReplyWrapper = styled.div({
   position: 'relative',
 });
 
-export const SecondaryReplyWrapper = styled.div({
+export const SecondaryReplyWrapper = styled.div<{
+  isSecondModifyOn: boolean;
+}>(props =>({
   boxSizing: 'border-box',
-  margin: '24px',
+  margin: '24px 24px 16px 24px',
   position: 'relative',
   borderRadius:10,
   border: `1px solid ${COLORS.Gray2}`,
-  padding:'16px 0px 32px 0px',
+  padding: props.isSecondModifyOn ? '16px 0px 20px 0px' : '16px 0px 46px 0px',
   height: 'auto',
-});
+}));

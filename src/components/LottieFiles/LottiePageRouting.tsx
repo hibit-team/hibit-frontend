@@ -10,8 +10,7 @@ const LottiePageRouting = () => {
 
   const { View } = useLottie(options);
 
-  return <div style={{position:'absolute',width:'100vw',height:'100vh',display:'flex',justifyContent:'center',alignItems:'center',
-  background:'gray'}}>
+  return <div data-id="modal-overlay" style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',display:'flex',justifyContent:'center',alignItems:'center'}}>
     <div style={{ width: 300, height: 300 }}>{View}</div>;
   </div>
 };

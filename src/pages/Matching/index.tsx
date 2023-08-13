@@ -5,7 +5,7 @@ import MatchingSearchBar from '../../components/Matching/SearchBar';
 import MatchingSlideBanner from '../../components/Matching/SlideBanner';
 import { AxiosError } from 'axios';
 import { useGetMatchingInfiniteQuery } from '../../hooks/MathchingMain/useGetMatchingInifiniteQuery';
-
+import LottiePageRouting from '../../components/LottieFiles/LottiePageRouting';
 export interface IPosts {
   idx: number; // 글 넘버 
   title: string; // 게시글 제목 
@@ -22,10 +22,10 @@ const MatchingPage = () => {
     data,
     error,
     isError,
-    // isLoading,
+    isLoading,
     isFetchingNextPage,
     fetchNextPage,
-    // isFetching,
+    isFetching,
     hasNextPage,
     // isFetchingPreviousPage,
     // fetchPreviousPage,
@@ -43,6 +43,7 @@ const MatchingPage = () => {
         <MatchingFilterButton></MatchingFilterButton>
         <MatchingContainer hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
       </LayoutTemplate>
+      { isLoading || isFetching ||isFetchingNextPage ? <LottiePageRouting/> : undefined}
     </div>
   );
 };

@@ -150,9 +150,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
             }, 500);
           }}
         >
-          <ReplyButton right={0} bottom={5}>
-            작성하기
-          </ReplyButton>
+          <ReplyButton buttonCord={{ right: 0, bottom: 5 }}>작성하기</ReplyButton>
         </div>
       </div>
     </div>
@@ -201,6 +199,26 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   });
   // 대댓글 unfold ==true면 펼치기
   const [isOpen, setIsOpen] = useState(false);
+
+  //(대)댓글 옵션컴포넌트 외부클릭시 꺼주기
+  const ref = useRef<HTMLDivElement>(null);
+  const handleClickOutside = useCallback(
+    (e: MouseEvent) => {
+      if (ref.current && !ref?.current.contains(e.target as Node) && isReplyOptModalOpen) {
+        // 외부 클릭이 발생한 경우, isOpen 상태를 변경
+        setIsReplyOptModalOpen(false);
+      }
+    },
+    [isReplyOptModalOpen, setIsReplyOptModalOpen]
+  );
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 외부 클릭 이벤트를 감지하는 이벤트 리스너를 추가
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      // 컴포넌트가 언마운트되거나 업데이트될 때 이벤트 리스너를 제거
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [setIsReplyOptModalOpen, handleClickOutside]);
   return (
     <div css={{ paddingBottom: 10 }}>
       <s.OriginalReplyWrapper>
@@ -262,8 +280,12 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             </div>
             {/* KEBAP BUTTON */}
             <img
-              onClick={() => {
-                setIsReplyOptModalOpen(!isReplyOptModalOpen);
+              onClick={e => {
+                e.stopPropagation();
+                if (isReplyOptModalOpen) setIsReplyOptModalOpen(false);
+                else {
+                  setIsReplyOptModalOpen(true);
+                }
               }}
               css={{
                 cursor: 'pointer',
@@ -276,6 +298,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
           {/* 게시글OPTION */}
           {isReplyOptModalOpen && (
             <div
+              ref={ref}
               css={{
                 position: 'absolute',
                 right: -30,
@@ -301,9 +324,11 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             </div>
           )}
         </div>
-        {/* 댓글텍스트 */}
+        {/* ORIGINAL 댓글 */}
         {isModifyOn ? (
           <ReplyModifyOnComponent
+            modifyTypes="original"
+            reply={reply}
             replyIDX={reply.idx}
             isModifyOn={isModifyOn}
             setIsModifyOn={setIsModifyOn}
@@ -380,6 +405,9 @@ export const SecondaryReplyInputComponent = ({
     if (value.length <= 250) {
       setSecondaryReplyText(value);
       adjustTextareaHeight();
+    } else {
+      setSecondaryReplyText(e.target.value.slice(0, 250));
+      adjustTextareaHeight();
     }
   };
   //댓글 길이에 반응하는 댓글창 (auto:측정,scrollHeight:반응형높이추가)
@@ -451,9 +479,7 @@ export const SecondaryReplyInputComponent = ({
         }}
         css={{ display: 'flex', alignItems: 'flex-end' }}
       >
-        <ReplyButton right={-20} bottom={0}>
-          작성하기
-        </ReplyButton>
+        <ReplyButton buttonCord={{ right: -20, bottom: 0 }}>작성하기</ReplyButton>
       </div>
     </div>
   );
@@ -461,6 +487,8 @@ export const SecondaryReplyInputComponent = ({
 
 //댓글(대댓글) 수정모드 컴포넌트
 export const ReplyModifyOnComponent = ({
+  modifyTypes,
+  reply,
   replyIDX,
   replyTextState,
   setReplyTextState,
@@ -469,6 +497,8 @@ export const ReplyModifyOnComponent = ({
   isSecondModifyOn,
   setIsSecondModifyOn,
 }: {
+  modifyTypes?: string;
+  reply?: IComments;
   replyIDX?: number;
   replyTextState: string;
   setReplyTextState?: React.Dispatch<React.SetStateAction<string>>;
@@ -480,8 +510,13 @@ export const ReplyModifyOnComponent = ({
   const replyTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleOriginalTextModifying = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (setReplyTextState) setReplyTextState(prevState => e.target.value);
-    adjustTextareaHeight();
+    if (setReplyTextState && e.target.value.length <= 250) {
+      setReplyTextState(e.target.value);
+      adjustTextareaHeight();
+    } else if (setReplyTextState && e.target.value.length > 250) {
+      setReplyTextState(e.target.value.slice(0, 250));
+      adjustTextareaHeight();
+    }
   };
   //댓글 길이에 반응하는 댓글창 (auto:측정,scrollHeight:반응형높이추가)
   const adjustTextareaHeight = () => {
@@ -505,6 +540,7 @@ export const ReplyModifyOnComponent = ({
       //esc눌러서 댓글 켜져있으면 꺼주기
       if (setIsModifyOn) setIsModifyOn(false);
       if (setIsSecondModifyOn) setIsSecondModifyOn(false);
+      if (setReplyTextState && reply) setReplyTextState(reply?.content);
     }
   };
   //댓글수정
@@ -512,7 +548,7 @@ export const ReplyModifyOnComponent = ({
   return (
     <div
       css={{
-        margin: '24px 30px',
+        margin: '24px 24px',
         border: `1px solid ${COLORS.Gray2}`,
         borderRadius: 10,
         padding: 16,
@@ -522,7 +558,7 @@ export const ReplyModifyOnComponent = ({
     >
       <textarea
         onKeyDown={handleKeyDown}
-        maxLength={251}
+        maxLength={250}
         ref={replyTextAreaRef}
         defaultValue={replyTextState}
         onChange={handleOriginalTextModifying}
@@ -544,7 +580,7 @@ export const ReplyModifyOnComponent = ({
           letterSpacing: -2,
           position: 'relative',
           top: 2,
-          width:'95%'
+          width: modifyTypes === 'secondary' ? '93%' : '97%',
         }}
       ></textarea>
       <div
@@ -556,9 +592,14 @@ export const ReplyModifyOnComponent = ({
           mutate({ replyIDX, body: { content: replyTextState } });
         }}
       >
-        <ReplyButton right={28} bottom={0}>
-          수정하기
-        </ReplyButton>
+        {/* //대댓글수정버튼 */}
+        {modifyTypes === 'original' ? (
+          <ReplyButton modifyTypes="original" buttonCord={{ right: 0, bottom: 0 }}>
+            수정하기
+          </ReplyButton>
+        ) : (
+          <ReplyButton buttonCord={{ right: 28, bottom: 0 }}>수정하기</ReplyButton>
+        )}
       </div>
     </div>
   );
@@ -581,10 +622,28 @@ export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => 
       return false;
     }
   });
+  const ref = useRef<HTMLDivElement>(null);
+  const handleClickOutside = useCallback(
+    (e: MouseEvent) => {
+      if (ref.current && !ref?.current.contains(e.target as Node) && isReplyOptModalOpen) {
+        // 외부 클릭이 발생한 경우, isOpen 상태를 변경
+        setIsReplyOptModalOpen(false);
+      }
+    },
+    [isReplyOptModalOpen, setIsReplyOptModalOpen]
+  );
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 외부 클릭 이벤트를 감지하는 이벤트 리스너를 추가
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      // 컴포넌트가 언마운트되거나 업데이트될 때 이벤트 리스너를 제거
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [setIsReplyOptModalOpen, handleClickOutside]);
 
   return (
     <div>
-      <s.SecondaryReplyWrapper>
+      <s.SecondaryReplyWrapper isSecondModifyOn={isSecondModifyOn}>
         <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 15px', justifyContent: 'space-between' }}>
           <img css={{ marginRight: 12 }} src={EmptyReplyArrow} alt="reply-arrow-empty" />
           <ImageBox width={32} height={32} source={reReply.writerImg} />
@@ -618,8 +677,13 @@ export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => 
               {isInclude ? <ReplyEmptyRoundLikeButton isReplyLikeOn={true} /> : <ReplyEmptyRoundLikeButton isReplyLikeOn={false} />}
             </div>
             <img
-              onClick={() => {
-                setIsReplyOptModalOpen(!isReplyOptModalOpen);
+              onClick={e => {
+                e.stopPropagation();
+                if (isReplyOptModalOpen) {
+                  setIsReplyOptModalOpen(false);
+                } else {
+                  setIsReplyOptModalOpen(true);
+                }
               }}
               css={{
                 cursor: 'pointer',
@@ -631,6 +695,7 @@ export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => 
           </div>
           {isReplyOptModalOpen && (
             <div
+              ref={ref}
               css={{
                 position: 'absolute',
                 right: -55,
@@ -660,6 +725,8 @@ export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => 
         </div>
         {isSecondModifyOn ? (
           <ReplyModifyOnComponent
+            modifyTypes="secondary"
+            reply={reReply}
             replyIDX={reReply.idx}
             replyTextState={replyTextState}
             setReplyTextState={setReplyTextState}
@@ -715,7 +782,15 @@ export const ReplyEmptyRoundLikeButton = ({ isReplyLikeOn }: { isReplyLikeOn: bo
 };
 
 //작성하기 버튼
-export const ReplyButton = styled.button<{ right?: number; bottom?: number }>(({ right, bottom }) => ({
+interface ButtonProps {
+  buttonCord: {
+    right: number;
+    bottom: number;
+  };
+  modifyTypes?: string;
+}
+
+export const ReplyButton = styled.button<ButtonProps>(({ buttonCord, modifyTypes }) => ({
   alignSelf: 'end',
   boxSizing: 'border-box',
   all: 'unset',
@@ -734,8 +809,8 @@ export const ReplyButton = styled.button<{ right?: number; bottom?: number }>(({
   },
   borderRadius: 60,
   position: 'relative',
-  right: right,
-  bottom: bottom,
+  right: modifyTypes === 'original' ? 0 : buttonCord.right,
+  bottom: modifyTypes === 'original' ? 0 : buttonCord.bottom,
 }));
 
 //유저 좋아요 리스트 모달
@@ -750,10 +825,8 @@ function LikeUserModal({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const handleClickOutside = useCallback((e: MouseEvent) => {
-    // ref를 사용하여 컴포넌트의 레퍼런스를 가져옵니다.
-    // ref.current는 컴포넌트의 레퍼런스를 나타냅니다.
     if (ref.current && !ref?.current.contains(e.target as Node)) {
-      // 외부 클릭이 발생한 경우, isOpen 상태를 변경합니다.
+      // 외부 클릭이 발생한 경우, isOpen 상태를 변경
       setIsLikeModalOpen(false);
     }
   }, []);

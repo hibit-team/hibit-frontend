@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import * as s from './styles';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
@@ -61,6 +61,25 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
       setIsInviteModalOpen(false);
     };
   }, []);
+
+  const ref = useRef<HTMLDivElement>(null);
+  const handleClickOutside = useCallback(
+    (e: MouseEvent) => {
+      if (ref.current && !ref?.current.contains(e.target as Node) && isPurpleKebapOptionOpen) {
+        // 외부 클릭이 발생한 경우, isOpen 상태를 변경
+        if (isPurpleKebapOptionOpen) setIsPurpleKebapOptionOpen(false);
+      }
+    },
+    [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen]
+  );
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 외부 클릭 이벤트를 감지하는 이벤트 리스너를 추가
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      // 컴포넌트가 언마운트되거나 업데이트될 때 이벤트 리스너를 제거
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [setIsPurpleKebapOptionOpen, handleClickOutside]);
   return (
     <div css={{ marginBottom: 100 }}>
       <s.MatchArticleWrapper>
@@ -122,8 +141,12 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             {data?.time}
           </div>
           <img
-            onClick={() => {
-              setIsPurpleKebapOptionOpen(!isPurpleKebapOptionOpen);
+            onClick={e => {
+              e.stopPropagation();
+              if (isPurpleKebapOptionOpen) setIsPurpleKebapOptionOpen(false);
+              else {
+                setIsPurpleKebapOptionOpen(true);
+              }
             }}
             css={{
               margin: 6,
@@ -134,6 +157,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
           />
           {isPurpleKebapOptionOpen && (
             <div
+              ref={ref}
               css={{
                 position: 'absolute',
                 top: '1rem',
@@ -264,7 +288,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
               gridRow: 2,
               display: 'flex',
               position: 'relative',
-              left: 542,
+              left: 535,
               bottom: 23,
               justifyContent: 'center',
               alignItems: 'center',
@@ -474,7 +498,7 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
               // const openInNewTab = (url:string) => {
               //   const newTab = window.open(url, '_blank');
               //   newTab?.focus();
-              // }; 
+              // };
               // openInNewTab(`/report/${postIDX}?reply=${replyIDX}`)
               navigate(`/report/${postIDX}?reply=${replyIDX}`);
             }

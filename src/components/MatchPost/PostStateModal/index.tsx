@@ -139,6 +139,7 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
               }
             }}
             css={{
+              userSelect:'none',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
