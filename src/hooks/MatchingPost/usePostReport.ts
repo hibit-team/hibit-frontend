@@ -1,4 +1,3 @@
-//게시글 및 댓글 신고 훅
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import HttpClient from '../../services/HttpClient';
 import { AxiosError } from 'axios';
@@ -12,7 +11,8 @@ export interface IReportBody {
   declarationType: string | null;
   content: string;
 }
-//게시글 좋아요
+
+//게시글 및 댓글 신고 요청 훅
 export const usePostReport = (body: IReportBody) => {
   const queryClient = useQueryClient();
   const matchingArticleLikeMutationFn = async () => {

@@ -1,17 +1,18 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import * as s from './style';
 import { css } from '@emotion/react';
 import Modal from 'react-modal';
 import COLORS from '../../../assets/color';
 import NoCheck from '../../../images/components/MatchPost/InviteModal/NoCheck.svg';
 import OnCheck from '../../../images/components/MatchPost/InviteModal/OnCheck.svg';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
 import { InviteModalUserList } from '../../../recoil/atom/InviteModalUserList';
 import { hoverAnimation } from '../PostArticle/styles';
 import { useGetInviteModalList } from '../../../hooks/MatchingPost/useGetInviteModalList';
 import { IInvitationProps } from '../../../hooks/MatchingPost/useGetInviteModalList';
+import { usePostInviteUserList } from '../../../hooks/MatchingPost/usePostInviteUserList';
 
 // React-lazy 코드스플리팅
 const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
@@ -20,15 +21,17 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
   const closeModal = () => {
     setModalIsOpen(false);
   };
-  useEffect(()=>{
-    return ()=>{
+  useEffect(() => {
+    return () => {
       //초대모달 언마운트시 클리어
-      setModalIsOpen(false)
-    }
-  },[setModalIsOpen])
-
+      setModalIsOpen(false);
+    };
+  }, [setModalIsOpen]);
+  //초대장발송 put
+  const userList = useRecoilValue(InviteModalUserList);
+  const { mutate: inviteUsersMutate } = usePostInviteUserList(postIDX, userList);
+  //초대 리스트 불러오기
   const { isFetching, isLoading, data: invitationList } = useGetInviteModalList(postIDX);
-  if (isFetching || isLoading) return <>idLoading...</>;
 
   const modalCss: ReactModal.Styles = {
     overlay: {
@@ -61,6 +64,8 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
       borderRadius: '16px 16px 16px 16px',
     },
   };
+
+  if (isFetching || isLoading) return <p css={{ margin: '0 auto', fontSize: 16, fontWeight: 700 }}>isLoading...</p>;
 
   return (
     <div>
@@ -105,8 +110,12 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
             return <InviteModalContent key={list.idx} list={list}></InviteModalContent>;
           })}
         </s.InviteModalContentsWrapper>
-        {/* 초대하기버튼  */}
+        {/* //초대 유저 리스트 post하기 버튼 */}
         <div
+          onClick={e => {
+            e.stopPropagation();
+            inviteUsersMutate();
+          }}
           data-id="invite-button"
           css={{
             display: Fold ? 'none' : 'flex',
@@ -119,7 +128,7 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
         >
           <div
             css={{
-              userSelect:'none',
+              userSelect: 'none',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -156,37 +165,33 @@ const InviteModal = ({ postIDX }: { postIDX: string | undefined }) => {
 
 export default InviteModal;
 
-const InviteModalContent = ({ list }: { list?: IInvitationProps }) => {
+const InviteModalContent = React.memo(({ list }: { list?: IInvitationProps }) => {
   //post body에 userList담아서 요청
   const [userList, setUserList] = useRecoilState(InviteModalUserList);
+  console.log(userList);
   const [checkState, setCheckState] = useState(false);
   useEffect(() => {
     //언마운트시 리스트 클리어
     return () => {
       setUserList([]);
-      setCheckState(false);
+      // setCheckState(false);
     };
-  }, []);
+  }, [setUserList]);
+  const handleClick = useCallback(() => {
+    if (list) {
+      const updatedUserList = checkState
+        ? userList.filter(item => item !== list.id)
+        : [...userList, list.id];
+
+      setUserList(updatedUserList);
+      setCheckState(prevCheckState => !prevCheckState);
+    }
+  }, [checkState, list, setUserList, userList]);
+
   return (
     <div
-      onClick={() => {
-        //받아온 리스트 목록이 존재하고, uncheck일떄
-        if (checkState === false && list) {
-          //true로바꾸고 
-          setCheckState(true);
-          //기존 리스트에 체크유저(list) 추가 
-          setUserList(prev => [...prev, list]);
-        } else if (checkState === true && list) {
-          //checkState true인경우 false로 바꾸고 다시 체크한 리스트 제외한 요소만 반환
-          setCheckState(false);
-          setUserList(prev =>
-            prev.filter(item => {
-              //해당 리스트 제외 요소들만 반환
-              return item !== list;
-            })
-          );
-        }
-      }}
+      onClick={handleClick
+    }
       css={{
         minWidth: 259,
         minHeight: 56,
@@ -208,4 +213,4 @@ const InviteModalContent = ({ list }: { list?: IInvitationProps }) => {
       {checkState ? <img src={OnCheck} alt="no-check"></img> : <img src={NoCheck} alt="no-check"></img>}
     </div>
   );
-};
+});
