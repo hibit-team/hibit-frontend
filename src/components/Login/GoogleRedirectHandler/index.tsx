@@ -25,7 +25,7 @@ const GoogleRedirectHandler = () => {
       code: code,
       redirectUri: redirectUri
     }
-    axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/google/token`, body, {
+    axios.post(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/google/token`, body, {
       headers: {
         "Content-Type": "application/json"
       }
