@@ -5,7 +5,7 @@ import { atom } from "recoil";
 //   id: string;
 //   profileImg: string;
 // }
-export const InviteModalUserList = atom<[]|string[]>({
+export const InviteModalUserList = atom<[]|number[]>({
   key: 'InviteModalUserList',
   default: [],
 });

@@ -51,7 +51,7 @@ export default function ReportModal() {
     reportId: 'b', //str
     postIdx: !postIdx ? null : Number.parseInt(postIdx),
     commentIdx: !commentIdx ? null : Number.parseInt(commentIdx),
-    declarationType: selectedOpt!== null ? declarationTypeArray[selectedOpt] : null,
+    declarationType: selectedOpt !== null ? declarationTypeArray[selectedOpt] : null,
     content: reportText,
   });
   return (
@@ -96,11 +96,12 @@ export default function ReportModal() {
             {reportOption.map((opt, idx) => {
               return (
                 <div
+                  key={idx}
                   onClick={() => {
                     setSelectedOpt(idx);
                   }}
                 >
-                  <ReportModalContent opt={opt} key={idx} idx={idx}></ReportModalContent>
+                  <ReportModalContent opt={opt} idx={idx}></ReportModalContent>
                 </div>
               );
             })}

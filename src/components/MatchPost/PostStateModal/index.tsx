@@ -6,41 +6,25 @@ import Modal from 'react-modal';
 import COLORS from '../../../assets/color';
 import NoCheck from '../../../images/components/MatchPost/InviteModal/NoCheck.svg';
 import OnCheck from '../../../images/components/MatchPost/InviteModal/OnCheck.svg';
-import { useRecoilState} from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { hoverAnimation } from '../PostArticle/styles';
-import { useUpdateMatchingStatus } from '../../../hooks/MatchingPost/useUpdateMatchingStatus';
-import { useGetInviteModalList } from '../../../hooks/MatchingPost/useGetInviteModalList';
+// import { useUpdateMatchingStatus } from '../../../hooks/MatchingPost/useUpdateStateAndPostUserList';
 import { IInvitationProps } from '../../../hooks/MatchingPost/useGetInviteModalList';
-import { PostStateModalAtom } from '../../../recoil/atom/PostStateModal';
-import { PostStateUserList } from '../../../recoil/atom/PostStateUserList';
-
+import { PostStateModalSwitch } from '../../../recoil/atom/PostStateModalSwitch';
+import { PostCompleteUserList } from '../../../recoil/atom/PostCompleteUserList';
+import HttpClient from '../../../services/HttpClient';
+import { AxiosError } from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import { useUpdateStateAndPostUserList } from '../../../hooks/MatchingPost/useUpdateStateAndPostUserList';
+//게시글 모집완료(complete)시 등장모달
 const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
-  const [modalIsOpen, setModalIsOpen] = useRecoilState(PostStateModalAtom);
-  const [Fold, setFold] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useRecoilState(PostStateModalSwitch);
+  const userList = useRecoilValue(PostCompleteUserList); //발송유저리스트
+  const [Fold, setFold] = useState(false);//접기여부
   const closeModal = () => {
     setModalIsOpen(false);
   };
-  // 게시글 상태변경 커스텀훅 (update)
-  const { mutate: updateMutate } = useUpdateMatchingStatus(postIDX);
-  //언마운트 모달 클리어 
-  useEffect(() => {
-    return () => {
-      setModalIsOpen(false);
-    };
-  }, [setModalIsOpen]);
-
-  //초대수락 인원(함께한 인원) 리스트 Query
-  const companyListQueryFn = async () => {
-    try {
-      const res = await HttpClient.get(`/matching/${postIDX}/oklist`);
-      return res;
-    } catch (e) {
-      console.error(`초대리스트를 불러오지 못했습니다 .${(e as AxiosError).message}`);
-      return;
-    }
-  };
-  const { data: companionList } = useQuery<IInvitationProps[]>(['company-list'], companyListQueryFn);
-
+  //모달css
   const modalCss: ReactModal.Styles = {
     overlay: {
       position: 'fixed',
@@ -73,6 +57,28 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
     },
   };
 
+  // //컴포넌트 언마운트시 모달 클리어
+  // useEffect(() => {
+  //   return () => {
+  //     setModalIsOpen(false);
+  //   };
+  // }, [setModalIsOpen]);
+
+  //초대수락 인원(함께한 인원) 리스트 Query
+  const companyListQueryFn = async () => {
+    try {
+      const res = await HttpClient.get(`/matching/${postIDX}/oklist`);
+      return res;
+    } catch (e) {
+      console.error(`초대리스트를 불러오지 못했습니다 .${(e as AxiosError).message}`);
+      return;
+    }
+  };
+  const { data: companionList } = useQuery<IInvitationProps[]>(['company-list'], companyListQueryFn);
+
+  // 게시글 상태변경 커스텀훅 (complete)
+  const { mutate: updateMutate } = useUpdateStateAndPostUserList(postIDX, userList);
+  
   return (
     <div>
       <Modal style={modalCss} isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Invite-Modal">
@@ -134,12 +140,12 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
               const confirmed = window.confirm(`함께한 유저를 선택하면 게시글의 상태가 '모집완료'로 변경됩니다.`);
               setModalIsOpen(false);
               if (confirmed === true) {
-                //게시글 상태 업데이트 put
+                //게시글 상태 업데이트 put => userList 발송
                 updateMutate(postIDX);
               }
             }}
             css={{
-              userSelect:'none',
+              userSelect: 'none',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -178,7 +184,7 @@ export default PostStateModal;
 
 const InviteModalContent = ({ list }: { list?: IInvitationProps }) => {
   //post body에 userList담아서 요청
-  const [userList, setUserList] = useRecoilState(PostStateUserList);
+  const setUserList = useSetRecoilState(PostCompleteUserList);
   const [checkState, setCheckState] = useState(false);
   useEffect(() => {
     //언마운트시 리스트 클리어
@@ -192,13 +198,13 @@ const InviteModalContent = ({ list }: { list?: IInvitationProps }) => {
       onClick={() => {
         if (checkState === false && list) {
           setCheckState(true);
-          setUserList(prev => [...prev, list]);
+          setUserList(prev => [...prev, list.idx]);
         } else if (checkState === true && list) {
           //checkState true인경우 다시 체크한 요소를 제외한 요소만 반환
           setCheckState(false);
           setUserList(prev =>
             prev.filter(item => {
-              return item !== list;
+              return item !== list.idx;
             })
           );
         }

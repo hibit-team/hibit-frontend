@@ -179,10 +179,11 @@ const InviteModalContent = React.memo(({ list }: { list?: IInvitationProps }) =>
   }, [setUserList]);
   const handleClick = useCallback(() => {
     if (list) {
+      //클릭시 체크되지않았다면 리스트추가, 체크된상태라면 빼기
       const updatedUserList = checkState
-        ? userList.filter(item => item !== list.id)
-        : [...userList, list.id];
-
+        ? userList.filter(item => item !== list.idx)
+        : [...userList, list.idx];
+      //이후 상태 업데이트
       setUserList(updatedUserList);
       setCheckState(prevCheckState => !prevCheckState);
     }
