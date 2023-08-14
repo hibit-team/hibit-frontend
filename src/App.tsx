@@ -17,6 +17,7 @@ import GoogleRedirectHandler from "./components/Login/GoogleRedirectHandler";
 
 function App() {
   const queryClient = new QueryClient();
+  const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
   return (
     <>
       <RecoilRoot>
@@ -33,7 +34,7 @@ function App() {
                 <Route path="/match-post" element={<MatchingPostPage />} />
                 <Route path="/others/:userID" element={<OtherProfile />} />
                 <Route path="/posting" element={<Posting />} />
-                <Route path="/google-callback" element={<GoogleRedirectHandler />} />
+                <Route path={"/google-callback"} element={<GoogleRedirectHandler />} />
               </Routes>
             </Router>
           </Container>

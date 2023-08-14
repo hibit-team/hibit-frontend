@@ -18,6 +18,7 @@ import AlarmAPI from '../../api/AlarmAPI';
 import { useRecoilValue } from 'recoil';
 import { userIdxState } from '../../recoil/atom/UserIdx';
 import { IAlarm } from '../../interfaces/Alarm/IAlarm';
+import tmpAlarmData from '../../assets/data/alarm/tmpAlarmData';
 
 const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }) => {
 
@@ -93,7 +94,7 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
                 </s.Tabs>
                 <s.AlarmList>
                   {
-                    alarmState.map((data) => {
+                    tmpAlarmData.map((data) => {
                       switch(data.type) {
                         case "COMMENT":
                           return <Comment {...data}/>
@@ -125,7 +126,7 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
                 </s.Tabs>
                 <s.AlarmList>
                   {
-                    alarmState.map((data) => {
+                    tmpAlarmData.map((data) => {
                       switch(data.type) {
                         case "REPORT":
                           return <Report {...data}/>

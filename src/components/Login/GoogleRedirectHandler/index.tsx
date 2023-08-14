@@ -8,10 +8,6 @@ import { accessTokenState, isLoggedInState } from '../../../recoil/atom/AccessTo
 const GoogleRedirectHandler = () => {
   const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
   const location = useLocation();
-  const [refreshCookies, setRefreshCookies] = useCookies(['refreshToken']);
-  
-  const accessTokenAtom = useRecoilValue(accessTokenState);
-  const isLoggedIn = useRecoilValue(isLoggedInState);
   const setAccessToken = useSetRecoilState(accessTokenState);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
 
@@ -37,14 +33,10 @@ const GoogleRedirectHandler = () => {
       .then((res) => {
         console.log(res.data);
         const accessToken = res.data.accessToken;
-        const refreshToken = res.data.refreshToken;
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        axios.defaults.headers.common['Authorization'] = `${accessToken}`;
         setAccessToken(accessToken);
-        setIsLoggedIn(true);
-        localStorage.setItem('isLoggedIn', 'true');
 
-        setRefreshCookies('refreshToken', refreshToken, {path: '/', maxAge: 604800});
         navigate('/');
       })
       .catch((err) => {
