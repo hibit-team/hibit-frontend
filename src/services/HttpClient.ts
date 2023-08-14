@@ -2,7 +2,7 @@ import axios, { AxiosError } from "axios";
 import { useCookies } from "react-cookie";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_SERVER_BASE_HTTPS_URL,
+  baseURL: process.env.REACT_APP_SERVER_BASE_URL,
   withCredentials: true,
 });
 
@@ -23,10 +23,11 @@ axiosInstance.interceptors.response.use(
       };
 
       try {
-        const response = await axios.post(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/token/access`, body); // refreshToken으로 ack 재발급 요청
+        const response = await axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/token/access`, body); // refreshToken으로 ack 재발급 요청
         if (response.status >= 200 || response.status < 300) { // 정상 응답 (2xx)
           const { acceesToken } = response.data;
           console.log({acceesToken});
+          console.log("토큰 재요청")
           axiosInstance.defaults.headers.common['Authorization'] = `${acceesToken}`; 
           error.config!.headers['Authorization'] = `${acceesToken}`;
           return axiosInstance(error.config!);

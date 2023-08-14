@@ -1,23 +1,17 @@
 import axios from 'axios';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { accessTokenState, isLoggedInState } from '../../../recoil/atom/AccessToken';
+import { useSetRecoilState } from 'recoil';
+import { accessTokenState } from '../../../recoil/atom/AccessToken';
 
 const GoogleRedirectHandler = () => {
   const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
   const location = useLocation();
   const setAccessToken = useSetRecoilState(accessTokenState);
-  const setIsLoggedIn = useSetRecoilState(isLoggedInState);
-
-  const handleSetAccessToken = (newAccessToken: string) => {
-    setAccessToken(newAccessToken);
-  };
   
   const navigate = useNavigate();
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
 
     console.log('Received code:', code);
@@ -43,7 +37,7 @@ const GoogleRedirectHandler = () => {
         console.error({err});
       });
 
-    }, [location.search, redirectUri]);
+    }, [location.search, navigate, redirectUri, setAccessToken]);
     
   return (
     <div>

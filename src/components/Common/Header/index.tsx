@@ -24,15 +24,15 @@ const Header = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("메인");
 
   // Log in
+  const isLoggedIn = useIsLogin();
   const accessTokenAtom = useRecoilValue(accessTokenState);
-  const isLoggedIn = useRecoilValue(isLoggedInState);
   const resetAccessToken = useResetRecoilState(accessTokenState);
   const setIsLoggedIn = useSetRecoilState(isLoggedInState);
-  useEffect(() => {
-    const isloggedin = localStorage.getItem('isLoggedIn');
-    setIsLoggedIn(isloggedin === 'true');
-    setIsLoggedIn(true); // 코드 작업 끝나고 삭제해야됨
-  }, [setIsLoggedIn]);
+  // useEffect(() => {
+  //   const isloggedin = localStorage.getItem('isLoggedIn');
+  //   setIsLoggedIn(isloggedin === 'true');
+  //   setIsLoggedIn(true); // 코드 작업 끝나고 삭제해야됨
+  // }, [setIsLoggedIn]);
   const onClickLogin = () => {
     openModal();
   };
@@ -43,8 +43,7 @@ const Header = () => {
   const onClickLogout = () => {
     alert("로그아웃 되었습니다.");
     resetAccessToken();
-    setIsLoggedIn(false);
-    localStorage.setItem('isLoggedIn', 'false');
+    // useIsLogin
   };
 
   const [hasAlarm, setHasAlarm] = useState<boolean>(true);
