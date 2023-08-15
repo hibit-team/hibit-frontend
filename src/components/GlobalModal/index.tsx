@@ -4,9 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { css } from '@emotion/react';
 import COLORS from '../../assets/color';
+import useIsMobile from '../../hooks/useIsMobile';
 //글로벌모달(회원가입/프로필등록유도)
-
 export const GlobalModal = () => {
+  const isMobile = useIsMobile();
   // modalText 초기화 & 언마운트시 모달 클리어
   //회원가입유도1
   const modalText1 = [
@@ -30,16 +31,16 @@ export const GlobalModal = () => {
     '내 프로필 등록하기',
   ];
   //유저로그인 상태값으로부터 회원/프로필 유무 boolean값으로 받아서 setState
-  const [modalText,setModalText] = useState<string[]>(modalText1);
-  
+  const [modalText, setModalText] = useState<string[]>(modalText1);
+
   // 모달텍스트 셋팅 & 언마운트시 모달클리어
   useEffect(() => {
     //여기서 회원상태값에 따라 의존성주입
-    setModalText(modalText3);
+    setModalText(modalText1);
     return () => {
       // if(modalIsOpen) closeModal();
-    }
-  },[]);
+    };
+  }, []);
 
   const svgSmile = (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -106,8 +107,8 @@ export const GlobalModal = () => {
       display: 'flex',
       flexDirection: 'column',
       border: 'none',
-      width: 610,
-      height: 402,
+      width: isMobile ? 365 : 610,
+      height: isMobile ? 350 : 402,
       overflow: 'hidden',
       borderRadius: 16,
       padding: 0,
@@ -116,7 +117,6 @@ export const GlobalModal = () => {
       transform: 'translate(-50%, -50%)',
     },
   };
-
   //modal switch : 전역추가예정
   const [modalIsOpen, setModalIsOpen] = useState(true);
   const closeModal = () => {
@@ -126,7 +126,7 @@ export const GlobalModal = () => {
     <Modal style={modalCss} isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Global-Modal">
       <s.ModalContentsWrapper>
         <s.ModalHeader>
-          <div css={{ userSelect: 'none', display: 'flex' }}>
+          <div css={{ userSelect: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             Say "Hi", a 'bit' slowly.
             <p css={{ position: 'relative', left: 10, top: 2 }}>{svgSmile}</p>
           </div>
@@ -148,19 +148,19 @@ export const GlobalModal = () => {
               flexDirection: 'column',
               justifyContent: 'space-between',
               alignItems: 'center',
-              fontSize: 22,
+              fontSize: '1.375em',
               fontWeight: 500,
             }}
           >
             {modalText[0]}
-            <div css={{margin:14,}}>{modalText[1]}</div>
+            <div css={{ margin: 14 }}>{modalText[1]}</div>
           </div>
           <div
             css={{
               userSelect: 'none',
               margin: '20px 0 36px 0',
               color: COLORS.Gray3,
-              fontSize: 20,
+              fontSize: '1.25em',
               fontWeight: 500,
             }}
           >
@@ -168,12 +168,12 @@ export const GlobalModal = () => {
           </div>
           <div
             css={{
-              cursor:'pointer',
+              cursor: 'pointer',
               userSelect: 'none',
-              fontSize: 18,
+              fontSize: '1.125em',
               color: COLORS.main79,
-              width: 260,
-              height: 52,
+              width: isMobile ? 200 : 260,
+              height: isMobile ? 40 : 52,
               fontWeight: 600,
               borderRadius: 10,
               border: `2px solid ${COLORS.main79}`,

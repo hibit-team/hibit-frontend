@@ -29,6 +29,7 @@ const MainPage = () => {
     return (
       <>    
         <MoHeaderComponent onToggle={onToggle}></MoHeaderComponent>
+        <GlobalModal/>
         <MobileTab></MobileTab>
         <MobileSlider></MobileSlider>
       </>
