@@ -1,18 +1,6 @@
 import styled from '@emotion/styled';
 import COLORS from '../../assets/color';
-// export const ModalOutLay = styled.div({
-//   boxSizing:'border-box',
-//   // position: 'absolute',
-//   // top:0,
-//   // left:0,
-//   display: 'flex',
-//   justifyContent: 'center',
-//   alignItems: 'center',
-//   width:'100%',
-//   height: '100%',
-//   background: 'rgba(0,0,0,0.05)',
-// });
-//반응형
+
 export const ModalContentsWrapper = styled.div({
   boxSizing:'border-box',
   overflow:'hidden',
@@ -29,7 +17,6 @@ export const ModalContentsWrapper = styled.div({
   // }
 });
 
-//Say "Hi", a 'bit' slowly.@ X 
 export const ModalHeader = styled.div({
   boxSizing:'border-box',
   display:'flex',
@@ -44,3 +31,11 @@ export const ModalHeader = styled.div({
   fontWeight: 800,
 })
 
+export const ModalTextWrapper = styled.div({
+  width:'100%',
+  height:'100%',
+  display:'flex',
+  flexDirection:'column',
+  justifyContent:'center',
+  alignItems:'center',
+})
