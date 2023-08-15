@@ -59,6 +59,9 @@ const CustomSearchBar = () => {
       ></input>
       {placeHolderState ? placeholderText : ''}
       <img
+        onClick={()=>{
+          //클릭시 recoil value 변경
+        }}
         css={css`
           width: 32px;
           height: 32px;
