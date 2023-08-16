@@ -32,9 +32,15 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
   useEffect(() => {
     const fetchAlarmList = async () => {
       try {
-        const alarmList = await AlarmAPI.getAlarmList(userIdx);
-        if(alarmList) {
-          setAlarmState(alarmList);
+        if (userIdx) {
+          const alarmList = await AlarmAPI.getAlarmList(userIdx);
+          if(alarmList) {
+            setAlarmState(alarmList);
+          } else {
+            console.log("alarmList가 없음");
+          }
+        } else {
+          console.log("userIdx가 없음");
         }
       } catch (error) {
         console.error({error});

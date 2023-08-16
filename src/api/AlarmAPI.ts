@@ -4,9 +4,8 @@ const AlarmAPI = {
   getAlarmList: async (userIdx: number) => {
     try {
       const path = `/alarm/list?userIdx=${userIdx}`;
-      const response = await HttpClient.get(path);
-      console.log({response});
-      return response;
+      // const response = await HttpClient.get(path);
+      // return response;
     } catch (e) {
       console.error({e});
       return null;

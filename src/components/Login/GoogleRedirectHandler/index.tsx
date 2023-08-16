@@ -3,11 +3,14 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { accessTokenState } from '../../../recoil/atom/AccessToken';
+import { axiosInstance } from '../../../services/HttpClient';
+import { userIdxState } from '../../../recoil/atom/UserIdx';
 
 const GoogleRedirectHandler = () => {
   const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
   const location = useLocation();
   const setAccessToken = useSetRecoilState(accessTokenState);
+  const setUserIdx = useSetRecoilState(userIdxState);
   
   const navigate = useNavigate();
   useEffect(() => {
@@ -25,11 +28,14 @@ const GoogleRedirectHandler = () => {
       }
     })
       .then((res) => {
-        console.log(res.data);
+        console.log(res);
         const accessToken = res.data.accessToken;
+        const userIdx = res.data.id;
 
-        axios.defaults.headers.common['Authorization'] = `${accessToken}`;
+        axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
         setAccessToken(accessToken);
+        setUserIdx(userIdx);
+        console.log(0);
 
         navigate('/');
       })
@@ -37,7 +43,7 @@ const GoogleRedirectHandler = () => {
         console.error({err});
       });
 
-    }, [location.search, navigate, redirectUri, setAccessToken]);
+    }, [location.search, navigate, redirectUri, setAccessToken, setUserIdx]);
     
   return (
     <div>

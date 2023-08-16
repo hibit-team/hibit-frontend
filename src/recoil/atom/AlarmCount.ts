@@ -6,12 +6,12 @@ export const alarmCountState = selector({
   key: 'alarmCountState',
   get: async ({get}) => {
     const userIdx = get(userIdxState);
-    const alarmList = await AlarmAPI.getAlarmList(userIdx);
-    if(alarmList) {
-      return alarmList.length;
-    } else {
-      return 0;
-    }
+    // const alarmList = await AlarmAPI.getAlarmList(userIdx);
+    // if(alarmList) {
+    //   return alarmList.length;
+    // } else {
+    //   return 0;
+    // }
   }
 });
 
