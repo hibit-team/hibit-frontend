@@ -4,14 +4,15 @@ import { css } from '@emotion/react';
 import COLORS from '../../../assets/color';
 import React, { useState } from 'react';
 import SearchIcon from '../../../images/components/Matching/searchIcon.svg';
-
+import { useSetRecoilState } from 'recoil';
+import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
 const CustomSearchBar = () => {
   const [inputValue, setInputValue] = useState('');
   const [placeHolderState, setPlaceHolderState] = useState(true);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
-
+  const setSortOption = useSetRecoilState(MatchingControllerState);
   const placeholderText = (
     <div
       onClick={() => {
@@ -59,8 +60,13 @@ const CustomSearchBar = () => {
       ></input>
       {placeHolderState ? placeholderText : ''}
       <img
-        onClick={()=>{
+        onClick={(e)=>{
           //클릭시 recoil value 변경
+          e.stopPropagation();
+          setSortOption({
+            atomKey:'search',
+            searchText:inputValue,
+          })
         }}
         css={css`
           width: 32px;

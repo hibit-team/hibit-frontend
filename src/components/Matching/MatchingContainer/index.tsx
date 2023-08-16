@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
 import { motion } from 'framer-motion';
+import { IMatchingControllerState } from '../../../hooks/MathchingMain/useGetMatchingInifiniteQuery';
 export interface IProps {
   hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
@@ -149,10 +150,11 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
 //매칭컨테이너(pages) - 매칭 그리드컨테이너(grid: eachPage)-매칭카드컴포넌트(eachData)
 const MatchingContainer = ({ hasNextPage, isFetchingNextPage, pages, fetchNextPage }: IProps) => {
   
-  const sortOption = useRecoilValue<string>(MatchingControllerState);
+  const sortOption = useRecoilValue<string|IMatchingControllerState>(MatchingControllerState);
+  console.log(sortOption,'test')
   return (
     <div >
-      <s.MatchingHeader>{ExhibitionText[sortOption]}</s.MatchingHeader>
+      { typeof sortOption === 'string' ? <s.MatchingHeader>{ExhibitionText[sortOption]}</s.MatchingHeader>: <s.MatchingHeader>{sortOption.searchText}에 대한 검색결과</s.MatchingHeader>}
       <s.MatchingGridContainer>
         {/* pages: page 1 ,2 ,3 ...  각페이지의 데이터가 eachPage파라미터로 ..*/}
         {pages?.map(eachPage => {
