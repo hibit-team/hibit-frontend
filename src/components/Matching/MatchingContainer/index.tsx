@@ -37,18 +37,15 @@ const cardVariants = {
 //매칭카드컴포넌트
 const MatchingCardComponent = ({ eachData }: IEachPost) => {
   const navigate = useNavigate();
-  const [timeVisibleState, setTimeVisibleState] = useState(false);
   return (
-    <motion.div variants={cardVariants} initial="hidden" animate="visible" exit="exit"
-      onMouseEnter={() => {
-        if (timeVisibleState === false) setTimeVisibleState(!timeVisibleState);
-      }}
-      onMouseLeave={() => {
-        if (timeVisibleState === true) setTimeVisibleState(!timeVisibleState);
-      }}
-      css={css`
-        // margin:auto;
-      `}
+    <motion.div
+      variants={cardVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      css={{ "&:hover p": {
+        opacity: '1',
+      }}}
     >
       <div
         onClick={() => {
@@ -129,19 +126,19 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
             {eachData?.title}
           </div>
         </div>
-        <div
+        <p
           css={{
-            fontWeight: 600,
-            fontSize: 16,
-            position: 'absolute',
-            top: 250,
-            left: 20,
-            display: timeVisibleState ? 'block' : 'none',
+            fontWeight: 700,
+            fontSize: 17,
+            position: 'relative',
+            top: -120,
+            left: 18,
             color: 'white',
+            opacity:0,
           }}
         >
-          {eachData.dateTime}
-        </div>
+          {eachData?.dateTime}
+        </p>
       </div>
     </motion.div>
   );
@@ -149,11 +146,14 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
 
 //매칭컨테이너(pages) - 매칭 그리드컨테이너(grid: eachPage)-매칭카드컴포넌트(eachData)
 const MatchingContainer = ({ hasNextPage, isFetchingNextPage, pages, fetchNextPage }: IProps) => {
-  
-  const sortOption = useRecoilValue<string|IMatchingControllerState>(MatchingControllerState);
+  const sortOption = useRecoilValue<string | IMatchingControllerState>(MatchingControllerState);
   return (
-    <div >
-      { typeof sortOption === 'string' ? <s.MatchingHeader>{ExhibitionText[sortOption]}</s.MatchingHeader>: <s.MatchingHeader>{sortOption.searchText}에 대한 검색결과</s.MatchingHeader>}
+    <div>
+      {typeof sortOption === 'string' ? (
+        <s.MatchingHeader>{ExhibitionText[sortOption]}</s.MatchingHeader>
+      ) : (
+        <s.MatchingHeader>{sortOption.searchText}에 대한 검색결과</s.MatchingHeader>
+      )}
       <s.MatchingGridContainer>
         {/* pages: page 1 ,2 ,3 ...  각페이지의 데이터가 eachPage파라미터로 ..*/}
         {pages?.map(eachPage => {
@@ -168,4 +168,3 @@ const MatchingContainer = ({ hasNextPage, isFetchingNextPage, pages, fetchNextPa
 };
 
 export default MatchingContainer;
-
