@@ -16,7 +16,7 @@ margin-bottom:24px;
   opacity: 0;
 }
 font-size: 24px;
-padding-left: 1.5rem;
+padding-left: 2.2rem;
 `
 
 

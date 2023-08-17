@@ -1,10 +1,9 @@
 import HttpClient from '../../services/HttpClient';
 import { useRecoilValue } from 'recoil';
 import { MatchingControllerState } from '../../recoil/atom/MatchingControllerState';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueryClient, } from '@tanstack/react-query';
 import { IPosts } from '../../pages/Matching';
 import { AxiosError } from 'axios';
-// import { IMatchingControllerState } from '../../recoil/atom/MatchingControllerState';
 //매칭메인페이지 칩게시물 fetching hook
 export interface IMatchingControllerState{
   atomKey:'search',
@@ -38,7 +37,7 @@ export const useGetMatchingInfiniteQuery = () => {
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length ? allPages.length + 1 : undefined;
     },
-    staleTime: 1000 * 5,
+    staleTime: 1000 * 45,  
     refetchOnWindowFocus: false,
   });
 };

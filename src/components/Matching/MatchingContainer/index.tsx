@@ -47,7 +47,7 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
         if (timeVisibleState === true) setTimeVisibleState(!timeVisibleState);
       }}
       css={css`
-        position: relative;
+        // margin:auto;
       `}
     >
       <div
@@ -64,7 +64,7 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
             </span>
           ))}
           <s.CardInfoBottom>
-            <s.CardStatus>{eachData?.status === 'N' ? '모집중' : eachData?.status === 'C' ? '모집완료' : 'error'}</s.CardStatus>
+            <s.CardStatus>{eachData?.status === 'N' ? '모집중' : eachData?.status === 'C' ? '모집완료' : '모집취소'}</s.CardStatus>
             <s.CardBottomCountInfo>
               <img
                 css={css`
@@ -151,7 +151,6 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
 const MatchingContainer = ({ hasNextPage, isFetchingNextPage, pages, fetchNextPage }: IProps) => {
   
   const sortOption = useRecoilValue<string|IMatchingControllerState>(MatchingControllerState);
-  console.log(sortOption,'test')
   return (
     <div >
       { typeof sortOption === 'string' ? <s.MatchingHeader>{ExhibitionText[sortOption]}</s.MatchingHeader>: <s.MatchingHeader>{sortOption.searchText}에 대한 검색결과</s.MatchingHeader>}

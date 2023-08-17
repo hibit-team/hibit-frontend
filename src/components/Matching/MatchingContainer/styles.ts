@@ -18,11 +18,12 @@ margin-top:40px;
 //그리드 컨테이너
 export const MatchingGridContainer = styled.div`
 display:grid;
-grid-template-columns: repeat(3,auto);
-margin-top:30px;
+grid-template-columns: repeat(3,33%);
+margin:30px auto 0 auto;
 max-width:100%;
 position:relative;
 left:1rem;
+user-select:none;
 `
 
 //카드 상단부이미지
