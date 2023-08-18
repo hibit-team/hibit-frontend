@@ -1,7 +1,6 @@
 import axios, { AxiosError } from "axios";
-import { useCookies } from "react-cookie";
-import { useRecoilValue } from "recoil";
-import { accessTokenState, isLoggedInState } from "../recoil/atom/AccessToken";
+import { useSetRecoilState } from "recoil";
+import { profileRegisteredState, userIdxState } from "../recoil/atom/LoginInfoState";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_BASE_URL,
@@ -9,54 +8,51 @@ export const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use(
-  (response) => {
-    console.log("정상적인 요청임");
+  /* 올바른 response callback*/
+  (response) => response, 
 
-    return Promise.resolve().then();
-  }, // 요청이 제대로 전달되는 경우(2xx 상태코드) : 정상 요청
+  /* 에러 발생 response callback */
+  async (error: AxiosError) => {
+    if (error.response) {
+      if (error.response.status === 401) { 
+        // 만료된 accessToken으로 요청한 경우
+        console.error("401 error. Accesstoken is not valid.");
 
-  async (error: AxiosError) => { // 요청 오류가 있는 경우 : 여러 경우에 대한 예외 처리
-    if (error.response && error.response.status === 401) { // 잘못된 ack : (1)새로고침해서 ack==null 이거나, (2)ack이 만료된 경우
-      console.log("코드 401임")
+        try {
+          const response = await axios.post(
+            `${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/token/access?logout=false`, 
+            {}
+          );  // refreshToken으로 ack 재발급 요청
 
-      const [cookies] = useCookies(['refreshToken']); // 서버에서 set-cookie 옵션 설정된 경우, 이 부분 코드 변경 가능성 있음.
+          if (200 <= response.status && response.status < 300) {
+            // 응답코드 2xx: accessToken 재발급 성공
+            const acceesToken = response.data.acceesToken;
+            const isProfileRegistered = response.data.isProfileRegistered;
+            const userIdx = response.data.id;
+            console.log("accessToken 재발급: ", {acceesToken, isProfileRegistered, userIdx});
 
-      if (!cookies.refreshToken) { // refreshToken 없는 경우 -> 재로그인 해야 함
-        console.error('No refreshToken. Please login again.');
-        return Promise.reject(error);
-      }
+            const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
+            const setUserIdx = useSetRecoilState(userIdxState);
 
-      const body = {
-        refreshToken: cookies.refreshToken
-      };
-
-      try {
-
-        // 로그아웃 요청 시, interceptor의 refreshToken을 이용한 accessToken값 얻는 로직 무효화
-        const isLoggedInAtom = useRecoilValue(isLoggedInState);
-        if (!isLoggedInAtom) { // false인 경우(로그아웃 요청한 경우) 요청 무효화
-          console.log("로그아웃 요청된 상태");
-          return Promise.reject(error);
+            axiosInstance.defaults.headers.common['Authorization'] = `${acceesToken}`;
+            setIsProfileRegistered(isProfileRegistered);
+            setUserIdx(userIdx);
+            
+            return;
+          } else {
+            // 재발급 실패
+            console.error({response});
+            alert("accessToken 재발급 실패. 재로그인 필요.");
+            window.location.href = "/";
+            return;
+          }
+        } catch (e) {
+          // 재발급 실패
+          console.error({e});
+          alert("accessToken 재발급 실패. 재로그인 필요.");
+          window.location.href = "/";
+          return;
         }
-
-
-
-        const response = await axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/token/access`, body); // refreshToken으로 ack 재발급 요청
-        if (response.status >= 200 || response.status < 300) { // 정상 응답 (2xx)
-          const { acceesToken } = response.data;
-          console.log({acceesToken});
-          console.log("토큰 재요청")
-          axios.defaults.headers.common['Authorization'] = `${acceesToken}`; 
-          error.config!.headers['Authorization'] = `${acceesToken}`;
-          return axiosInstance(error.config!);
-        } else { // 비정상 응답
-          console.error('Failed to refresh token: ', response.status);
-          return Promise.reject(error);
-        }
-
-      } catch (error) {
-        console.error('Error occured while refreshing token', error);
-        return Promise.reject(error);
       }
     }
     return Promise.reject(error);

@@ -8,10 +8,9 @@ import LoginModal from '../../Login/LoginModal';
 import CustomModalAlarm from '../../Alarm';
 import * as s from "./styles";
 import { useRecoilValue, useRecoilValueLoadable, useResetRecoilState, useSetRecoilState } from 'recoil';
-import { accessTokenState, isLoggedInState } from '../../../recoil/atom/AccessToken';
-import useIsLogin from '../../../hooks/useIsLogin';
+import { accessTokenState, profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
+import useLoginInfo from '../../../hooks/useLoginInfo';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
-import axios from 'axios';
 import { axiosInstance } from '../../../services/HttpClient';
 
 const CATEGORIES: IHeaderCategory[] = [
@@ -26,39 +25,56 @@ const Header = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("메인");
 
   // Login + Modal
-  const isLoggedIn = useIsLogin();
+  const loginInfo = useLoginInfo();
+  
   const accessTokenAtom = useRecoilValue(accessTokenState);
   const resetAccessToken = useResetRecoilState(accessTokenState);
+  const resetUserIdx = useResetRecoilState(userIdxState);
+  const resetIsProfileRegistered = useResetRecoilState(profileRegisteredState);
+
   const [modalOpen, setModalOpen] = useState(false);
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
   console.log(axiosInstance.defaults.headers.common)
 
   // Logout
-  const onClickLogout = () => {
-    console.log({accessTokenAtom})
-    resetAccessToken();
-    clearTokenAndHeader();
-    alert("로그아웃 되었습니다.");
-    console.log({accessTokenAtom})
+  const onClickLogout = async () => {
+    await axiosInstance.post(`/api/auth/token/access?logout=true`, {})
+      .then((res) => {
+        // console.log({res}) // ex)성공적으로 로그아웃되었습니다.
+        resetAccessToken(); // atom으로 관리되는 token값 null로 초기화
+        resetUserIdx();
+        resetIsProfileRegistered();
+        clearTokenAndHeader(); // axiosInstance의 default header accessToken값 null로 초기화
+        alert("로그아웃 되었습니다.");
+        return null;
+      })
+      .catch((e) => {
+        console.error({e});
+        alert("로그아웃 실패. 재로그인 하세요.");
+        resetAccessToken(); // atom으로 관리되는 token값 null로 초기화
+        resetUserIdx(); // atom으로 관리되는 userIdx값 null로 초기화
+        resetIsProfileRegistered(); // atom으로 관리되는 isProfileRegistered값 null로 초기화
+        clearTokenAndHeader(); // axiosInstance의 default header accessToken값 null로 초기화
+        navigate("/");
+        return null;
+      }) 
   };
   const clearTokenAndHeader = () => {
-    console.log(2);
-    axios.defaults.headers.common['Authorization'] = null;
-    // console.log(axios.defaults.headers.common);
+    axiosInstance.defaults.headers.common['Authorization'] = null;
   }
 
   const [hasAlarm, setHasAlarm] = useState<boolean>(true);
   const alarmCount = useRecoilValue(alarmCountState);
-  // useEffect(() => {
-  //   if (alarmCount > 0) {
-  //     setHasAlarm(true);
-  //     return;
-  //   }
-  //   else {
-  //     setHasAlarm(false);
-  //   }
-  // }, [alarmCount]);
+  useEffect(() => {
+    if (alarmCount > 0) {
+      setHasAlarm(true);
+      return;
+    }
+    else {
+      setHasAlarm(false);
+    }
+  }, [alarmCount]);
   
   const [isAlarmOpen, setIsAlarmOpen] = useState<boolean>(false);
   const onClickAlarm = () => {
@@ -114,7 +130,7 @@ const Header = () => {
             )
           })}
       </s.LeftContainer>
-      {isLoggedIn ?
+      {loginInfo?.isLoggedIn ?
         <s.RightContainer>
           <s.AlarmLogoContainer>
             <img onClick={onClickAlarm} src={AlarmIcon} alt='alarm-icon' />

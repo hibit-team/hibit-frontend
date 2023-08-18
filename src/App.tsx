@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
 import MainPage from "./pages/Main";
 import styled from "@emotion/styled";
 import { Global } from "@emotion/react";
@@ -14,10 +14,29 @@ import OtherProfile from "./pages/OtherProfile";
 import Posting from "./pages/Posting";
 import 'react-day-picker/dist/style.css';
 import GoogleRedirectHandler from "./components/Login/GoogleRedirectHandler";
+import { useEffect } from "react";
+import axios from "axios";
+import { axiosInstance } from "./services/HttpClient";
 
 function App() {
   const queryClient = new QueryClient();
   const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
+
+  /* 새로 고침 발생 시 accessToken 재발급 과정 */
+  useEffect(() => {
+    axiosInstance.post(`/api/auth/token/access`, {})
+      .then((res) => { 
+        // accessToken 재발급 및 header로 설정
+        console.log("new accessToken: ", res.data);
+        axiosInstance.defaults.headers.common['Authorization'] = res.data.accessToken;
+      })
+      .catch((e) => { 
+        console.error("유효하지 않은 refreshToken.", {e});
+        alert("유효하지 않은 refreshToken입니다. 다시 로그인을 시도하세요.");
+      });
+    return;
+  }, []);
+
   return (
     <>
       <RecoilRoot>

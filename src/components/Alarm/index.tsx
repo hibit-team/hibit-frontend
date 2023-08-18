@@ -16,7 +16,7 @@ import Event from './Event';
 import Remind from './Remind';
 import AlarmAPI from '../../api/AlarmAPI';
 import { useRecoilValue } from 'recoil';
-import { userIdxState } from '../../recoil/atom/UserIdx';
+import { userIdxState } from '../../recoil/atom/LoginInfoState';
 import { IAlarm } from '../../interfaces/Alarm/IAlarm';
 import tmpAlarmData from '../../assets/data/alarm/tmpAlarmData';
 
