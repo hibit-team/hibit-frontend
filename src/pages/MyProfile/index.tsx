@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as s from "./styles";
 import useIsMobile from "../../hooks/useIsMobile";
 import LayoutTemplateGray from "../../components/Common/LayoutTemplateGray";
@@ -11,6 +11,10 @@ import ProfileImage from "../../components/Profile";
 import WhitePlus from "../../images/components/Profile/WhitePlus.svg";
 import GrayPlus from "../../images/components/Profile/GrayPlus.svg";
 import CautionIcon from "../../images/components/Profile/CautionIcon.svg";
+import MyprofileAPI from "../../api/MyprofileAPI";
+import { userIdxState } from "../../recoil/atom/LoginInfoState";
+import { useRecoilValue } from "recoil";
+import { useNavigate } from "react-router-dom";
 
 export interface IimgProps {
   imgURL: string;
@@ -23,40 +27,41 @@ export interface IimgProps {
 const MyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
-  /* 초기에 받은 data */
-  const receivedData: IProfile = {
-    nickname: "망고조아",
-    age: 27,
-    gender: 0,
-    personality: ["지적인", "차분한"],
-    introduce: "오늘은 축구가 땡긴다",
-    job: "숭실대학교",
-    address_sido: "서울특별시",
-    address_sigugun: "구로구",
-    img: [
-      "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-1.png",
-      "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-2.png",
-      "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-3.png"
-    ], 
-  };
+  const navigate = useNavigate();
 
-  const [nickname, setNickname] = useState<string>(receivedData.nickname);
-  const [age, setAge] = useState<number>(receivedData.age);
-  const [gender, setGender] = useState<number>(receivedData.gender);
-  const [personality, setPersonality] = useState<string[]>(receivedData.personality);
-  const [introduce, setIntroduce] = useState<string>(receivedData.introduce);
-  // const [job, setJob] = useState<string | undefined>();
-  const [job, setJob] = useState<string | undefined>(receivedData.job);
-  const [address_sido, setAddress_sido] = useState<string | undefined>(receivedData.address_sido);
+  let receivedData: IProfile;
+  const profileId = useRecoilValue(userIdxState);
+  useEffect(() => {
+    if (profileId) {
+      receivedData = MyprofileAPI.getMyProfile(profileId, profileId);
+    } else {
+      alert("로그인을 먼저 진행해 주세요.");
+      
+    }
+
+  }, [profileId]);
+
+  const [nickname, setNickname] = useState<string | undefined>(undefined);
+  const [age, setAge] = useState<number | undefined>(undefined);
+  const [gender, setGender] = useState<number | undefined>(undefined);
+  const [personality, setPersonality] = useState<string[] | undefined>(undefined);
+  const [introduce, setIntroduce] = useState<string | undefined>(undefined);
+  const [job, setJob] = useState<string | undefined>(undefined);
+  const [address_sido, setAddress_sido] = useState<string | undefined>(undefined);
+  const [address_sigungu, setAddress_sigungu] = useState<string | undefined>(undefined);
+  const [img, setImg] = useState<string[] | undefined | null>(undefined);
+
   const [isAddressChanged, setIsAddressChanged] = useState<boolean>(false);
-  const [address_sigungu, setAddress_sigungu] = useState<string | undefined>(receivedData.address_sigugun);
-  const [img, setImg] = useState<string[] | undefined | null>(receivedData.img);
   
   /* 성격 리스트 - api로 받아 올 부분 */ 
   const personalityList = tmpPersonality;
 
-  /* 수정이 반영된 데이터: `취소` 버튼 클릭 시 receivedData로 다시 초기화 */
-  const sendData: IProfile = receivedData;
+  const onClickCancelBtn = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (window.confirm("변경 사항을 취소하시겠습니까?")) {
+      window.alert("메인 화면으로 돌아갑니다.");
+      navigate("/");
+    }
+  };
 
   const onClickEditBtn = () => {
     setIsEditMode(true);
@@ -280,7 +285,9 @@ const MyProfile = () => {
             </s.OptionalInfoWrapper>
         </s.OptionalInfoContainer>
         <s.ButtonContainer>
-          <s.CancelBtn isEditMode={isEditMode}>취소</s.CancelBtn>
+          <s.CancelBtn 
+            isEditMode={isEditMode}
+            onClick={onClickCancelBtn}>취소</s.CancelBtn>
           <s.SaveBtn isEditMode={isEditMode}>저장하기</s.SaveBtn>
         </s.ButtonContainer>
       </s.Wrapper>
