@@ -5,8 +5,8 @@ export const Wrapper = styled.div`
   flex-direction: row;
   align-items: center;
   width: 274px;
-  height: 86px;
   min-height: 86px; 
+  max-height: 86px;
   border-bottom: 1px solid #c9c9c9;
   flex: 1;
 `;
@@ -36,7 +36,7 @@ export const Imoji = styled.img`
   align-items: center;
   width: 20px;
   height: 20px;
-  background-color: black;
+  background-color: none;
 `;
 
 export const ContentsWrapper = styled.div`

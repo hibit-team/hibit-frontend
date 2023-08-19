@@ -1,42 +1,58 @@
 import axios, { AxiosError } from "axios";
-import { useCookies } from "react-cookie";
+import { useSetRecoilState } from "recoil";
+import { profileRegisteredState, userIdxState } from "../recoil/atom/LoginInfoState";
 
-const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_SERVER_BASE_URL,
+export const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_SERVER_BASE_URL,
   withCredentials: true,
 });
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  /* 올바른 response callback*/
+  (response) => response, 
+
+  /* 에러 발생 response callback */
   async (error: AxiosError) => {
-    if (error.response && error.response.status === 401) {
-      const [cookies] = useCookies(['refreshToken']);
+    if (error.response) {
+      if (error.response.status === 401) { 
+        // 만료된 accessToken으로 요청한 경우
+        console.error("401 error. Accesstoken is not valid.");
 
-      if (!cookies.refreshToken) {
-        console.error('No refreshToken. Please login again.');
-        return Promise.reject(error);
-      }
+        try {
+          const response = await axios.post(
+            `${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/token/access?logout=false`, 
+            {}
+          );  // refreshToken으로 ack 재발급 요청
 
-      const body = {
-        refreshToken: cookies.refreshToken
-      };
+          if (200 <= response.status && response.status < 300) {
+            // 응답코드 2xx: accessToken 재발급 성공
+            const acceesToken = response.data.acceesToken;
+            const isProfileRegistered = response.data.isProfileRegistered;
+            const userIdx = response.data.id;
+            console.log("accessToken 재발급: ", {acceesToken, isProfileRegistered, userIdx});
 
-      try {
-        const response = await axios.post(`${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/token/access`, body);
-        if (response.status === 200) {
-          const { acceesToken } = response.data;
-          console.log({acceesToken});
-          axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${acceesToken}`; 
-          error.config!.headers['Authorization'] = `Bearer ${acceesToken}`;
-          return axiosInstance(error.config!);
-        } else {
-          console.error('Failed to refresh token: ', response.status);
-          return Promise.reject(error);
+            const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
+            const setUserIdx = useSetRecoilState(userIdxState);
+
+            axiosInstance.defaults.headers.common['Authorization'] = `${acceesToken}`;
+            setIsProfileRegistered(isProfileRegistered);
+            setUserIdx(userIdx);
+            
+            return;
+          } else {
+            // 재발급 실패
+            console.error({response});
+            alert("accessToken 재발급 실패. 재로그인 필요.");
+            window.location.href = "/";
+            return;
+          }
+        } catch (e) {
+          // 재발급 실패
+          console.error({e});
+          alert("accessToken 재발급 실패. 재로그인 필요.");
+          window.location.href = "/";
+          return;
         }
-
-      } catch (error) {
-        console.error('Error occured while refreshing token', error);
-        return Promise.reject(error);
       }
     }
     return Promise.reject(error);

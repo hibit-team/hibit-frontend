@@ -1,3 +1,4 @@
+import reply from "../../../images/components/Alarm/Imoji/reply.svg";
 import * as s from "./styles";
 
 const Recomment = ({nickname, imglink, time}: any) => {
@@ -9,7 +10,7 @@ const Recomment = ({nickname, imglink, time}: any) => {
           alt="profile"
         />
         <s.Imoji 
-          src={imglink}
+          src={reply}
           alt="imoji"
         />
       </s.ProfileImgWrapper>

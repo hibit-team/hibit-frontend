@@ -9,15 +9,15 @@ const GoogleLoginButton = () => {
   const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
   const scope = process.env.REACT_APP_GOOGLE_SCOPE;
   const url = `${authorizationURL}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline`;
-    
+
   const handleCredentialResponse = async (authorization_code: CredentialResponse) => {
-    axios.get(`${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/google/oauth-uri`, {
+    axios.get(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/google/oauth-uri`, {
       params: {
         redirectUri: redirectUri
       }
     })
       .then((res) => {
-        window.location.href = url;        
+        window.location.href = url;
       })
       .catch((err) => {
         console.log(err);

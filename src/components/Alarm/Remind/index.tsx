@@ -1,12 +1,13 @@
 import heart from "../../../images/components/Alarm/Imoji/heart.svg";
+import defaultProfile from "../../../images/components/defaultProfile.svg";
 import * as s from "./styles";
 
-const CommentHeart = ({nickname, imglink, time}: any) => {
+const Remind = ({content, imglink, time}: any) => {
   return (
     <s.Wrapper>
     <s.ProfileImgWrapper>
       <s.ProfileImg 
-        src={imglink}
+        src={defaultProfile}
         alt="profile"
       />
       <s.Imoji 
@@ -17,7 +18,7 @@ const CommentHeart = ({nickname, imglink, time}: any) => {
 
     <s.ContentsWrapper>
       <s.MainContents>
-        {nickname}님이 회원님의 댓글을 좋아합니다.
+        {content}
       </s.MainContents>
       <s.Time>{time}</s.Time>
     </s.ContentsWrapper>
@@ -25,4 +26,4 @@ const CommentHeart = ({nickname, imglink, time}: any) => {
   )
 };
 
-export default CommentHeart;
+export default Remind;
