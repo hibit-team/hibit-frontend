@@ -34,7 +34,7 @@ export const MatchPostLabelCss = css`
 `;
 
 export const MatchPostStatusContainer = styled.div<{ isStatusModalOpen: boolean }>`
-  height: ${props => (props.isStatusModalOpen ? '96px' : '34px')};
+  height: ${props => (props.isStatusModalOpen ? '126px' : '34px')};
   transition: height 0.2s linear;
   background: white;
   border-radius: 10px;
@@ -51,4 +51,5 @@ export const MatchPostStatusContainer = styled.div<{ isStatusModalOpen: boolean 
   flex-direction: column;
   position: relative;
   z-index: 10;
+  overflow: hidden;
 `;

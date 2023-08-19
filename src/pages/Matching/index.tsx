@@ -3,78 +3,48 @@ import MatchingFilterButton from '../../components/Matching/FilterButton';
 import MatchingContainer from '../../components/Matching/MatchingContainer';
 import MatchingSearchBar from '../../components/Matching/SearchBar';
 import MatchingSlideBanner from '../../components/Matching/SlideBanner';
-import { useState } from 'react';
-import HttpClient from '../../services/HttpClient';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-
+import { useGetMatchingInfiniteQuery } from '../../hooks/MathchingMain/useGetMatchingInifiniteQuery';
+import LottiePageRouting from '../../components/LottieFiles/LottiePageRouting';
 export interface IPosts {
-  idx: number;
-  user: {
-    idx: number;
-    id: string;
-  };
-  title: string;
-  status: string;
-  number_and_What: string[];
-  mainimg: string;
-  liked: number;
-  comment_number: number;
+  idx: number; // 글 넘버 
+  title: string; // 게시글 제목 
+  exhibition: string; // 전시회 어디
+  status: string; // 게시글 모집 상태
+  number_and_What: Array<string>; //라벨
+  mainimg: string; // 메인 이미지
+  liked: number; //게시글 좋아요수
+  comment_number: number; //댓글 수
+  dateTime: string; //호버시 나오는 희망 관람시간
 }
-
 const MatchingPage = () => {
-  //sortOption : ["allposts",'thisweek','like']
-  const [sortOption, setSortOption] = useState<string>('allposts');
-  const fetchPosts = async ({ pageParam = 1 }) => {
-    const res = await HttpClient.get(`/post/list/${sortOption}/${pageParam}`);
-    return res;
-  };
-
-  //sortOption변경함수
-  const handleSortOption = (opt: string) => {
-    console.log(opt);
-    setSortOption(opt);
-  };
-
   const {
-    // status,
     data,
     error,
     isError,
     isLoading,
     isFetchingNextPage,
     fetchNextPage,
-    // isFetching,
-    // hasNextPage,
+    isFetching,
+    hasNextPage,
     // isFetchingPreviousPage,
     // fetchPreviousPage,
     // hasPreviousPage,
-  } = useInfiniteQuery<IPosts[], AxiosError>(['posts', sortOption], fetchPosts, {
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length ? allPages.length + 1 : undefined;
-    },
-  });
+  } = useGetMatchingInfiniteQuery();
 
-  if (isLoading === true) {
-    //초기 데이터fetch, nextPage fetch 로딩 플래그
-    return <p>Loading...</p>;
-  }
   if (isError === true) {
-    return <p>Error: {(error as AxiosError)?.message}</p>;
+    return <p>Page Error: {(error as AxiosError)?.message}</p>;
   }
   return (
     <div>
       <LayoutTemplate>
         <MatchingSlideBanner></MatchingSlideBanner>
         <MatchingSearchBar></MatchingSearchBar>
-        <MatchingFilterButton sortOption={sortOption} handleSortOption={handleSortOption}></MatchingFilterButton>
-        <MatchingContainer
-          isFetchingNextPage={isFetchingNextPage}
-          sortOption={sortOption}
-          pages={data?.pages}
-          fetchNextPage={fetchNextPage}
-        ></MatchingContainer>
+        <MatchingFilterButton></MatchingFilterButton>
+        <MatchingContainer hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
       </LayoutTemplate>
+      {/* 딜레이가 너무 짧아서 써도 되는지 애매.. =>로딩용으로 바기 */}
+      { isLoading || isFetching ||isFetchingNextPage ? <LottiePageRouting/> : undefined}
     </div>
   );
 };

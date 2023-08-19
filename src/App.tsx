@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MainPage from "./pages/Main";
 import styled from "@emotion/styled";
 import { Global } from "@emotion/react";
@@ -17,6 +17,8 @@ import GoogleRedirectHandler from "./components/Login/GoogleRedirectHandler";
 import { useEffect } from "react";
 import axios from "axios";
 import { axiosInstance } from "./services/HttpClient";
+import NotFound from "./pages/NotFound";
+import ReportModal from './components/MatchPost/ReportModal';
 
 function App() {
   const queryClient = new QueryClient();
@@ -50,10 +52,12 @@ function App() {
                 <Route path='/matching' element={<MatchingPage></MatchingPage>}/>
                 <Route path="/user/kakao-oauth" element={<KaKao />} />
                 <Route path="/profile" element={<MyProfile />} />
-                <Route path="/match-post" element={<MatchingPostPage />} />
+                <Route path="/matchPost/:idx" element={<MatchingPostPage />} />
                 <Route path="/others/:userID" element={<OtherProfile />} />
                 <Route path="/posting" element={<Posting />} />
                 <Route path="/google-callback" element={<GoogleRedirectHandler />} />
+                <Route path="/report/:idx" element={<ReportModal />} />
+                <Route path="/*" element={<NotFound />} />
               </Routes>
             </Router>
           </Container>
@@ -65,4 +69,4 @@ function App() {
 
 export default App;
 
-const Container = styled.div``;
+const Container = styled.div``
