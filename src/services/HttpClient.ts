@@ -66,7 +66,7 @@ const HttpClient = {
   },
 
   post: async (path: string, body: unknown, headers = {}) => {
-    const response = await axiosInstance.post(path, body, { headers });
+    const response = await axiosInstance.post(path, JSON.stringify(body), { headers });
     return response.data;
   },
 

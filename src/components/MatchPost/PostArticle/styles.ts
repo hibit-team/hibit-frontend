@@ -46,16 +46,9 @@ export const ArticleTextSection = styled.div`
   box-sizing: border-box;
   display: grid;
   width: 864px;
-  margin: 40px auto 0px auto;
-  border-bottom: 1px solid ${COLORS.Gray2};
-  grid-template-columns: 233px 640px;
-  &: nth-child(2) {
-    grid-row: 2/3;
-  }
-  &: nth-child(3) {
-    grid-column: 2/3;
-  }
-  border-bottom: 1px solid ${COLORS.Gray2};
+  margin: 40px auto 0px 0px;
+  padding-left:24px;
+  grid-template-columns: 250px 640px;
 `;
 
 export const ArticleArrowWrapper = styled.div`
@@ -64,7 +57,7 @@ export const ArticleArrowWrapper = styled.div`
   display: flex;
   grid-row: 2/3;
   position: relative;
-  left: 190px;
+  left: 200px;
   bottom: 50px;
   justify-content: center;
   align-items: center;
@@ -82,21 +75,20 @@ export const ArticleArrowWrapper = styled.div`
 export const hoverAnimation = keyframes`
   0% {
     color: ${COLORS.main100};
-    box-shadow: none
+    box-shadow: none;
   }
   100% {
     background-color: ${COLORS.main100}
     color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 `;
 
 export const InviteBoxWrapper = styled.button({
   all: 'unset',
   border: `2px solid ${COLORS.main79}`,
-  borderRadius: 20,
-  width: 190,
-  height: 72,
+  borderRadius: 16,
+  width: 150,
+  height: 55,
   background: COLORS.main24,
   color: COLORS.main79,
   fontWeight: 700,
@@ -104,7 +96,7 @@ export const InviteBoxWrapper = styled.button({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  margin: '40px auto 40px auto',
+  // margin: '40px auto 40px auto',
   cursor: 'pointer',
   '&:hover': {
     fontWeight: 700,
@@ -115,3 +107,19 @@ export const InviteBoxWrapper = styled.button({
     cursor: 'pointer',
   },
 });
+
+
+
+export const StyledSliderWrapper = styled.div`
+  box-sizing: border-box;
+  border: 1px solid ${COLORS.Gray2};
+  padding-left: 16px;
+  margin: 10px;
+  width: 233px;
+  height: 320px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f1f1f1;
+`;

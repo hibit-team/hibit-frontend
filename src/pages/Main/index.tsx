@@ -9,6 +9,7 @@ import MobileNavbar from "../../components/Main/Mobile/MobileNavbar";
 import MobileTab from "../../components/Main/Mobile/MobileTab";
 import MobileSlider from "../../components/Main/Mobile/MobileSlider";
 import CustomModalAlarm from "../../components/Alarm";
+import { GlobalModal } from "../../components/GlobalModal";
 const MainPage = () => {
   const [toggleState, setToggleState] = useRecoilState<boolean>(toggleNavState);
   const onToggle: Function = () => {
@@ -28,6 +29,7 @@ const MainPage = () => {
     return (
       <>    
         <MoHeaderComponent onToggle={onToggle}></MoHeaderComponent>
+        <GlobalModal/>
         <MobileTab></MobileTab>
         <MobileSlider></MobileSlider>
       </>
@@ -35,6 +37,7 @@ const MainPage = () => {
   }
   return (
     <LayoutTemplate>
+      <GlobalModal/>
       <MainTab></MainTab>
       <s.Wrapper>
         {/* <GoogleLoginButton /> */}
