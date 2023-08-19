@@ -118,7 +118,7 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
         </s.InviteModalHeader>
         {/* 컨텐츠영역 */}
         <s.InviteModalContentsWrapper css={{ display: Fold ? 'none' : 'flex' }}>
-          {invitationList?.map(list => {
+          {companionList?.map(list => {
             return <InviteModalContent key={list.idx} list={list}></InviteModalContent>;
           })}
         </s.InviteModalContentsWrapper>
