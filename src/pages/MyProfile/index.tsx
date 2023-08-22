@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import * as s from "./styles";
 import useIsMobile from "../../hooks/useIsMobile";
 import LayoutTemplateGray from "../../components/Common/LayoutTemplateGray";
 import { IProfile } from "../../interfaces/Profile/IProfile";
-import { tmpPersonality } from "../../assets/data/personality/tmpPersonality";
 import CheckIcon from "../../images/components/Profile/CheckIcon.svg";
 import UnCheckIcon from "../../images/components/Profile/UnCheckIcon.svg";
 import address_sido_sigugun from "../../assets/data/address/address";
@@ -15,6 +14,8 @@ import MyprofileAPI from "../../api/MyprofileAPI";
 import { userIdxState } from "../../recoil/atom/LoginInfoState";
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
+import useLoginInfo, { ILoginInfo } from "../../hooks/useLoginInfo";
+import { read } from "fs";
 
 export interface IimgProps {
   imgURL: string;
@@ -29,32 +30,35 @@ const MyProfile = () => {
 
   const navigate = useNavigate();
 
-  let receivedData: IProfile;
-  const profileId = useRecoilValue(userIdxState);
+  let myProfileData: Promise<IProfile>;
+  const userIdx = useRecoilValue(userIdxState);
+  const loginInfo: ILoginInfo | undefined = useLoginInfo();
+
   useEffect(() => {
-    if (profileId) {
-      receivedData = MyprofileAPI.getMyProfile(profileId, profileId);
+    if (userIdx) {
+      myProfileData = MyprofileAPI.getMyProfile(userIdx);
     } else {
       alert("로그인을 먼저 진행해 주세요.");
-      
     }
+  }, [userIdx]);
 
-  }, [profileId]);
-
+  /* 필수 정보 */
   const [nickname, setNickname] = useState<string | undefined>(undefined);
   const [age, setAge] = useState<number | undefined>(undefined);
   const [gender, setGender] = useState<number | undefined>(undefined);
-  const [personality, setPersonality] = useState<string[] | undefined>(undefined);
-  const [introduce, setIntroduce] = useState<string | undefined>(undefined);
-  const [job, setJob] = useState<string | undefined>(undefined);
-  const [address_sido, setAddress_sido] = useState<string | undefined>(undefined);
-  const [address_sigungu, setAddress_sigungu] = useState<string | undefined>(undefined);
-  const [img, setImg] = useState<string[] | undefined | null>(undefined);
+  const [personality, setPersonality] = useState<string[]>([]);
+  const [allPersonalities, setAllPerosonalities] = useState<string[]>([]);
+  useEffect(() => {
+    MyprofileAPI.getAllPersonalities()
+      .then((res) => {
+        setAllPerosonalities(res);
+      })
+      .catch((e) => {
+        console.error({e});
+      });
+  }, []);
 
-  const [isAddressChanged, setIsAddressChanged] = useState<boolean>(false);
-  
-  /* 성격 리스트 - api로 받아 올 부분 */ 
-  const personalityList = tmpPersonality;
+  const [introduce, setIntroduce] = useState<string | undefined>(undefined);
 
   const onClickCancelBtn = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (window.confirm("변경 사항을 취소하시겠습니까?")) {
@@ -69,24 +73,52 @@ const MyProfile = () => {
 
   const onClickPersonalityBtn = (item: string) => {
     if(!personality.includes(item) && personality.length > 4) {
-      alert("최대 5개");
+      alert("최대 5개까지 선택 가능합니다.");
       return;
     }
-    if(personality.includes(item)) setPersonality(personality.filter((element) => element !== item));
+    if(personality.includes(item)) {
+      
+      setPersonality(personality.filter((element) => element !== item));
+    }
     else setPersonality([...personality, item]);
+    
   };
 
   const onClickMaleBtn = () => setGender(0);
   const onClickFemaleBtn = () => setGender(1);
-
   const onChangeIntroText = (e: React.ChangeEvent<HTMLTextAreaElement>) => setIntroduce(e.target.value);
-  const onChangeJob = (e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value);
 
+
+  /* 선택 정보 */
+  const [job, setJob] = useState<string | undefined>(undefined);
+  const [isJobChecked, setIsJobChecked] = useState<boolean | undefined>(false);
+  const onClickJobCheck = () => {
+    if (!isEditMode) return;
+    setIsJobChecked(!isJobChecked);
+  };
+  const onChangeJob = (e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value);
+  // 직업 혹은 학교
+
+  const [address_sido, setAddress_sido] = useState<string | undefined>(undefined);
+  const [address_sigungu, setAddress_sigungu] = useState<string | undefined>(undefined);
+  const [isAddressChecked, setIsAddressChecked] = useState<boolean | undefined>(false);
+  const onClickAddressCheck = () => {
+    if (!isEditMode) return;
+    setIsAddressChecked(!isAddressChecked);
+  };
+  const [isAddressChanged, setIsAddressChanged] = useState<boolean>(false);
   const onChangeSIDO = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setAddress_sido(e.target.value);
     setIsAddressChanged(true);
-  }
-
+  };
+  // 주소
+  
+  const [img, setImg]: any = useState();
+  const [isImgChecked, setIsImgChecked] = useState<boolean | undefined>(false);
+  const onClickImgCheck = () => {
+    if (!isEditMode) return;
+    setIsImgChecked(!isImgChecked);
+  };
   const imgInputRef = useRef<HTMLInputElement | null>(null);
   const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if(!e.target.files) return;
@@ -94,9 +126,20 @@ const MyProfile = () => {
       alert("이미지는 최대 3장까지 추가할 수 있습니다.");
       return;
     }
-    img?.push(e.target.files[0].name);
-    const newImgList = JSON.parse(JSON.stringify(img));
-    setImg(newImgList)
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    return new Promise<void>((resolve) => {
+      reader.onload = () => {
+        if(img) {
+          setImg([...img, reader.result]);
+        } else {
+          setImg([img]);
+        }
+        resolve();
+      };
+    });
+    // const newImgList = JSON.parse(JSON.stringify(img));
+    // setImg(newImgList)
     // console.log(e.target.files[0].name);
   }, [img]);
   const onUploadImgBtnClick = useCallback(() => {
@@ -153,15 +196,18 @@ const MyProfile = () => {
             <s.HorizontalLine />
             <s.EssentialColumn2>본인의 성격을 골라주세요. (최대 5개)</s.EssentialColumn2>
             <s.PersonalityTable>
-              {tmpPersonality.map((item, idx) => {
-                return (
-                  <s.PersonalityItem 
-                    disabled={!isEditMode} 
-                    isSelected={personality.includes(item)}
-                    onClick={() => onClickPersonalityBtn(item)}
-                  >{item}</s.PersonalityItem>
-                )
-              })}
+              {
+                allPersonalities &&
+                allPersonalities.map((item, idx) => { 
+                  return (
+                    <s.PersonalityItem 
+                      disabled={!isEditMode} 
+                      isSelected={personality.includes(item)}
+                      onClick={() => onClickPersonalityBtn(item)}
+                    >{item}</s.PersonalityItem>
+                  )
+                })
+              }
             </s.PersonalityTable>
 
             <s.HorizontalLine />
@@ -182,10 +228,10 @@ const MyProfile = () => {
         <s.OptionalInfoContainer>
           <s.OptionalInfoWrapper>
               <s.JobContainer>
-                { 
-                  job ? 
-                  <s.CheckBox src={CheckIcon} alt="checked" /> : 
-                  <s.CheckBox src={UnCheckIcon} alt="unchecked" />
+                {
+                  isJobChecked ?
+                  <s.CheckBox src={CheckIcon} alt="checked" onClick={onClickJobCheck} /> :
+                  <s.CheckBox src={UnCheckIcon} alt="unchecked" onClick={onClickJobCheck} />
                 }
                 <s.OptionalColumn>직업 혹은 학교</s.OptionalColumn>
                 <s.JobInput 
@@ -198,9 +244,9 @@ const MyProfile = () => {
 
               <s.AddressContainer>
                 { 
-                  address_sido ? 
-                  <s.CheckBox src={CheckIcon} alt="checked" /> : 
-                  <s.CheckBox src={UnCheckIcon} alt="unchecked" />
+                  isAddressChecked ? 
+                  <s.CheckBox src={CheckIcon} alt="checked" onClick={onClickAddressCheck} /> : 
+                  <s.CheckBox src={UnCheckIcon} alt="unchecked" onClick={onClickAddressCheck} />
                 }
                 <s.OptionalColumn>주소</s.OptionalColumn>
                 <s.AddressSIGU 
@@ -249,9 +295,9 @@ const MyProfile = () => {
 
               <s.ImageContainer>
                 {
-                  (img?.length !== 0) ? 
-                  <s.CheckBox src={CheckIcon} alt="checked" /> : 
-                  <s.CheckBox src={UnCheckIcon} alt="unchecked" />
+                  isImgChecked ?
+                  <s.CheckBox src={CheckIcon} alt="checked" onClick={onClickImgCheck}/> : 
+                  <s.CheckBox src={UnCheckIcon} alt="unchecked" onClick={onClickImgCheck}/>
                 }
                 <s.OptionalColumn>나의 사진</s.OptionalColumn>
                 <s.ImageList>
@@ -264,7 +310,7 @@ const MyProfile = () => {
                     }
                   </s.ImageAddBox>
                   {
-                    img?.map((item, idx) => (
+                    img?.map((item: string, idx: number) => (
                       <ProfileImage 
                         imgURL={item} 
                         isFirst={idx === 0 ? true : false}
