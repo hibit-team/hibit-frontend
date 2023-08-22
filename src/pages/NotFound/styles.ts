@@ -8,19 +8,20 @@ export const NotFound = styled.div({
   flexDirection: 'column',
   '& img': { width: 150, height: 150, position: 'fixed', left: '8vw', top: '5vh' },
   '@media (max-width:600px)': {
-    bottom: 30,
+    bottom: '5vh',
     alignItems: 'center',
-    '& img': { width: 120, height: 120, position: 'fixed', left: 'calc(50% - 65px)', top: '13vh' },
+    '& img': { width: 120, height: 120, position: 'fixed', left: 'calc(50% - 65px)', top: '15vh' },
     '& div': {
       fontSize: 24,
       margin: 10,
     },
-    '& span': { fontWeight: 600, fontSize: 14 },
+    '& span': { fontWeight: 600, fontSize: 13 },
   },
 });
 
 export const toHomeText = css({
   position: 'relative',
+  top:'11%',
   color: COLORS.white,
   fontWeight: 700,
   borderRadius: 10,
@@ -31,6 +32,5 @@ export const toHomeText = css({
   userSelect: 'none',
   cursor: 'pointer',
   right: 8,
-  marginTop: 30,
-  '@media (max-width:600px)': { fontSize: 16, right: 4, marginTop: 50, bottom: 50 },
+  '@media (max-width:600px)': { fontSize: 16,right:'3px',top:10, },
 });

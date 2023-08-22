@@ -66,7 +66,7 @@ export default function MatchingPostPage() {
   if (isError) {
     console.error(`게시글 정보를 불러오지 못했습니다 : ${(error as AxiosError).message}`);
     alert('존재하지 않는 게시글입니다.')
-    navigate('/404NotFound')
+    navigate('/matching')
   }
   
   return (
