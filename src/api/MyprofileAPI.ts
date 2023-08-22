@@ -1,9 +1,20 @@
 import HttpClient from "../services/HttpClient";
 
 const MyprofileAPI = {
-  getMyProfile: async (profileId: number, loginMember: number) => {
+  getAllPersonalities: async () => {
     try {
-      const path = `/api/profiles/me/${profileId}?id=${loginMember}`;
+      const path =`/api/profiles/personalities`;
+      const response = await HttpClient.get(path);
+      return response;
+    } catch (e) {
+      console.error({e});
+      return null;
+    }
+  },
+
+  getMyProfile: async (loginMember: number) => {
+    try {
+      const path = `/api/profiles/me?id=${loginMember}`;
       const response = await HttpClient.get(path);
       return response;
     } catch (e) {
@@ -16,6 +27,17 @@ const MyprofileAPI = {
     try {
       const path = `/api/profiles/me/${profileId}`;
       const response = await HttpClient.put(path, body);
+      return response;
+    } catch (e) {
+      console.error({e});
+      return null;
+    }
+  },
+
+  postMyProfile: async (body: unknown) => {
+    try {
+      const path = `/api/profiles`;
+      const response = await HttpClient.post(path, body);
       return response;
     } catch (e) {
       console.error({e});

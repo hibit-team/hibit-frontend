@@ -4,12 +4,12 @@ import { accessTokenState, profileRegisteredState, userIdxState } from '../recoi
 
 export interface ILoginInfo {
   userIdx: number | null,
-  isProfileRegistered: boolean | null,
+  isProfileRegistered: number | null,
   isLoggedIn: boolean
 }
 
-const useLoginInfo = () => {
-  const [loginInfo, setLoginInfo] = useState<ILoginInfo>();
+const useLoginInfo = (): ILoginInfo | undefined => {
+  const [loginInfo, setLoginInfo] = useState<ILoginInfo | undefined>();
 
   const userIdx = useRecoilValue(userIdxState);
   const accessToken = useRecoilValue(accessTokenState);
@@ -22,6 +22,7 @@ const useLoginInfo = () => {
         isProfileRegistered: isProfileRegistered,
         isLoggedIn: true
       }
+      console.log({loginInfo});
       setLoginInfo(loginInfo);
     }
     else {
@@ -30,6 +31,7 @@ const useLoginInfo = () => {
         isProfileRegistered: null,
         isLoggedIn: false
       };
+      console.log({loginInfo});
       setLoginInfo(loginInfo);
     };
   }, [accessToken, userIdx]);

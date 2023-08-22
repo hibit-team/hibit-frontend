@@ -1,10 +1,10 @@
 import HttpClient from "../services/HttpClient";
 
 const FileAPI = {
-  postPostingFiles: async (post_id: number, data: FormData) => {
+  postFiles: async (mainimgIdx: number, formData: FormData) => {
     try {
-      const path = `/${post_id}/upload`;
-      const response = HttpClient.post(path, data);
+      const path = `/upload?mainimgIdx=${mainimgIdx}`;
+      const response = HttpClient.post(path, formData);
       return response;
     } catch (e) {
       console.error({e});

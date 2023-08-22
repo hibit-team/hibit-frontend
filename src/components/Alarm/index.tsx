@@ -27,21 +27,21 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
   const isMobile = useIsMobile();
   const AlarmStyles = isMobile ? s.MobileModalStyle : s.WebModalStyle;
 
-  const userIdx = useRecoilValue(userIdxState);
+  // const userIdx = useRecoilValue(userIdxState);
   const [alarmState, setAlarmState] = useState<IAlarm[]>([]);
   useEffect(() => {
     const fetchAlarmList = async () => {
       try {
-        if (userIdx) {
-          const alarmList = await AlarmAPI.getAlarmList(userIdx);
-          if(alarmList) {
-            setAlarmState(alarmList);
-          } else {
-            console.log("alarmList가 없음");
-          }
+        const alarmList = await AlarmAPI.getAlarmList();
+        if(alarmList) {
+          setAlarmState(alarmList);
         } else {
-          console.log("userIdx가 없음");
+          console.log("alarmList가 없음");
         }
+        // if (userIdx) {
+        // } else {
+        //   console.log("userIdx가 없음");
+        // }
       } catch (error) {
         console.error({error});
       }

@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-export const accessTokenState = atom<string|null>({
+export const accessTokenState = atom<string | null>({
   key: 'accessTokenState',
   default: null
 });
@@ -10,7 +10,7 @@ export const userIdxState = atom<number | null>({
   default: null,
 });
 
-export const profileRegisteredState = atom<boolean | null>({
+export const profileRegisteredState = atom<number | null>({
   key: 'profileRegisteredState',
   default: null,
 });

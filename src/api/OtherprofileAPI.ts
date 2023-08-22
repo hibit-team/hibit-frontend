@@ -1,9 +1,9 @@
 import HttpClient from "../services/HttpClient";
 
 const OtherprofileAPI = {
-  getOtherProfile: async (profileId: number) => {
+  getOtherProfile: async (otherMemberId: number, loginIdx: number) => {
     try {
-      const path = `/api/profiles/other/${profileId}`;
+      const path = `/api/profiles/other/${otherMemberId}?id=${loginIdx}`;
       const response = await HttpClient.get(path);
       return response;
     } catch (e) {

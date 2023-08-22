@@ -29,7 +29,7 @@ const GoogleRedirectHandler = () => {
       }
     })
       .then((res) => {
-        console.log(res);
+        console.log("응답", {res});
         const accessToken = res.data.accessToken;
         const userIdx = res.data.id;
         const profileRegistered = res.data.isProfileRegistered;
@@ -45,7 +45,7 @@ const GoogleRedirectHandler = () => {
         console.error({err});
       });
 
-    }, [location.search, navigate, redirectUri, setAccessToken, setUserIdx]);
+    }, [location.search]);
     
   return (
     <div>

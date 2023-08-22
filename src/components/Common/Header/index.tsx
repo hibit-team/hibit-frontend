@@ -35,13 +35,13 @@ const Header = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
-  console.log(axiosInstance.defaults.headers.common)
+  // console.log(axiosInstance.defaults.headers.common)
 
   // Logout
   const onClickLogout = async () => {
-    await axiosInstance.post(`/api/auth/token/access?logout=true`, {})
+    await axiosInstance.get(`/api/auth/logout`)
       .then((res) => {
-        // console.log({res}) // ex)성공적으로 로그아웃되었습니다.
+        console.log({res}) // ex)성공적으로 로그아웃되었습니다.
         resetAccessToken(); // atom으로 관리되는 token값 null로 초기화
         resetUserIdx();
         resetIsProfileRegistered();
