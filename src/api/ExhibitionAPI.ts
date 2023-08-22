@@ -3,7 +3,7 @@ import HttpClient from "../services/HttpClient";
 const ExhibitionAPI = {
   getExhibitions: async () => {
     try {
-      const path = `exhibition/list`;
+      const path = `/exhibition/list`;
       const response = HttpClient.get(path);
       return response;
     } catch (e) {

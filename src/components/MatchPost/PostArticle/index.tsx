@@ -1,12 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import * as s from './styles';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import COLORS from '../../../assets/color';
 import Slider from 'react-slick';
-import Tim from '../../../images/components/MatchPost/Tim.svg';
-import ProfileDefault from '../../../images/components/MatchPost/profileDefault.svg';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../../../assets/slick.css';
@@ -15,21 +13,28 @@ import PurpleKebap from '../../../images/components/MatchPost/purpleKebap.svg';
 import PurpleLike from '../../../images/components/MatchPost/purpleLike.png';
 import WhiteLike from '../../../images/components/MatchPost/whiteLike.png';
 import FsLightbox from 'fslightbox-react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
-import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
 import ReplySectionComponent from '../PostReplySection';
-
-export default function MatchPostArticle() {
+import { IMatchingPostPage } from '../../../pages/MatchPost';
+import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteReplyMutation';
+import { useDeleteMatchingPostMutation } from '../../../hooks/MatchingPost/useDeleteMatchingPostMutation';
+import { usePostMatchingArticleLikeMutation } from '../../../hooks/MatchingPost/usePostMatchingArticleLikeMutation';
+import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
+import { useNavigate } from 'react-router-dom';
+import { PostIDXAtom } from '../../../recoil/atom/PostIDXAtom';
+export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
-  const [isLikeStateOn, setIsLikeStateOn] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
   const settings = {
     dots: true,
     infinite: true,
+    arrows: false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    autoplay: true,
     appendDots: (dots: any) => (
       <div
         style={{
@@ -46,7 +51,35 @@ export default function MatchPostArticle() {
     ),
     dotsClass: 'dots_custom2',
   };
-  const dateOption = ['0000-00-00-오전', '0000-00-00-오후'];
+  const { mutate: articleLikeMutate } = usePostMatchingArticleLikeMutation(postIDX);
+  const isLikeStateOn = data?.likeUsers?.find(item => {
+    return item.idx === 2;
+  });
+  useEffect(() => {
+    return () => {
+      //컴포넌트 언마운트시 모달 clear해주기
+      setIsInviteModalOpen(false);
+    };
+  }, []);
+
+  const ref = useRef<HTMLDivElement>(null);
+  const handleClickOutside = useCallback(
+    (e: MouseEvent) => {
+      if (ref.current && !ref?.current.contains(e.target as Node) && isPurpleKebapOptionOpen) {
+        // 외부 클릭이 발생한 경우, isOpen 상태를 변경
+        if (isPurpleKebapOptionOpen) setIsPurpleKebapOptionOpen(false);
+      }
+    },
+    [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen]
+  );
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 외부 클릭 이벤트를 감지하는 이벤트 리스너를 추가
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      // 컴포넌트가 언마운트되거나 업데이트될 때 이벤트 리스너를 제거
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [setIsPurpleKebapOptionOpen, handleClickOutside]);
   return (
     <div css={{ marginBottom: 100 }}>
       <s.MatchArticleWrapper>
@@ -59,7 +92,7 @@ export default function MatchPostArticle() {
               font-weight: 800;
             `}
           >
-            게시글 명 게시글 명 게시글 공백포함 최대 30자까지
+            {data?.title}
           </div>
           <div
             css={{
@@ -78,9 +111,8 @@ export default function MatchPostArticle() {
                 position: 'relative',
                 bottom: 3,
               }}
-              // src={ProfileDefault}
-              src={PEPE}
-              alt="defaultImage"
+              src={data?.writerImg}
+              alt="writer-profile-img"
             />
           </div>
 
@@ -92,7 +124,7 @@ export default function MatchPostArticle() {
               margin: 6px;
             `}
           >
-            닉네임
+            {data?.writer}
           </div>
           <div
             css={css`
@@ -106,11 +138,15 @@ export default function MatchPostArticle() {
               color: #797979;
             `}
           >
-            7시간 전{' '}
+            {data?.time}
           </div>
           <img
-            onClick={() => {
-              setIsPurpleKebapOptionOpen(!isPurpleKebapOptionOpen);
+            onClick={e => {
+              e.stopPropagation();
+              if (isPurpleKebapOptionOpen) setIsPurpleKebapOptionOpen(false);
+              else {
+                setIsPurpleKebapOptionOpen(true);
+              }
             }}
             css={{
               margin: 6,
@@ -121,10 +157,11 @@ export default function MatchPostArticle() {
           />
           {isPurpleKebapOptionOpen && (
             <div
+              ref={ref}
               css={{
                 position: 'absolute',
-                top: '3.3rem',
-                right: '-0.4rem',
+                top: '1rem',
+                right: '-3.5rem',
                 border: `1.5px solid ${COLORS.Gray2}`,
                 borderRadius: '10px',
                 background: 'white',
@@ -137,7 +174,7 @@ export default function MatchPostArticle() {
                 justifyContent: 'center',
               }}
             >
-              <OptionComponent></OptionComponent>
+              <PostOptionComponent postIDX={postIDX}></PostOptionComponent>
             </div>
           )}
         </s.ArticleTitleSection>
@@ -152,9 +189,9 @@ export default function MatchPostArticle() {
           >
             관람희망날짜
           </div>
-          {dateOption.map((date, idx) => (
+          {data?.dateTime.map((time, idx) => (
             <div key={idx} css={ArticleDateCss}>
-              {date}
+              {time}
             </div>
           ))}
         </s.ArticleDateSection>
@@ -177,15 +214,32 @@ export default function MatchPostArticle() {
               color: ${COLORS.Gray3};
             `}
           >
-            뚝섬 미술관 인사이드미 전시회
+            {data?.exhibiton}
           </div>
         </s.ArticlePlaceTogoSection>
 
         <s.ArticleTextSection>
           <ArticleImageSlider {...settings}>
-            <img src={Tim} alt="tempo"></img>
-            <img src={Tim} alt="tempo"></img>
-            <img src={Tim} alt="tempo"></img>
+            <div
+              css={css`
+                width: 250px;
+                height: 320px;
+                background-image: url(${data?.mainimg});
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+              `}
+            ></div>
+            <div
+              css={css`
+                width: 250px;
+                height: 320px;
+                background-image: url(${data?.subimg[0]});
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+              `}
+            ></div>
           </ArticleImageSlider>
           <s.ArticleArrowWrapper
             onClick={() => {
@@ -205,7 +259,10 @@ export default function MatchPostArticle() {
             />
           </s.ArticleArrowWrapper>
           <article
+            data-id="article-text"
             css={{
+              position: 'relative',
+              left: 16,
               color: COLORS.Gray3,
               fontSize: 20,
               margin: '-3px 1.6rem',
@@ -215,18 +272,15 @@ export default function MatchPostArticle() {
               overflowWrap: 'break-word',
             }}
           >
-            게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
-            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동
-            했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
-            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동
-            했습니다. 게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다. 게시글 본문 입니다. 오늘은 등 운동
-            했습니다.게시글 본문 입니다. 오늘은 등 운동 했습니다.게시글 본문.게시했습니다.게시글 본문.게시했습니다.게시글 본문.게시했습니다.게시글
-            본문.게시게시글 본문.게시
+            내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ
+            {/* {data?.content} */}
           </article>
           <button
-            onClick={() => {
+            onClick={e => {
+              e.stopPropagation();
+              //게시글좋아요버튼
+              articleLikeMutate(postIDX);
               alert(isLikeStateOn ? '해당 게시글의 `좋아요`를 취소했습니다.' : '해당 게시글에 `좋아요`를 눌렀습니다.');
-              setIsLikeStateOn(!isLikeStateOn);
             }}
             css={{
               all: 'unset',
@@ -234,7 +288,7 @@ export default function MatchPostArticle() {
               gridRow: 2,
               display: 'flex',
               position: 'relative',
-              left: 542,
+              left: 535,
               bottom: 23,
               justifyContent: 'center',
               alignItems: 'center',
@@ -262,10 +316,20 @@ export default function MatchPostArticle() {
             )}
           </button>
         </s.ArticleTextSection>
-        <s.InviteBoxWrapper>초대하기</s.InviteBoxWrapper>
+        <div css={{ width: 874, height: 1, background: COLORS.Gray2, margin: 'auto' }}></div>
+        <div css={{ display: 'flex', justifyContent: 'center', padding: 32 }}>
+          <s.InviteBoxWrapper
+            onClick={e => {
+              e.stopPropagation();
+              setIsInviteModalOpen(!isInviteModalOpen);
+            }}
+          >
+            초대하기
+          </s.InviteBoxWrapper>
+        </div>
 
-        <FsLightboxWrapper />
-        <ReplySectionComponent></ReplySectionComponent>
+        <FsLightboxWrapper data={data} />
+        <ReplySectionComponent postIDX={postIDX}></ReplySectionComponent>
       </s.MatchArticleWrapper>
     </div>
   );
@@ -290,22 +354,91 @@ export const ArticleDateCss = css`
 
 export const ArticleImageSlider = styled(Slider)`
   box-sizing: border-box;
-  width: 233px;
-  height: 320px;
+  border: 1px solid ${COLORS.Gray2};
+  width: 250px;
+  overflow: hidden;
+  height: 300px;
   border-radius: 10px;
 `;
 
-export const OptionComponent = ({
-  setIsModifyOn,
-  isModifyOn,
-  isReplyOptModalOpen,
-  setIsReplyOptModalOpen,
-}: {
+interface IOptionComponent {
+  replyIDX?: number;
   setIsModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
   isModifyOn?: boolean;
   isReplyOptModalOpen?: boolean;
   setIsReplyOptModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+}
+
+//게시글 전용 option컴포넌트 분리
+export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }) => {
+  const navigate = useNavigate();
+  const postOption1 = css({
+    //수정
+    all: 'unset',
+    position: 'relative',
+    cursor: 'pointer',
+    top: 2,
+    fontSize: 18,
+    padding: '6px',
+    borderBottom: `1px solid ${COLORS.Gray2}`,
+    color: COLORS.Gray3,
+    '&:hover': { color: COLORS.main79, scale: '1.04' },
+  });
+  const postOption2 = css({
+    //삭제(idx=2)
+    all: 'unset',
+    position: 'relative',
+    cursor: 'pointer',
+    top: 2,
+    fontSize: 18,
+    padding: '6px',
+    borderBottom: `1px solid ${COLORS.Gray2}`,
+    color: COLORS.Gray3,
+    '&:hover': { color: COLORS.main79, scale: '1.04' },
+  });
+  const postOption3 = css({
+    //신고
+    all: 'unset',
+    position: 'relative',
+    cursor: 'pointer',
+    top: 2,
+    fontSize: 18,
+    padding: '6px',
+    color: COLORS.Gray3,
+    '&:hover': { color: 'red', scale: '1.04' },
+  });
+  const options = ['수정', '삭제', '신고'];
+  //게시글 삭제
+  const { mutate } = useDeleteMatchingPostMutation(postIDX);
+  return (
+    <>
+      {options.map((opt, i) => (
+        <button
+          //수정모드 라우트 처리 , 게시글 삭제 API 연동 , 신고 라우트 처리
+          key={i}
+          css={i === 0 ? postOption1 : i === 1 ? postOption2 : postOption3}
+          onClick={() => {
+            switch (i) {
+              //삭제
+              case 1: {
+                const confirm = window.confirm('게시글을 삭제하시겠습니까?');
+                if (confirm) mutate(postIDX);
+                break;
+              }
+              case 2: {
+                navigate(`/report/${postIDX}`);
+              }
+            }
+          }}
+        >
+          {opt}
+        </button>
+      ))}
+    </>
+  );
+};
+
+export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOptModalOpen, setIsReplyOptModalOpen }: IOptionComponent) => {
   //수정삭제신고 게시글 옵션
   const postOption1 = css({
     //수정
@@ -343,24 +476,35 @@ export const OptionComponent = ({
     '&:hover': { color: 'red', scale: '1.04' },
   });
   const options = ['수정', '삭제', '신고'];
+  const { mutate } = useDeleteReplyMutation(replyIDX);
+  const navigate = useNavigate();
+  const postIDX = useRecoilValue(PostIDXAtom);
   return (
     <>
-      {options.map((opt, idx) => (
+      {options.map((opt, i) => (
         <button
-          onClick={
-            idx === 0 && setIsModifyOn
-              ? () => {
-                  //옵션모달꺼주기
-                  if (setIsReplyOptModalOpen) {
-                    setIsReplyOptModalOpen(!isReplyOptModalOpen);
-                  }
-                  //수정모드On
-                  setIsModifyOn(!isModifyOn);
-                }
-              : () => {}
-          }
-          key={idx}
-          css={idx === 0 ? postOption1 : idx === 1 ? postOption2 : postOption3}
+          onClick={() => {
+            //옵션모달꺼주기
+            if (setIsReplyOptModalOpen) {
+              setIsReplyOptModalOpen(!isReplyOptModalOpen);
+            }
+            //수정모드On(i==0)
+            if (i === 0 && setIsModifyOn) setIsModifyOn(!isModifyOn);
+            //삭제버튼인 경우에(i==1)
+            if (i === 1) {
+              mutate(replyIDX);
+            }
+            if (i === 2) {
+              // const openInNewTab = (url:string) => {
+              //   const newTab = window.open(url, '_blank');
+              //   newTab?.focus();
+              // };
+              // openInNewTab(`/report/${postIDX}?reply=${replyIDX}`)
+              navigate(`/report/${postIDX}?reply=${replyIDX}`);
+            }
+          }}
+          key={i}
+          css={i === 0 ? postOption1 : i === 1 ? postOption2 : postOption3}
         >
           {opt}
         </button>
@@ -369,7 +513,7 @@ export const OptionComponent = ({
   );
 };
 
-export const FsLightboxWrapper = () => {
+export const FsLightboxWrapper = ({ data }: { data?: IMatchingPostPage }) => {
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   return (
     <>
@@ -387,18 +531,9 @@ export const FsLightboxWrapper = () => {
       <FsLightbox
         toggler={toggler}
         sources={[
-          <div>
-            <img src={Tim} alt="dd" />
-          </div>,
-          <div>
-            <img src={ProfileDefault} alt="dd" />
-          </div>,
-          <div>
-            <img src={Tim} alt="dd" />
-          </div>,
-          <div>
-            <img src={PurpleKebap} alt="dd" />
-          </div>,
+          <img src={data?.mainimg} alt="main-img" />,
+          <img src={data?.subimg[0]} alt="sub1-img" />,
+          <img src={data?.subimg[1]} alt="sub2-img" />,
         ]}
       />
     </>

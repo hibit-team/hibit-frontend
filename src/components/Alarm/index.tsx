@@ -13,27 +13,12 @@ import Accept from './Accept';
 import Refuse from './Refuse';
 import Report from './Report';
 import Event from './Event';
-
-const tmpAlarmData = [
-  {nickname: "애옹이", type: "COMMENT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "개죽이", type: "RECOMMENT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "시면준", type: "COMMENTHEART", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "망고조아", type: "INVITATION", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "애옹이", type: "OPENCHAT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전", link: "https://naver.com"},
-  {nickname: "시면준아프지마", type: "ACCEPT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "재모기", type: "REFUSE", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전"},
-  {nickname: "", type: "REPORT", imglink: "", time: "1시간 전"},
-  {nickname: "", type: "EVENT", imglink: "", time: "1시간 전"},
-  {nickname: "애옹이", type: "COMMENT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "개죽이", type: "RECOMMENT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "시면준", type: "COMMENTHEART", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "망고조아", type: "INVITATION", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "애옹이", type: "OPENCHAT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전", link: "https://naver.com"},
-  {nickname: "시면준아프지마", type: "ACCEPT", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "재모기", type: "REFUSE", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "2시간 전"},
-  {nickname: "", type: "REPORT", imglink: "", time: "2시간 전"},
-  {nickname: "", type: "EVENT", imglink: "", time: "2시간 전"},
-];
+import Remind from './Remind';
+import AlarmAPI from '../../api/AlarmAPI';
+import { useRecoilValue } from 'recoil';
+import { userIdxState } from '../../recoil/atom/LoginInfoState';
+import { IAlarm } from '../../interfaces/Alarm/IAlarm';
+import tmpAlarmData from '../../assets/data/alarm/tmpAlarmData';
 
 const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }) => {
 
@@ -42,9 +27,29 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
   const isMobile = useIsMobile();
   const AlarmStyles = isMobile ? s.MobileModalStyle : s.WebModalStyle;
 
-  const onClickProfileBtn = () => {
-    navigate("/profile");
-  };
+  const userIdx = useRecoilValue(userIdxState);
+  const [alarmState, setAlarmState] = useState<IAlarm[]>([]);
+  useEffect(() => {
+    const fetchAlarmList = async () => {
+      try {
+        if (userIdx) {
+          const alarmList = await AlarmAPI.getAlarmList(userIdx);
+          if(alarmList) {
+            setAlarmState(alarmList);
+          } else {
+            console.log("alarmList가 없음");
+          }
+        } else {
+          console.log("userIdx가 없음");
+        }
+      } catch (error) {
+        console.error({error});
+      }
+    }
+
+    fetchAlarmList();
+  }, []);
+  
 
   const [isTabLeft, setIsTabLeft] = useState(true);
   const onClickLeftTab = () => {
@@ -96,28 +101,26 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
                 <s.AlarmList>
                   {
                     tmpAlarmData.map((data) => {
-                      if(data.type === "COMMENT"){
-                        return <Comment nickname={data.nickname} imglink={data.imglink} time={data.time}/>
+                      switch(data.type) {
+                        case "COMMENT":
+                          return <Comment {...data}/>
+                        case "RECOMMENT":
+                          return <Recomment {...data}/>
+                        case "COMMENTHEART":
+                          return <CommentHeart {...data}/>
+                        case "INVITATION":
+                          return <Invitation {...data}/>
+                        case "OPENCHAT":
+                          return <Openchat {...data}/>
+                        case "ACCEPT":
+                          return <Accept {...data}/>
+                        case "REFUSE":
+                          return <Refuse {...data}/>
+                        case "REMIND":
+                          return <Remind {...data}/>
+                        default:
+                          return null;
                       }
-                      if(data.type === "RECOMMENT"){
-                        return <Recomment nickname={data.nickname} imglink={data.imglink} time={data.time}/>
-                      }
-                      if(data.type === "COMMENTHEART"){
-                        return <CommentHeart nickname={data.nickname} imglink={data.imglink} time={data.time}/>
-                      }
-                      if(data.type === "INVITATION"){
-                        return <Invitation nickname={data.nickname} imglink={data.imglink} time={data.time}/>
-                      }
-                      if(data.type === "OPENCHAT"){
-                        return <Openchat nickname={data.nickname} imglink={data.imglink} time={data.time} link={data.link}/>
-                      }
-                      if(data.type === "ACCEPT"){
-                        return <Accept nickname={data.nickname} imglink={data.imglink} time={data.time}/>
-                      }
-                      if(data.type === "REFUSE"){
-                        return <Refuse nickname={data.nickname} imglink={data.imglink} time={data.time}/>
-                      }
-                      return null;
                     })
                   }
                 </s.AlarmList>
@@ -130,13 +133,14 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
                 <s.AlarmList>
                   {
                     tmpAlarmData.map((data) => {
-                      // if(data.type === "REPORT"){
-                      //   return <Report nickname={data.nickname} imglink={data.imglink} time={data.time}/>
-                      // }
-                      // if(data.type === "EVENT"){
-                      //   return <Event nickname={data.nickname} imglink={data.imglink} time={data.time}/>
-                      // }
-                      return null;
+                      switch(data.type) {
+                        case "REPORT":
+                          return <Report {...data}/>
+                        case "EVENT":
+                          return <Event {...data}/>
+                        default:
+                          return null;
+                      }
                     })
                   }
                 </s.AlarmList>

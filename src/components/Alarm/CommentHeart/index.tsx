@@ -1,3 +1,4 @@
+import heart from "../../../images/components/Alarm/Imoji/heart.svg";
 import * as s from "./styles";
 
 const CommentHeart = ({nickname, imglink, time}: any) => {
@@ -9,7 +10,7 @@ const CommentHeart = ({nickname, imglink, time}: any) => {
         alt="profile"
       />
       <s.Imoji 
-        src={imglink}
+        src={heart}
         alt="imoji"
       />
     </s.ProfileImgWrapper>

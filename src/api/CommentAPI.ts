@@ -3,7 +3,7 @@ import HttpClient from "../services/HttpClient";
 const CommentAPI = {
   getCommentList: async (post_id: number) => {
     try {
-      const path = `comment/list/${post_id}`;
+      const path = `/comment/list/${post_id}`;
       const response = await HttpClient.get(path);
       return response;
     } catch (e) {
@@ -14,7 +14,7 @@ const CommentAPI = {
 
   getCommentLike: async (comment_id: number) => {
     try {
-      const path = `comment/like/${comment_id}`;
+      const path = `/comment/like/${comment_id}`;
       const response = await HttpClient.get(path);
       return response;
     } catch (e) {
@@ -25,7 +25,7 @@ const CommentAPI = {
 
   postComment: async (post_id: number, user_id: number, body: any) => {
     try {
-      const path = `comment/${post_id}/${user_id}`;
+      const path = `/comment/${post_id}/${user_id}`;
       const response = await HttpClient.post(path, body);
       return response;
     } catch (e) {
@@ -36,7 +36,7 @@ const CommentAPI = {
 
   postReplies: async (comment_id: number, user_id: number, body: any) => {
     try {
-      const path = `comment/${comment_id}/${user_id}`;
+      const path = `/comment/${comment_id}/${user_id}`;
       const response = await HttpClient.post(path, body);
       return response;
     } catch (e) {
@@ -47,7 +47,7 @@ const CommentAPI = {
 
   putComment: async (commnet_id: number, body: any) => {
     try {
-      const path = `comment/update/${commnet_id}`;
+      const path = `/comment/update/${commnet_id}`;
       const response = HttpClient.put(path, body);
       return response;
     } catch (e) {
@@ -58,7 +58,7 @@ const CommentAPI = {
 
   deleteComment: async (comment_id: number) => {
     try {
-      const path = `comment/delete/${comment_id}`;
+      const path = `/comment/delete/${comment_id}`;
       const response = HttpClient.delete(path);
       return response;
     } catch (e) {

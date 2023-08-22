@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { IHeaderCategory } from '../../../interfaces/IHeaderCategories';
 import { useNavigate, useLocation } from "react-router-dom";
 import HibitLogo from "../../../images/components/HibitLogo.svg";
@@ -7,6 +7,11 @@ import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
 import CustomModalAlarm from '../../Alarm';
 import * as s from "./styles";
+import { useRecoilValue, useRecoilValueLoadable, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { accessTokenState, profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
+import useLoginInfo from '../../../hooks/useLoginInfo';
+import { alarmCountState } from '../../../recoil/atom/AlarmCount';
+import { axiosInstance } from '../../../services/HttpClient';
 
 const CATEGORIES: IHeaderCategory[] = [
   { title: "서비스 소개", link: "/intro" },
@@ -18,46 +23,67 @@ const Header = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [selectedCategory, setSelectedCategory] = useState<string>("메인");
-  const [isLogin, setIsLogin] = useState<boolean>(true);
-  const [hasAlarm, setHasAlarm] = useState<boolean>(true);
-  const [alarmCount, setAlarmCount] = useState<number>(14);
+
+  // Login + Modal
+  const loginInfo = useLoginInfo();
   
-  // const [alarmState, setAlarmState] = useRecoilState<boolean>(AlarmSwitchState);
-  // const onAlarmState = ()=>setAlarmState(!alarmState)
+  const accessTokenAtom = useRecoilValue(accessTokenState);
+  const resetAccessToken = useResetRecoilState(accessTokenState);
+  const resetUserIdx = useResetRecoilState(userIdxState);
+  const resetIsProfileRegistered = useResetRecoilState(profileRegisteredState);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const closeModal = () => setModalOpen(false);
+  const onClickLogin = () => setModalOpen(true);
+  console.log(axiosInstance.defaults.headers.common)
+
+  // Logout
+  const onClickLogout = async () => {
+    await axiosInstance.post(`/api/auth/token/access?logout=true`, {})
+      .then((res) => {
+        // console.log({res}) // ex)성공적으로 로그아웃되었습니다.
+        resetAccessToken(); // atom으로 관리되는 token값 null로 초기화
+        resetUserIdx();
+        resetIsProfileRegistered();
+        clearTokenAndHeader(); // axiosInstance의 default header accessToken값 null로 초기화
+        alert("로그아웃 되었습니다.");
+        return null;
+      })
+      .catch((e) => {
+        console.error({e});
+        alert("로그아웃 실패. 재로그인 하세요.");
+        resetAccessToken(); // atom으로 관리되는 token값 null로 초기화
+        resetUserIdx(); // atom으로 관리되는 userIdx값 null로 초기화
+        resetIsProfileRegistered(); // atom으로 관리되는 isProfileRegistered값 null로 초기화
+        clearTokenAndHeader(); // axiosInstance의 default header accessToken값 null로 초기화
+        navigate("/");
+        return null;
+      }) 
+  };
+  const clearTokenAndHeader = () => {
+    axiosInstance.defaults.headers.common['Authorization'] = null;
+  }
+
+  const [hasAlarm, setHasAlarm] = useState<boolean>(true);
+  const alarmCount = useRecoilValue(alarmCountState);
+  useEffect(() => {
+    if (alarmCount > 0) {
+      setHasAlarm(true);
+      return;
+    }
+    else {
+      setHasAlarm(false);
+    }
+  }, [alarmCount]);
+  
   const [isAlarmOpen, setIsAlarmOpen] = useState<boolean>(false);
   const onClickAlarm = () => {
     setIsAlarmOpen(!isAlarmOpen);
     console.log({isAlarmOpen});
   };
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const openModal = () => {
-    setModalOpen(true);
-  };
 
-  const closeModal = () => {
-    setModalOpen(false);
-    console.log({modalOpen});
-  };
 
-  useEffect(() => {
-    if (alarmCount === 0) setHasAlarm(false);
-    else setHasAlarm(true);
-  }, [alarmCount]);
-
-  const onClickLogin = () => {
-    // setIsLogin(true);
-    openModal();
-  };
-
-  const onClickLogout = () => {
-    alert("로그아웃 되었습니다.");
-    setIsLogin(false);
-  };
-
-  const onClickSignup = () => {
-    navigate("/signup");
-  };
   
   /* Web View */
   const onClickCategory = (title: string, link: string) => {
@@ -68,6 +94,7 @@ const Header = () => {
   useEffect(() => {
     CATEGORIES.map((selected: IHeaderCategory) => {
       if (pathname.includes(selected.link)) setSelectedCategory(selected.title);
+      return null;
     });
   }, [pathname]);
   
@@ -103,13 +130,15 @@ const Header = () => {
             )
           })}
       </s.LeftContainer>
-      {isLogin ?
+      {loginInfo?.isLoggedIn ?
         <s.RightContainer>
           <s.AlarmLogoContainer>
             <img onClick={onClickAlarm} src={AlarmIcon} alt='alarm-icon' />
             {
               hasAlarm ?
-              <s.AlarmCountWrapper>{alarmCount}</s.AlarmCountWrapper>
+              <Suspense fallback={<div>0</div>}>
+                <s.AlarmCountWrapper>{alarmCount!}</s.AlarmCountWrapper>
+              </Suspense>
               : <></>
             }
             
@@ -121,7 +150,7 @@ const Header = () => {
           <s.TextWrapper onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
         </s.RightContainer> :
         <s.RightContainer>
-          <s.TextWrapper onClick={() => onClickSignup()}>회원가입</s.TextWrapper>
+          <s.TextWrapper>회원가입</s.TextWrapper>
           <s.TextWrapper onClick={() => onClickLogin()}>로그인</s.TextWrapper>
           <LoginModal open={modalOpen} close={closeModal} />
         </s.RightContainer>

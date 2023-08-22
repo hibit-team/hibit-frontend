@@ -3,9 +3,15 @@ import HttpClient from "../services/HttpClient";
 const PostingAPI = {
   getPostings: async (post_id: number) => {
     try {
-      const path = `post/${post_id}`;
+      const path = `/post/${post_id}`;
       const response = await HttpClient.get(path);
-      return response;
+
+      if (response.status === 200) {
+        const data = response.data;
+        return data;
+      } else {
+        console.error('Failed to fetch data: ', response.status);
+      }
     } catch (e) {
       console.error({e});
       return null;
@@ -14,9 +20,14 @@ const PostingAPI = {
 
   putPosting: async (post_id: number, body: any) => {
     try {
-      const path = `post/${post_id}`;
+      const path = `/post/${post_id}`;
       const response = await HttpClient.put(path, body);
-      return response;
+      if (response.status === 200) {
+        const data = response.data;
+        return data;
+      } else {
+        console.error('Failed to fetch data: ', response.status);
+      }
     } catch (e) {
       console.error({e});
       return null;
@@ -25,9 +36,14 @@ const PostingAPI = {
 
   deletePosting: async (post_id: number) => {
     try {
-      const path = `post/${post_id}`;
+      const path = `/post/${post_id}`;
       const response = await HttpClient.delete(path);
-      return response;
+      if (response.status === 200) {
+        const data = response.data;
+        return data;
+      } else {
+        console.error('Failed to fetch data: ', response.status);
+      }
     } catch (e) {
       console.error({e});
       return null;
@@ -36,9 +52,14 @@ const PostingAPI = {
 
   postPosting: async (body: any) => {
     try {
-      const path = `post/write`;
+      const path = `/post/write`;
       const response = await HttpClient.post(path, body);
-      return response;
+      if (response.status === 200) {
+        const data = response.data;
+        return data;
+      } else {
+        console.error('Failed to fetch data: ', response.status);
+      }
     } catch (e) {
       console.error({e});
       return null;
