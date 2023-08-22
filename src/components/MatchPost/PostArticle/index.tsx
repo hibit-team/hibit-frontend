@@ -272,8 +272,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
               overflowWrap: 'break-word',
             }}
           >
-            내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ
-            {/* {data?.content} */}
+            {data?.content}
           </article>
           <button
             onClick={e => {

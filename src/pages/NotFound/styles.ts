@@ -2,22 +2,20 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import COLORS from '../../assets/color';
-import { relative } from 'path';
-import { Column } from '../Posting/styles';
 export const NotFound = styled.div({
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
-  '& img': { width: 150, height: 150, position: 'fixed', left: 100, top: 30 },
+  '& img': { width: 150, height: 150, position: 'fixed', left: '8vw', top: '5vh' },
   '@media (max-width:600px)': {
     bottom: 30,
     alignItems: 'center',
-    '& img': { width: 120, height: 120, position: 'fixed', left: 'calc(50% - 65px)', top: 120 },
+    '& img': { width: 120, height: 120, position: 'fixed', left: 'calc(50% - 65px)', top: '13vh' },
     '& div': {
       fontSize: 24,
       margin: 10,
     },
-    '& span': { fontWeight: 600, fontSize: 12 },
+    '& span': { fontWeight: 600, fontSize: 14 },
   },
 });
 
@@ -26,9 +24,9 @@ export const toHomeText = css({
   color: COLORS.white,
   fontWeight: 700,
   borderRadius: 10,
-  background:COLORS.main79,
+  background: COLORS.main79,
   border: `2px solid ${COLORS.main100}`,
-  padding: '20px 26px',
+  padding: '20px 62px',
   fontSize: 29,
   userSelect: 'none',
   cursor: 'pointer',

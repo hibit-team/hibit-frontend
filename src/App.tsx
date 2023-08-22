@@ -57,6 +57,7 @@ function App() {
                 <Route path="/posting" element={<Posting />} />
                 <Route path="/google-callback" element={<GoogleRedirectHandler />} />
                 <Route path="/report/:idx" element={<ReportModal />} />
+                <Route path="/404NotFound" element={<NotFound />} />
                 <Route path="/*" element={<NotFound />} />
               </Routes>
             </Router>
