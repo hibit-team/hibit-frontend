@@ -18,6 +18,7 @@ export interface ILikeUsers {
 export interface IMatchingPostPage {
   idx: number; //게시글넘버
   writer: string; //게시글 작성자
+  writerIdx: number;
   writerImg: string; //작성자 프로필
   title: string; //게시글제목
   content: string; //본문텍스트

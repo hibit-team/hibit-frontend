@@ -23,7 +23,9 @@ import { usePostMatchingArticleLikeMutation } from '../../../hooks/MatchingPost/
 import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
 import { useNavigate } from 'react-router-dom';
 import { PostIDXAtom } from '../../../recoil/atom/PostIDXAtom';
+import useLoginInfo from '../../../hooks/useLoginInfo';
 export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
+  const userIdxInfo = useLoginInfo()?.userIdx;
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   const [isInviteModalOpen, setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
@@ -159,6 +161,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             <div
               ref={ref}
               css={{
+                userSelect:'none',
                 position: 'absolute',
                 top: '1rem',
                 right: '-3.5rem',
@@ -167,14 +170,15 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 background: 'white',
                 boxSizing: 'border-box',
                 width: 56,
-                height: 102,
+                height: 'auto',
+                padding:'10px 0',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <PostOptionComponent postIDX={postIDX}></PostOptionComponent>
+              <PostOptionComponent userIdx={data?.writerIdx} userIdxInfo={userIdxInfo} postIDX={postIDX}></PostOptionComponent>
             </div>
           )}
         </s.ArticleTitleSection>
@@ -372,7 +376,15 @@ interface IOptionComponent {
 }
 
 //게시글 전용 option컴포넌트 분리
-export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }) => {
+export const PostOptionComponent = ({
+  userIdx,
+  userIdxInfo,
+  postIDX,
+}: {
+  userIdx?: number;
+  userIdxInfo?: number | null;
+  postIDX: string | undefined;
+}) => {
   const navigate = useNavigate();
   const postOption1 = css({
     //수정
@@ -394,7 +406,6 @@ export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }
     top: 2,
     fontSize: 18,
     padding: '6px',
-    borderBottom: `1px solid ${COLORS.Gray2}`,
     color: COLORS.Gray3,
     '&:hover': { color: COLORS.main79, scale: '1.04' },
   });
@@ -409,33 +420,36 @@ export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }
     color: COLORS.Gray3,
     '&:hover': { color: 'red', scale: '1.04' },
   });
-  const options = ['수정', '삭제', '신고'];
+  const options = [['수정',0], ['삭제',1]];
   //게시글 삭제
   const { mutate } = useDeleteMatchingPostMutation(postIDX);
   return (
     <>
-      {options.map((opt, i) => (
+      {(userIdx === userIdxInfo) ? options.map((opt) => (
         <button
           //수정모드 라우트 처리 , 게시글 삭제 API 연동 , 신고 라우트 처리
-          key={i}
-          css={i === 0 ? postOption1 : i === 1 ? postOption2 : postOption3}
-          onClick={() => {
-            switch (i) {
+          key={opt[0]}
+          css={opt[1] === 0 ? postOption1 : postOption2 }
+          onClick={() => {  
+            switch (opt[1]) {
+              case 0: {
+                //수정 라우트로 이동
+                navigate('/matching')
+                break;
+              }
               //삭제
               case 1: {
                 const confirm = window.confirm('게시글을 삭제하시겠습니까?');
                 if (confirm) mutate(postIDX);
                 break;
               }
-              case 2: {
-                navigate(`/report/${postIDX}`);
-              }
+              default:
             }
           }}
         >
-          {opt}
+          {opt[0]}
         </button>
-      ))}
+      )): <button onClick={()=>{navigate(`/report/:${postIDX}`)}}css={postOption3}>신고</button>}
     </>
   );
 };
@@ -494,9 +508,9 @@ export const OptionComponent = ({
   const postIDX = useRecoilValue(PostIDXAtom);
   return (
     <div css={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      {/* (userIdxInfo === reply?.writerIdx) && (userIdxInfo === reReply?.writerIdx)  */}
-      {((userIdxInfo === reply?.writerIdx) && (userIdxInfo === reReply?.writerIdx)) ? options.map(opt => 
-        (
+      {/* //유저 식별 API인터페이스 */}
+      {userIdxInfo === reply?.writerIdx && userIdxInfo === reReply?.writerIdx ? (
+        options.map(opt => (
           <button
             onClick={() => {
               //옵션모달꺼주기
@@ -511,15 +525,22 @@ export const OptionComponent = ({
               }
             }}
             key={opt[1]}
-            css={opt[1] === 0 ? postOption1 : postOption2 }
+            css={opt[1] === 0 ? postOption1 : postOption2}
           >
             {opt[0]}
           </button>
-        )
-      ): (<button onClick={()=>{
-        navigate(`/report/${postIDX}?reply=${replyIDX}`);
-      }}
-      css={postOption3}>신고</button>) }
+        ))
+      ) : (
+        <button
+          onClick={() => {
+            //accessToken이 존재하는 경우만 요청이 가능하도록 할 예정 =>
+            navigate(`/report/${postIDX}?reply=${replyIDX}`);
+          }}
+          css={postOption3}
+        >
+          신고
+        </button>
+      )}
     </div>
   );
 };

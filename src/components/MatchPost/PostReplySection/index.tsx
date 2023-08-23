@@ -109,7 +109,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
       window.scrollTo({ top: documentHeight, behavior: 'smooth' });
     },
     onError: e => {
-      alert('댓글 입력에 실패했습니다.')
+      alert('댓글 입력에 실패했습니다.');
       console.error(`댓글 입력에 실패했습니다. Error: ${(e as AxiosError).message}`);
     },
   });
@@ -283,7 +283,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
               }}
             >
               <img src={ReplyArrow} alt="reply-arrow-button" />
-              <div css={{ marginLeft: 4 }}>답글</div>
+              <div css={{ userSelect: 'none', marginLeft: 4 }}>답글</div>
             </div>
             {/* KEBAP BUTTON */}
             <img
@@ -314,7 +314,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
                 justifyContent: 'center',
                 width: 56,
                 height: 'auto',
-                padding:'10px 0px',
+                padding: '10px 0px',
                 alignItems: 'center',
                 flexDirection: 'column',
                 border: `1px solid ${COLORS.Gray2}`,
@@ -616,7 +616,7 @@ export const ReplyModifyOnComponent = ({
 };
 
 //대댓글 컴포넌트
-export const SecondaryReplyComponent = ({ userIdxInfo, reReply }: { userIdxInfo?: number | null , reReply: IComments }) => {
+export const SecondaryReplyComponent = ({ userIdxInfo, reReply }: { userIdxInfo?: number | null; reReply: IComments }) => {
   //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [replyTextState, setReplyTextState] = useState(reReply.content);
@@ -714,7 +714,7 @@ export const SecondaryReplyComponent = ({ userIdxInfo, reReply }: { userIdxInfo?
                 justifyContent: 'center',
                 width: 56,
                 height: 'auto',
-                padding:'10px 0',
+                padding: '10px 0',
                 alignItems: 'center',
                 flexDirection: 'column',
                 border: `1px solid ${COLORS.Gray2}`,
@@ -722,7 +722,7 @@ export const SecondaryReplyComponent = ({ userIdxInfo, reReply }: { userIdxInfo?
                 background: 'white',
                 zIndex: 10,
                 cursor: 'pointer',
-                userSelect:'none',
+                userSelect: 'none',
               }}
             >
               <OptionComponent
