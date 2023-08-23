@@ -16,6 +16,7 @@ import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import useLoginInfo, { ILoginInfo } from "../../hooks/useLoginInfo";
 import { read } from "fs";
+import FileAPI from "../../api/FileAPI";
 
 export interface IimgProps {
   imgURL: string;
@@ -24,6 +25,8 @@ export interface IimgProps {
   imgList: string[];
   setImgList: (value: string[]) => void;
 }
+
+const FILE_SIZE_MAX_LIMIT = 7 * 1024 * 1024;  // 7MB
 
 const MyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -121,31 +124,52 @@ const MyProfile = () => {
   };
   const imgInputRef = useRef<HTMLInputElement | null>(null);
   const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if(!e.target.files) return;
-    if(img?.length === 3) {
+    if (!e.target.files) {
+      console.log("이미지 파일 없음");
+      return;
+    }
+    if (img?.length === 3) {
       alert("이미지는 최대 3장까지 추가할 수 있습니다.");
       return;
     }
+
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
-    return new Promise<void>((resolve) => {
-      reader.onload = () => {
-        if(img) {
-          setImg([...img, reader.result]);
-        } else {
-          setImg([img]);
-        }
-        resolve();
-      };
-    });
-    // const newImgList = JSON.parse(JSON.stringify(img));
-    // setImg(newImgList)
-    // console.log(e.target.files[0].name);
-  }, [img]);
+    
+    reader.onload = () => {
+      const newImg = [...(img || [])];
+      newImg.push(reader.result as string);
+      setImg(newImg);
+    };
+  }, [img, setImg]);
   const onUploadImgBtnClick = useCallback(() => {
     if(!imgInputRef.current) return;
     imgInputRef.current.click();
   }, [])
+
+  const onClickSendBtn = () => {
+    // 폼데이터로 이미지 업로드
+    if (img && img.length > 0) {
+      const formData = new FormData();
+      img.forEach((imageData: any, index: number) => {
+        formData.append(`file${index}`, imageData);
+      });
+  
+      FileAPI.postFiles(0, formData)
+        .then((res) => {
+          console.log({res});
+          // 이미지 업로드 된 url (응답) 받아서 최종 POST 요청
+
+
+        })
+        .catch((e) => {
+          console.error({e});
+          
+        });
+    }
+    
+    else return;
+  }
 
   
   if(useIsMobile()) {
@@ -310,7 +334,8 @@ const MyProfile = () => {
                     }
                   </s.ImageAddBox>
                   {
-                    img?.map((item: string, idx: number) => (
+                    img &&
+                    img.map((item: string, idx: number) => (
                       <ProfileImage 
                         imgURL={item} 
                         isFirst={idx === 0 ? true : false}
@@ -334,7 +359,9 @@ const MyProfile = () => {
           <s.CancelBtn 
             isEditMode={isEditMode}
             onClick={onClickCancelBtn}>취소</s.CancelBtn>
-          <s.SaveBtn isEditMode={isEditMode}>저장하기</s.SaveBtn>
+          <s.SaveBtn
+           isEditMode={isEditMode}
+           onClick={onClickSendBtn}>저장하기</s.SaveBtn>
         </s.ButtonContainer>
       </s.Wrapper>
     </LayoutTemplateGray>

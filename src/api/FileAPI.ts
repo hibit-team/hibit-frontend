@@ -1,10 +1,18 @@
-import HttpClient from "../services/HttpClient";
+import axios from "axios";
 
 const FileAPI = {
   postFiles: async (mainimgIdx: number, formData: FormData) => {
     try {
       const path = `/upload?mainimgIdx=${mainimgIdx}`;
-      const response = HttpClient.post(path, formData);
+      const axiosInstance = axios.create({
+        baseURL: process.env.REACT_APP_SERVER_BASE_HTTPS_URL,
+        withCredentials: true,
+      });
+      const response = await axiosInstance.post(path, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
       return response;
     } catch (e) {
       console.error({e});
