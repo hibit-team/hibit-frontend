@@ -509,7 +509,7 @@ export const OptionComponent = ({
   return (
     <div css={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {/* //유저 식별 API인터페이스 */}
-      {userIdxInfo === reply?.writerIdx && userIdxInfo === reReply?.writerIdx ? (
+      {(userIdxInfo === reply?.writerIdx && userIdxInfo === reReply?.writerIdx) ? (
         options.map(opt => (
           <button
             onClick={() => {

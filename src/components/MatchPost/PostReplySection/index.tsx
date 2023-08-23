@@ -18,6 +18,7 @@ import { useUpdateReplyTextMutation } from '../../../hooks/MatchingPost/useUpdat
 import { usePostSecondaryReplyInputMutation } from '../../../hooks/MatchingPost/usePostSecondaryReplyInputMutation';
 import { usePostReplyLikeMutation } from '../../../hooks/MatchingPost/usePostReplyLikeMutation';
 import useLoginInfo from '../../../hooks/useLoginInfo';
+import { motion } from 'framer-motion';
 //좋아요한 유저들
 export interface ILikeUsers {
   idx: number;
@@ -652,7 +653,9 @@ export const SecondaryReplyComponent = ({ userIdxInfo, reReply }: { userIdxInfo?
   }, [setIsReplyOptModalOpen, handleClickOutside]);
 
   return (
-    <div>
+    <motion.div  initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}>
       <s.SecondaryReplyWrapper isSecondModifyOn={isSecondModifyOn}>
         <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 15px', justifyContent: 'space-between' }}>
           <img css={{ marginRight: 12 }} src={EmptyReplyArrow} alt="reply-arrow-empty" />
@@ -751,7 +754,7 @@ export const SecondaryReplyComponent = ({ userIdxInfo, reReply }: { userIdxInfo?
           <s.SecondaryReplyText>{replyTextState}</s.SecondaryReplyText>
         )}
       </s.SecondaryReplyWrapper>
-    </div>
+    </motion.div>
   );
 };
 
