@@ -17,7 +17,7 @@ import { AxiosError } from 'axios';
 import { useUpdateReplyTextMutation } from '../../../hooks/MatchingPost/useUpdateReplyTextMutation';
 import { usePostSecondaryReplyInputMutation } from '../../../hooks/MatchingPost/usePostSecondaryReplyInputMutation';
 import { usePostReplyLikeMutation } from '../../../hooks/MatchingPost/usePostReplyLikeMutation';
-
+import useLoginInfo from '../../../hooks/useLoginInfo';
 //좋아요한 유저들
 export interface ILikeUsers {
   idx: number;
@@ -29,6 +29,7 @@ export interface ILikeUsers {
 export interface IComments {
   idx: number;
   writer: string;
+  writerIdx: number;
   writerImg: string;
   content: string;
   childComments: IComments[];
@@ -64,6 +65,7 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
   if (isError) {
     console.error(`댓글리스트를 불러오지 못했습니다 :  ${error as AxiosError}`);
   }
+
   return (
     <div css={{ position: 'relative', paddingBottom: 100 }}>
       {/* 유저 댓글입력창 */}
@@ -91,6 +93,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
       return response;
     } catch (e) {
       console.error(`댓글 입력에 실패했습니다. Error: ${(e as AxiosError).message}`);
+      if ((e as AxiosError).response?.status === 404) alert('비회원은 댓글을 작성할 수 없습니다.');
       return;
     }
   };
@@ -106,6 +109,7 @@ export const InputReplyWrapper = ({ postIDX, userIDX }: { postIDX?: string; user
       window.scrollTo({ top: documentHeight, behavior: 'smooth' });
     },
     onError: e => {
+      alert('댓글 입력에 실패했습니다.')
       console.error(`댓글 입력에 실패했습니다. Error: ${(e as AxiosError).message}`);
     },
   });
@@ -174,6 +178,9 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       OriginalReplyTextRef.current.style.height = OriginalReplyTextRef.current.scrollHeight + 'px';
     }
   };
+  //로그인 정보 불러오기
+  const userIdxInfo = useLoginInfo()?.userIdx;
+
   useEffect(() => {
     if (OriginalReplyTextRef.current) {
       handleOriginalReplyText();
@@ -306,7 +313,8 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
                 display: 'flex',
                 justifyContent: 'center',
                 width: 56,
-                height: 102,
+                height: 'auto',
+                padding:'10px 0px',
                 alignItems: 'center',
                 flexDirection: 'column',
                 border: `1px solid ${COLORS.Gray2}`,
@@ -315,6 +323,8 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
               }}
             >
               <OptionComponent
+                userIdxInfo={userIdxInfo}
+                reply={reply}
                 replyIDX={reply.idx}
                 isModifyOn={isModifyOn}
                 setIsModifyOn={setIsModifyOn}
@@ -373,7 +383,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       ) : undefined}
       {reply.childComments.map((reReply, lineNumber) => {
         if (isOpen === false && lineNumber >= 3) return <></>;
-        return <SecondaryReplyComponent key={reReply.idx} reReply={reReply}></SecondaryReplyComponent>;
+        return <SecondaryReplyComponent userIdxInfo={userIdxInfo} key={reReply.idx} reReply={reReply}></SecondaryReplyComponent>;
       })}
     </div>
   );
@@ -606,7 +616,7 @@ export const ReplyModifyOnComponent = ({
 };
 
 //대댓글 컴포넌트
-export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => {
+export const SecondaryReplyComponent = ({ userIdxInfo, reReply }: { userIdxInfo?: number | null , reReply: IComments }) => {
   //원댓글과 별도의 optModalState
   const [isReplyOptModalOpen, setIsReplyOptModalOpen] = useState(false);
   const [replyTextState, setReplyTextState] = useState(reReply.content);
@@ -703,7 +713,8 @@ export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => 
                 display: 'flex',
                 justifyContent: 'center',
                 width: 56,
-                height: 102,
+                height: 'auto',
+                padding:'10px 0',
                 alignItems: 'center',
                 flexDirection: 'column',
                 border: `1px solid ${COLORS.Gray2}`,
@@ -711,9 +722,12 @@ export const SecondaryReplyComponent = ({ reReply }: { reReply: IComments }) => 
                 background: 'white',
                 zIndex: 10,
                 cursor: 'pointer',
+                userSelect:'none',
               }}
             >
               <OptionComponent
+                userIdxInfo={userIdxInfo}
+                reReply={reReply}
                 replyIDX={reReply.idx}
                 isReplyOptModalOpen={isReplyOptModalOpen}
                 setIsReplyOptModalOpen={setIsReplyOptModalOpen}

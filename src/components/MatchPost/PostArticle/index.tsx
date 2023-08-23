@@ -15,7 +15,7 @@ import WhiteLike from '../../../images/components/MatchPost/whiteLike.png';
 import FsLightbox from 'fslightbox-react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
-import ReplySectionComponent from '../PostReplySection';
+import ReplySectionComponent, { IComments } from '../PostReplySection';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
 import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteReplyMutation';
 import { useDeleteMatchingPostMutation } from '../../../hooks/MatchingPost/useDeleteMatchingPostMutation';
@@ -361,6 +361,9 @@ export const ArticleImageSlider = styled(Slider)`
 `;
 
 interface IOptionComponent {
+  reply?: IComments;
+  reReply?: IComments;
+  userIdxInfo?: number | null | undefined;
   replyIDX?: number;
   setIsModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
   isModifyOn?: boolean;
@@ -437,7 +440,16 @@ export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }
   );
 };
 
-export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOptModalOpen, setIsReplyOptModalOpen }: IOptionComponent) => {
+export const OptionComponent = ({
+  userIdxInfo,
+  reply,
+  reReply,
+  replyIDX,
+  setIsModifyOn,
+  isModifyOn,
+  isReplyOptModalOpen,
+  setIsReplyOptModalOpen,
+}: IOptionComponent) => {
   //수정삭제신고 게시글 옵션
   const postOption1 = css({
     //수정
@@ -459,7 +471,6 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
     top: 2,
     fontSize: 18,
     padding: '6px',
-    borderBottom: `1px solid ${COLORS.Gray2}`,
     color: COLORS.Gray3,
     '&:hover': { color: COLORS.main79, scale: '1.04' },
   });
@@ -474,41 +485,42 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
     color: COLORS.Gray3,
     '&:hover': { color: 'red', scale: '1.04' },
   });
-  const options = ['수정', '삭제', '신고'];
+  const options = [
+    ['수정', 0],
+    ['삭제', 1],
+  ];
   const { mutate } = useDeleteReplyMutation(replyIDX);
   const navigate = useNavigate();
   const postIDX = useRecoilValue(PostIDXAtom);
   return (
-    <>
-      {options.map((opt, i) => (
-        <button
-          onClick={() => {
-            //옵션모달꺼주기
-            if (setIsReplyOptModalOpen) {
-              setIsReplyOptModalOpen(!isReplyOptModalOpen);
-            }
-            //수정모드On(i==0)
-            if (i === 0 && setIsModifyOn) setIsModifyOn(!isModifyOn);
-            //삭제버튼인 경우에(i==1)
-            if (i === 1) {
-              mutate(replyIDX);
-            }
-            if (i === 2) {
-              // const openInNewTab = (url:string) => {
-              //   const newTab = window.open(url, '_blank');
-              //   newTab?.focus();
-              // };
-              // openInNewTab(`/report/${postIDX}?reply=${replyIDX}`)
-              navigate(`/report/${postIDX}?reply=${replyIDX}`);
-            }
-          }}
-          key={i}
-          css={i === 0 ? postOption1 : i === 1 ? postOption2 : postOption3}
-        >
-          {opt}
-        </button>
-      ))}
-    </>
+    <div css={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      {/* (userIdxInfo === reply?.writerIdx) && (userIdxInfo === reReply?.writerIdx)  */}
+      {((userIdxInfo === reply?.writerIdx) && (userIdxInfo === reReply?.writerIdx)) ? options.map(opt => 
+        (
+          <button
+            onClick={() => {
+              //옵션모달꺼주기
+              if (setIsReplyOptModalOpen) {
+                setIsReplyOptModalOpen(!isReplyOptModalOpen);
+              }
+              //수정모드On(i==0)
+              if (opt[1] === 0 && setIsModifyOn) setIsModifyOn(!isModifyOn);
+              //삭제버튼인 경우에(i==1)
+              if (opt[1] === 1) {
+                mutate(replyIDX);
+              }
+            }}
+            key={opt[1]}
+            css={opt[1] === 0 ? postOption1 : postOption2 }
+          >
+            {opt[0]}
+          </button>
+        )
+      ): (<button onClick={()=>{
+        navigate(`/report/${postIDX}?reply=${replyIDX}`);
+      }}
+      css={postOption3}>신고</button>) }
+    </div>
   );
 };
 
