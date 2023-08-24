@@ -101,8 +101,7 @@ const PostPosting = () => {
   }, []);
 
   const onClickSubmitBtn = () => {
-    const result = window.confirm("매칭 게시글을 등록하시겠습니까?");
-    if(result) {
+    if (window.confirm("매칭 게시글을 등록하시겠습니까?")) {
       alert("게시글이 등록되었습니다.");
       // submit api 추가 필요
       navigate(-1);
