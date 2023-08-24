@@ -15,6 +15,10 @@ const OtherProfile = () => {
   // 프로필 등록 or 미등록 유저에 따른 조건부 렌더링
   const [isProfileRegistered, setIsProfileRegistered] = useState(true);
 
+  // 타인 선택정보 공개 여부에 따른 조건부 렌더링
+  const [isAddressPrivate, setIsAddressPrivate] = useState(true);
+  const [isJobPrivate, setIsPrivate] = useState(true);
+
 
   const [isTabLeft, setIsTabLeft] = useState<boolean>(true);
   const onClickTab = () => {
@@ -124,14 +128,22 @@ const OtherProfile = () => {
                     
                     <s.Row2>
                       <s.Title>주소</s.Title>
-                      <s.Address>{address} 거주</s.Address>
+                      {
+                        isAddressPrivate ?
+                        <s.Address>비공개</s.Address> :
+                        <s.Address>{address} 거주</s.Address>
+                      }
                     </s.Row2>
                     
                     <s.HorizontalLine2 />
 
                     <s.Row3>
                       <s.Title>직업 혹은 학교</s.Title>
-                      <s.Job>{job}</s.Job>
+                      {
+                        isJobPrivate ?
+                        <s.Job>비공개</s.Job> :
+                        <s.Job>{job}</s.Job>
+                      }
                     </s.Row3>
 
                     <s.HorizontalLine3 />
