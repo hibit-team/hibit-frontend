@@ -1,34 +1,23 @@
-import React, { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as s from "./styles";
-import useIsMobile from "../../hooks/useIsMobile";
-import LayoutTemplateGray from "../../components/Common/LayoutTemplateGray";
-import { IProfile } from "../../interfaces/Profile/IProfile";
-import CheckIcon from "../../images/components/Profile/CheckIcon.svg";
-import UnCheckIcon from "../../images/components/Profile/UnCheckIcon.svg";
-import address_sido_sigugun from "../../assets/data/address/address";
-import ProfileImage from "../../components/Profile";
-import WhitePlus from "../../images/components/Profile/WhitePlus.svg";
-import GrayPlus from "../../images/components/Profile/GrayPlus.svg";
-import CautionIcon from "../../images/components/Profile/CautionIcon.svg";
-import MyprofileAPI from "../../api/MyprofileAPI";
-import { userIdxState } from "../../recoil/atom/LoginInfoState";
+import useIsMobile from "../../../hooks/useIsMobile";
+import LayoutTemplateGray from "../../../components/Common/LayoutTemplateGray";
+import { IProfile } from "../../../interfaces/Profile/IProfile";
+import CheckIcon from "../../../images/components/Profile/CheckIcon.svg";
+import UnCheckIcon from "../../../images/components/Profile/UnCheckIcon.svg";
+import address_sido_sigugun from "../../../assets/data/address/address";
+import ProfileImage from "../../../components/Profile";
+import WhitePlus from "../../../images/components/Profile/WhitePlus.svg";
+import GrayPlus from "../../../images/components/Profile/GrayPlus.svg";
+import CautionIcon from "../../../images/components/Profile/CautionIcon.svg";
+import MyprofileAPI from "../../../api/MyprofileAPI";
+import { userIdxState } from "../../../recoil/atom/LoginInfoState";
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
-import useLoginInfo, { ILoginInfo } from "../../hooks/useLoginInfo";
-import { read } from "fs";
-import FileAPI from "../../api/FileAPI";
+import useLoginInfo, { ILoginInfo } from "../../../hooks/useLoginInfo";
+import FileAPI from "../../../api/FileAPI";
 
-export interface IimgProps {
-  imgURL: string;
-  isFirst: boolean;
-  isEditMode: boolean;
-  imgList: string[];
-  setImgList: (value: string[]) => void;
-}
-
-const FILE_SIZE_MAX_LIMIT = 7 * 1024 * 1024;  // 7MB
-
-const MyProfile = () => {
+const PutMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -160,6 +149,35 @@ const MyProfile = () => {
           console.log({res});
           // 이미지 업로드 된 url (응답) 받아서 최종 POST 요청
 
+          const imageResponse = {
+            mainImage: res?.data.mainImage,
+            subImages: res?.data.subImages
+          }
+
+          const body: IProfile = {
+            nickname: nickname,
+            age: age,
+            gender: gender,
+            personality: personality,
+            introduce: introduce,
+            job: job,
+            address_sido: address_sido,
+            address_sigugun: address_sigungu,
+            img: imageResponse
+          }
+
+          if (userIdx) {
+            MyprofileAPI.putMyProfile(userIdx, body)
+              .then((res) => {
+                console.log("post my profile res: ", {res});
+              })
+              .catch((e) => {
+                console.error({e});
+              });
+          } else {
+            console.error("userIdx가 존재하지 않습니다.");
+            alert("userIdx가 존재하지 않습니다.");
+          }
 
         })
         .catch((e) => {
@@ -368,4 +386,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default PutMyProfile;

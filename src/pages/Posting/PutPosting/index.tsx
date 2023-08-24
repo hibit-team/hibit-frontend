@@ -1,13 +1,13 @@
 import { ChangeEvent, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import LayoutTemplateGray from "../../components/Common/LayoutTemplateGray";
-import useIsMobile from "../../hooks/useIsMobile";
-import CalendarComponent from "../../components/CalendarComponent";
+import LayoutTemplateGray from "../../../components/Common/LayoutTemplateGray";
+import useIsMobile from "../../../hooks/useIsMobile";
+import CalendarComponent from "../../../components/CalendarComponent";
 import * as s  from "./styles";
-import AddBtn from "../../images/components/Posting/AddBtn.svg";
-import OpenchatGuide from "../../images/components/Posting/OpenchatGuide.svg";
-import GrayPlus from "../../images/components/Profile/GrayPlus.svg";
-import ProfileImage from "../../components/Profile";
+import AddBtn from "../../../images/components/Posting/AddBtn.svg";
+import OpenchatGuide from "../../../images/components/Posting/OpenchatGuide.svg";
+import GrayPlus from "../../../images/components/Profile/GrayPlus.svg";
+import ProfileImage from "../../../components/Profile";
 
 const tmpExhibitionData = [
   "로그아웃 전시회", "전시회2", "전시회3", "전시회4"
@@ -27,7 +27,7 @@ const testImgs: string[] = [
   // "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-3.png"
 ];
 
-const Posting = () => {
+const PutPosting = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
@@ -271,4 +271,4 @@ const Posting = () => {
   )
 };
 
-export default Posting;
+export default PutPosting;

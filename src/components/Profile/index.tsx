@@ -1,4 +1,4 @@
-import { IimgProps } from "../../pages/MyProfile";
+import { IimgProps } from "../../interfaces/Profile/IimgProps";
 import * as s from "./styles";
 import CloseBtn from "../../images/components/Profile/CloseBtn.svg";
 
