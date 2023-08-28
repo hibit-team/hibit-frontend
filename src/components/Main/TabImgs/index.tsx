@@ -3,6 +3,10 @@ import * as s from "./styles";
 import mainLeft from '../../../images/components/Main/mainLeft.svg';
 import mainRight from '../../../images/components/Main/mainRight.svg';
 import nowTogoButton from '../../../images/components/Main/nowTogoButton.svg';
+import { useRecoilState } from "recoil"
+import { MatchingControllerState } from "../../../recoil/atom/MatchingControllerState";
+import { useNavigate } from "react-router-dom";
+
 //slider기본세팅
 const settings = {
   arrows: false,
@@ -15,6 +19,8 @@ const settings = {
 };
 
 const TabImgs = () => {
+  const [sortOption,handleSortOption] = useRecoilState(MatchingControllerState);
+  const navigate = useNavigate()
   return (
     <s.SliderContainer {...settings}>
       <s.SlideImgWrapper>
@@ -25,7 +31,11 @@ const TabImgs = () => {
           <h1 css={s.textCss1}>우리 심심한데 전시나 볼과?</h1>
           <h1 css={s.textCss2}>이번주에 출발하는 전시회</h1>
           <s.textCssContainer3>
-            <img css={s.textCss3} src={nowTogoButton} alt='togo-button'/>
+            <img onClick={()=>{
+            handleSortOption('thisweek')
+            navigate('/matching')
+            }}
+            css={s.textCss3} src={nowTogoButton} alt='togo-button'/>
           </s.textCssContainer3>
         </s.SlideBottom>
       </s.SlideImgWrapper>
@@ -38,7 +48,10 @@ const TabImgs = () => {
           <h1 css={s.textCss1}>어떤 전시회가 인기가 많을까?</h1>
           <h1 css={s.textCss2}>좋아요 많은 게시글</h1>
           <s.textCssContainer3>
-            <img css={s.textCss3} src={nowTogoButton} alt='togo-button'/>
+            <img onClick={()=>{
+            handleSortOption('like')
+            navigate('/matching')
+            }} css={s.textCss3} src={nowTogoButton} alt='togo-button'/>
           </s.textCssContainer3>
         </s.SlideBottom>
       </s.SlideImgWrapper>
