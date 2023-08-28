@@ -13,11 +13,6 @@ import useLoginInfo from '../../../hooks/useLoginInfo';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
 import { axiosInstance } from '../../../services/HttpClient';
 
-const CATEGORIES: IHeaderCategory[] = [
-  { title: "서비스 소개", link: "/intro" },
-  { title: "매칭", link: "/matching" },
-  { title: "프로필", link: "/profile"},
-];
 
 const Header = () => {
   const navigate = useNavigate();
@@ -26,6 +21,8 @@ const Header = () => {
 
   // Login + Modal
   const loginInfo = useLoginInfo();
+  const isLogin = loginInfo?.isLoggedIn;
+  const isProfileRegistered = loginInfo?.isProfileRegistered;
   
   const accessTokenAtom = useRecoilValue(accessTokenState);
   const resetAccessToken = useResetRecoilState(accessTokenState);
@@ -91,13 +88,6 @@ const Header = () => {
     navigate(link);
   };
   
-  useEffect(() => {
-    CATEGORIES.map((selected: IHeaderCategory) => {
-      if (pathname.includes(selected.link)) setSelectedCategory(selected.title);
-      return null;
-    });
-  }, [pathname]);
-  
   /* Mobile View */
   const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -116,19 +106,25 @@ const Header = () => {
   return (
     <s.Wrapper>
       <s.LeftContainer>
-        <s.LogoContainer onClick={() => onClickCategory("메인", "/")}>
+        <s.LogoContainer onClick={() => navigate("/")}>
           <img src={HibitLogo} alt='hibit-logo'/>
         </s.LogoContainer>
-         {CATEGORIES.map((selected: IHeaderCategory, index: number) => {
-            return (
-              <s.Category 
-                key={index}
-                onClick={() => onClickCategory(selected.title, selected.link)}
-              >
-                {selected.title}
-              </s.Category> 
-            )
-          })}
+        <s.Category onClick={() => navigate("/intro")}>서비스 소개</s.Category>
+        <s.Category onClick={() => navigate("/matching")}>매칭</s.Category>
+        <s.Category
+         onClick={() => {
+          if (isLogin) {
+            if (isProfileRegistered) {
+              navigate("/put-profile");
+            } else {
+              navigate("/post-profile");
+            }
+          } else {
+            // navigate("/post-profile");
+            alert("로그인 후에 진행 해 주세요.");
+          }
+        }}>프로필</s.Category>
+        
       </s.LeftContainer>
       {loginInfo?.isLoggedIn ?
         <s.RightContainer>
