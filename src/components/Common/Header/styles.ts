@@ -75,6 +75,7 @@ export const TextWrapper = styled.div`
   border-radius: 20px;
   margin-left: 24px;
   cursor: pointer;
+  font-weight: 600;
 `;
 
 export const MobileWrapper = styled.div`

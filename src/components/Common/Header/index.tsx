@@ -2,12 +2,13 @@ import { Suspense, useEffect, useState } from 'react';
 import { IHeaderCategory } from '../../../interfaces/IHeaderCategories';
 import { useNavigate, useLocation } from "react-router-dom";
 import HibitLogo from "../../../images/components/HibitLogo.svg";
+import HibitLogoWhite from "../../../images/components/HibitLogoWhite.svg";
 import AlarmIcon from "../../../images/components/AlarmIcon.svg";
 import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
 import CustomModalAlarm from '../../Alarm';
 import * as s from "./styles";
-import { useRecoilValue, useRecoilValueLoadable, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilValueLoadable, useResetRecoilState } from 'recoil';
 import { accessTokenState, profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
 import useLoginInfo from '../../../hooks/useLoginInfo';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
@@ -105,6 +106,9 @@ const Header = () => {
     setIsMenuOpen(true);
   };
 
+  const { pathname: path } = useLocation();
+  console.log(path)
+
   if (isMobile) {
     return (
       <s.MobileWrapper>
@@ -112,14 +116,13 @@ const Header = () => {
       </s.MobileWrapper>
     );
   }
-
   return (
     <s.Wrapper>
-      <s.LeftContainer>
+      <s.LeftContainer style={{ color: path === '/matching' ? 'white' : 'black'}} >
         <s.LogoContainer onClick={() => onClickCategory("메인", "/")}>
-          <img src={HibitLogo} alt='hibit-logo'/>
+          {path === '/matching' ? <img src={HibitLogoWhite} alt='logo-white'/> : <img src={HibitLogo} alt='hibit-logo'/> }
         </s.LogoContainer>
-         {CATEGORIES.map((selected: IHeaderCategory, index: number) => {
+        {CATEGORIES.map((selected: IHeaderCategory, index: number) => {
             return (
               <s.Category 
                 key={index}
@@ -149,7 +152,7 @@ const Header = () => {
           />
           <s.TextWrapper onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
         </s.RightContainer> :
-        <s.RightContainer>
+        <s.RightContainer style={{ color: path === '/matching' ? 'white' : 'black'}}>
           <s.TextWrapper>회원가입</s.TextWrapper>
           <s.TextWrapper onClick={() => onClickLogin()}>로그인</s.TextWrapper>
           <LoginModal open={modalOpen} close={closeModal} />
