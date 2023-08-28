@@ -3,7 +3,7 @@ import * as s from "./styles";
 import mainLeft from '../../../images/components/Main/mainLeft.svg';
 import mainRight from '../../../images/components/Main/mainRight.svg';
 import nowTogoButton from '../../../images/components/Main/nowTogoButton.svg';
-import { useRecoilState } from "recoil"
+import { useSetRecoilState } from "recoil"
 import { MatchingControllerState } from "../../../recoil/atom/MatchingControllerState";
 import { useNavigate } from "react-router-dom";
 
@@ -19,7 +19,7 @@ const settings = {
 };
 
 const TabImgs = () => {
-  const [sortOption,handleSortOption] = useRecoilState(MatchingControllerState);
+  const handleSortOption = useSetRecoilState(MatchingControllerState);
   const navigate = useNavigate()
   return (
     <s.SliderContainer {...settings}>

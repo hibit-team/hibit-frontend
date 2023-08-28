@@ -4,6 +4,8 @@ import COLORS from "../../../assets/color";
 // import styled from "@emotion/styled";
 
 export const CustomSearchBarStyles =css`
+position: relative;
+bottom: 20px;
 width: 880px;
 height: 68px;
 border-radius:60px;

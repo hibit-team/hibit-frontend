@@ -12,7 +12,7 @@ export const MatchingHeader = styled.div`
   color: ${COLORS.black};
   font-size: 23px;
   font-weight: 900;
-  margin-top: 40px;
+  margin-top: 20px;
 `;
 
 //그리드 컨테이너
@@ -155,7 +155,7 @@ export const LoadMoreButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto 120px auto;
+  margin: 30px auto 120px auto;
   border-radius: 3rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
   &:hover {
@@ -166,12 +166,4 @@ export const LoadMoreButton = styled.div`
     color: white;
     cursor: pointer;
   }
-`;
-export const LoadingIndicatorCss = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 300px;
-  height: 100px;
-  margin: 0 auto;
 `;
