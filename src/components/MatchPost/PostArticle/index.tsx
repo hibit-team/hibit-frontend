@@ -321,14 +321,14 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
         </s.ArticleTextSection>
         <div css={{ width: 874, height: 1, background: COLORS.Gray2, margin: 'auto' }}></div>
         <div css={{ display: 'flex', justifyContent: 'center', padding: 32 }}>
-          <s.InviteBoxWrapper
+          {userIdxInfo === data?.writerImg ? <s.InviteBoxWrapper
             onClick={e => {
               e.stopPropagation();
               setIsInviteModalOpen(!isInviteModalOpen);
             }}
           >
             초대하기
-          </s.InviteBoxWrapper>
+          </s.InviteBoxWrapper> : undefined}
         </div>
 
         <FsLightboxWrapper data={data} />

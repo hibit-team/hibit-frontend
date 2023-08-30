@@ -10,6 +10,7 @@ import PostStateModal from '../PostStateModal';
 import { useRecoilState } from 'recoil';
 import { PostStateModalSwitch } from '../../../recoil/atom/PostStateModalSwitch';
 import { useUpdateMatchingStatusCancel } from '../../../hooks/MatchingPost/useUpdateMatchingStatusCancle';
+import useLoginInfo from '../../../hooks/useLoginInfo';
 
 export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPostPage; postIDX: string | undefined }) {
   const label = data?.number_and_What;
@@ -18,6 +19,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
   //게시글 모집취소 mutation hook
   const { mutate: cancelMutate } = useUpdateMatchingStatusCancel(postIDX);
+  const loginInfo = useLoginInfo();
 
   return (
     <div>
@@ -35,7 +37,8 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
           <s.MatchPostStatusContainer isStatusModalOpen={isStatusModalOpen}>
             <div
               onClick={() => {
-                setIsStatusModalOpen(!isStatusModalOpen);
+                if(data?.writerIdx === loginInfo?.userIdx) { setIsStatusModalOpen(!isStatusModalOpen);}
+                else { alert('게시글의 상태는 작성자만 변경할 수 있습니다.')}
               }}
               css={{ userSelect: 'none', display: 'flex', padding: '6px 0px 6px 12px'}}
             >
