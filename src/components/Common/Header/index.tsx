@@ -152,9 +152,9 @@ const Header = () => {
           />
           <s.TextWrapper onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
         </s.RightContainer> :
-        <s.RightContainer style={{ color: path === '/matching' ? 'white' : 'black'}}>
-          <s.TextWrapper>회원가입</s.TextWrapper>
-          <s.TextWrapper onClick={() => onClickLogin()}>로그인</s.TextWrapper>
+        <s.RightContainer >
+          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}}>회원가입</s.TextWrapper>
+          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogin()}>로그인</s.TextWrapper>
           <LoginModal open={modalOpen} close={closeModal} />
         </s.RightContainer>
       }

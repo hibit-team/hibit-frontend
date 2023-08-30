@@ -37,18 +37,18 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
               onClick={() => {
                 setIsStatusModalOpen(!isStatusModalOpen);
               }}
-              css={{ userSelect: 'none', display: 'flex', padding: '6px 0px 6px 12px' }}
+              css={{ userSelect: 'none', display: 'flex', padding: '6px 0px 6px 12px'}}
             >
-              <button css={{ userSelect: 'none', all: 'unset' }}>
-                {data?.status === 'N' ? '모집 중' : data?.status === 'C' ? '모집 완료' : '모집 취소'}
+              <button css={{ userSelect: 'none', all: 'unset'}}>
+              <span css={{position:'relative',left: '9px'}}>{data?.status === 'N' ? '모집 중' : data?.status === 'C' ? '모집 완료' : '모집 취소'}</span>
               </button>
               {!isStatusModalOpen ? (
-                <img css={{ position: 'relative', left: 5, bottom: 1 }} src={ArrownDown} alt="modalOpen-arrow"></img>
+                <img css={{ position: 'relative', left: 16, bottom: 1 }} src={ArrownDown} alt="modalOpen-arrow"></img>
               ) : (
-                <img css={{ position: 'relative', left: 5, bottom: 1 }} src={ArrowUp} alt="modalClose-arrow"></img>
+                <img css={{ position: 'relative', left: 16, bottom: 1 }} src={ArrowUp} alt="modalClose-arrow"></img>
               )}
             </div>
-            <div css={{ userSelect: 'none', display: isStatusModalOpen ? 'block' : 'none' }}>
+            <div css={{userSelect: 'none', display: isStatusModalOpen ? 'block' : 'none' }}>
               <div
                 onClick={e => {
                   e.stopPropagation();
@@ -81,7 +81,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                   boxSizing: 'border-box',
                 }}
               >
-                모집 중
+                <span css={{position:'relative',left: '9px'}}>모집 중 </span>
               </div>
               <div
                 onClick={e => {
@@ -118,7 +118,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                   borderBottom: `1px solid ${COLORS.main79}`,
                 }}
               >
-                모집 완료
+                <span css={{position:'relative',left: '8px'}}>모집 완료</span>
               </div>
               <div
                 onClick={e => {
@@ -155,7 +155,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                   boxSizing: 'border-box',
                 }}
               >
-                모집 취소
+                <span css={{position:'relative',left: '8px'}}>모집 취소</span>
               </div>
             </div>
           </s.MatchPostStatusContainer>
