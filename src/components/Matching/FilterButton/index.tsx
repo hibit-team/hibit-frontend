@@ -45,7 +45,7 @@ const MatchingFilterButton = () => {
           </div>
           <div
             onClick={() => {
-              if (isLoggedIn !== false) {
+              if (isLoggedIn === false) {
                 alert('비회원은 게시글을 작성할 수 없습니다.');
                 return;
               }

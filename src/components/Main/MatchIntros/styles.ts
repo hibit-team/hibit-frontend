@@ -57,7 +57,7 @@ export const PhoneImg = styled.img`
 `;
 
 export const MidContainer = styled.div`
-  width: 100vw;
+  max-width: 100vw;
   height: 1800px;
   background-color: #EFE8F9;
 `;

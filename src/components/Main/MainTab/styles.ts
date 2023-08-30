@@ -84,7 +84,7 @@ export const LeftTab_2 = styled.div`
   height:100%;
   line-height:100%;
   border-bottom: 2px solid #797979;
-  opacity:0.8; */
+  opacity:0.8; 
 `;
 
 export const RightTab_2 = styled.div`
