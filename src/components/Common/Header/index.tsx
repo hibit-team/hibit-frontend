@@ -8,11 +8,12 @@ import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
 import CustomModalAlarm from '../../Alarm';
 import * as s from "./styles";
-import { useRecoilValue, useRecoilValueLoadable, useResetRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, useRecoilValueLoadable, useResetRecoilState } from 'recoil';
 import { accessTokenState, profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
 import useLoginInfo from '../../../hooks/useLoginInfo';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
 import { axiosInstance } from '../../../services/HttpClient';
+import { LoginModalState } from '../../../recoil/atom/LoginModalState';
 
 const CATEGORIES: IHeaderCategory[] = [
   { title: "서비스 소개", link: "/intro" },
@@ -33,10 +34,9 @@ const Header = () => {
   const resetUserIdx = useResetRecoilState(userIdxState);
   const resetIsProfileRegistered = useResetRecoilState(profileRegisteredState);
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useRecoilState(LoginModalState);
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
-  console.log(axiosInstance.defaults.headers.common)
 
   // Logout
   const onClickLogout = async () => {

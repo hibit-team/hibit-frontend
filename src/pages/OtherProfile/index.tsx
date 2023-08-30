@@ -6,15 +6,13 @@ import FsLightbox from "fslightbox-react";
 import ImageCarousel from "../../components/OtherProfile/ImageCarousel";
 import ZoomInIcon from "../../images/components/OtherProfile/ZoomInIcon.svg";
 import LockIcon from "../../images/components/OtherProfile/LockIcon.png";
-
+import { GlobalModal } from "../../components/GlobalModal";
+import useLoginInfo from "../../hooks/useLoginInfo";
+import { Global } from "@emotion/react";
 const OtherProfile = () => {
   const idParams = useParams();
-  const userID = idParams.userID;
-  // console.log(userID);
-
-  // 프로필 등록 or 미등록 유저에 따른 조건부 렌더링
-  const [isProfileRegistered, setIsProfileRegistered] = useState(true);
-
+  const userID = idParams.userID; 
+  const isProfileRegistered = useLoginInfo()?.isProfileRegistered;
 
   const [isTabLeft, setIsTabLeft] = useState<boolean>(true);
   const onClickTab = () => {
@@ -63,7 +61,7 @@ const OtherProfile = () => {
                 <s.RightTab1 onClick={onClickUserHistoryTab}>유저 히스토리</s.RightTab1>
               </s.Tabs>
 
-              {
+              {/* {
                 !isProfileRegistered ?
                   <s.NotRegisterContainer>
                     <s.LockImage 
@@ -88,13 +86,13 @@ const OtherProfile = () => {
                     >내 프로필 등록하기</s.RegisterProfileBtn>
                   </s.NotRegisterContainer> :
                   null
-              }
+              } */}
 
               <s.NotRegisterContainer>
 
               </s.NotRegisterContainer>
 
-              <s.ProfileContainer isRegistered={isProfileRegistered}>
+              <s.ProfileContainer isRegistered={isProfileRegistered ? isProfileRegistered : false }>
                 <s.TopInfoContainer>
                   <s.CarouselWrapper>
                     <ImageCarousel />
@@ -169,6 +167,7 @@ const OtherProfile = () => {
           )
         }
       </s.Wrapper>
+      { isProfileRegistered !== false ? <GlobalModal/> : undefined }
     </LayoutTemplate>
   )
 };
