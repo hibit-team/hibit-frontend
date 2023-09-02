@@ -36,12 +36,20 @@ const PutMyProfile = () => {
   }, [userIdx]);
 
   /* 필수 정보 */
-  const [nickname, setNickname] = useState<string | undefined>();
+  const [nickname, setNickname] = useState<string>();
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
+  };
+  const [isNicknameDuplicated, setIsNicknameDuplicated] = useState<boolean>(true);
+  const onClickDuplicateNickname = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("중복 확인 API");
+    // .then()
+    setIsNicknameDuplicated(false);
+    // .catch()
+    // setIsNicknameDuplicated(true);
   }; // nickname
   
-  const [age, setAge] = useState<number>(0);
+  const [age, setAge] = useState<number | null>(null);
   const onChangeAge = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAge(+e.target.value);
   }; // age
@@ -184,14 +192,18 @@ const PutMyProfile = () => {
 
           const body: IProfile = {
             nickname: nickname,
-            age: age,
-            gender: gender,
+            age: age!,
+            gender: gender!,
             personality: personality,
             introduce: introduce,
             job: job,
-            address_sido: address_sido,
-            address_sigugun: address_sigungu,
-            img: imageResponse
+            addressCity: address_sido,
+            addressDistrict: address_sigungu,
+            mainImg: imageResponse.mainImage,
+            subImg: imageResponse.subImages!,
+            jobVisibility: isJobChecked ? 1 : 0,
+            addressVisibility: isAddressChecked ? 1: 0, 
+            subImgVisibility: isImgChecked ? 1 : 0,
           }
 
 
@@ -300,7 +312,7 @@ const PutMyProfile = () => {
                 disabled={!isEditMode} 
                 placeholder={`${age}`} 
                 type="number" 
-                value={age}
+                value={age!}
                 onChange={onChangeAge} 
               />
             </s.AgeContainer>

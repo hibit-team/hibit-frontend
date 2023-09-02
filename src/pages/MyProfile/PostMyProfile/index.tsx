@@ -20,33 +20,32 @@ const PostMyProfile = () => {
 
   const navigate = useNavigate();
 
-  let myProfileData: Promise<IProfile>;
   let userIdx: number | null = null;
   localStorage.getItem("userIdx");
   if (localStorage.getItem("userIdx")) {
     userIdx = +localStorage.getItem("userIdx")!;
   }
-  useEffect(() => {
-    if (userIdx) {
-      myProfileData = MyprofileAPI.getMyProfile(userIdx);
-    } else {
-      alert("로그인을 먼저 진행해 주세요.");
-      navigate("/");
-    }
-  }, [userIdx]);
 
   /* 필수 정보 */
-  const [nickname, setNickname] = useState<string | undefined>();
+  const [nickname, setNickname] = useState<string>("");
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
+  }; 
+  const [isNicknameDuplicated, setIsNicknameDuplicated] = useState<boolean>(true);
+  const onClickDuplicateNickname = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("중복 확인 API");
+    // .then()
+    setIsNicknameDuplicated(false);
+    // .catch()
+    // setIsNicknameDuplicated(true);
   }; // nickname
   
-  const [age, setAge] = useState<number>(0);
+  const [age, setAge] = useState<number | null>(null);
   const onChangeAge = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAge(+e.target.value);
   }; // age
 
-  const [gender, setGender] = useState<number | undefined>();
+  const [gender, setGender] = useState<number | null>(null);
   const [personality, setPersonality] = useState<string[]>([]);
   const [allPersonalities, setAllPersonalities] = useState<string[]>([]);
   useEffect(() => {
@@ -59,7 +58,7 @@ const PostMyProfile = () => {
       });
   }, []);
 
-  const [introduce, setIntroduce] = useState<string | undefined>();
+  const [introduce, setIntroduce] = useState<string>("");
 
   const onClickCancelBtn = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (window.confirm("변경 사항을 취소하시겠습니까?")) {
@@ -91,20 +90,18 @@ const PostMyProfile = () => {
 
 
   /* 선택 정보 */
-  const [job, setJob] = useState<string | undefined>();
-  const [isJobChecked, setIsJobChecked] = useState<boolean | undefined>(false);
+  const [job, setJob] = useState<string>("");
+  const [isJobChecked, setIsJobChecked] = useState<boolean>(false);
   const onClickJobCheck = () => {
-    if (!isEditMode) return;
     setIsJobChecked(!isJobChecked);
   };
   const onChangeJob = (e: React.ChangeEvent<HTMLInputElement>) => setJob(e.target.value);
   // 직업 혹은 학교
 
-  const [address_sido, setAddress_sido] = useState<string | undefined>(undefined);
-  const [address_sigungu, setAddress_sigungu] = useState<string | undefined>(undefined);
-  const [isAddressChecked, setIsAddressChecked] = useState<boolean | undefined>(false);
+  const [address_sido, setAddress_sido] = useState<string>("");
+  const [address_sigungu, setAddress_sigungu] = useState<string>("");
+  const [isAddressChecked, setIsAddressChecked] = useState<boolean>(false);
   const onClickAddressCheck = () => {
-    if (!isEditMode) return;
     setIsAddressChecked(!isAddressChecked);
   };
   const [isAddressChanged, setIsAddressChanged] = useState<boolean>(false);
@@ -116,9 +113,8 @@ const PostMyProfile = () => {
   
   const [imgURLs, setImgURLs]= useState<string[]>([]);
   const [imgs, setImgs]= useState<File[]>([]);
-  const [isImgChecked, setIsImgChecked] = useState<boolean | undefined>(false);
+  const [isImgChecked, setIsImgChecked] = useState<boolean>(false);
   const onClickImgCheck = () => {
-    if (!isEditMode) return;
     setIsImgChecked(!isImgChecked);
   };
   const imgInputRef = useRef<HTMLInputElement | null>(null);
@@ -147,14 +143,16 @@ const PostMyProfile = () => {
   const onUploadImgBtnClick = useCallback(() => {
     if(!imgInputRef.current) return;
     imgInputRef.current.click();
-  }, [])
+  }, []);
+
+  
 
   const onClickSendBtn = () => {
 
-    // if (!checkAllInfo()) {
-    //   alert("모든 정보를 기입해야 합니다.");
-    //   return;
-    // }
+    if (!checkAllInfo()) {
+      alert("모든 정보를 기입해야 합니다.");
+      return;
+    }
 
     if (imgs && imgs.length > 0) {
       const formData = new FormData();
@@ -166,8 +164,6 @@ const PostMyProfile = () => {
   
       FileAPI.postFiles(0, formData)
         .then((res) => {
-          console.log({res});
-          // 이미지 업로드 된 url (응답) 받아서 최종 POST 요청
           const imageResponse: IImage = {
             mainImage: "",
             subImages: []
@@ -180,20 +176,23 @@ const PostMyProfile = () => {
             });
           }
 
-          console.log("업로드 완료", imageResponse);
+          console.log("이미지 업로드 완료", imageResponse);
 
           const body: IProfile = {
             nickname: nickname,
-            age: age,
-            gender: gender,
+            age: age!,
+            gender: gender!,
             personality: personality,
             introduce: introduce,
             job: job,
-            address_sido: address_sido,
-            address_sigugun: address_sigungu,
-            img: imageResponse
+            addressCity: address_sido,
+            addressDistrict: address_sigungu,
+            mainImg: imageResponse.mainImage,
+            subImg: imageResponse.subImages!,
+            jobVisibility: isJobChecked ? 1 : 0,
+            addressVisibility: isAddressChecked ? 1: 0, 
+            subImgVisibility: isImgChecked ? 1 : 0,
           }
-
 
           MyprofileAPI.postMyProfile(body)
             .then((res) => {
@@ -217,6 +216,11 @@ const PostMyProfile = () => {
   const checkAllInfo = () => {
     if (nickname === undefined || nickname === "") {
       alert("닉네임 정보를 입력해 주세요.");
+      return false;
+    }
+
+    if (isNicknameDuplicated) {
+      alert("닉네임 중복 확인을 먼저 해 주세요.");
       return false;
     }
 
@@ -251,7 +255,6 @@ const PostMyProfile = () => {
     }
 
     if (address_sigungu === undefined || address_sigungu === "") {
-      // console.log("시군구 없음");
       alert("시/군/구 정보를 입력해 주세요.");
       return false;
     }
@@ -286,21 +289,22 @@ const PostMyProfile = () => {
             <s.NicknameContainer>
               <s.EssentialColumn>닉네임</s.EssentialColumn>
               <s.NicknameInput 
-                disabled={!isEditMode} 
-                placeholder={nickname} 
+                 
+                placeholder="ex) 성수동프로감성러" 
                 value={nickname} 
                 onChange={onChangeNickname}
                 />
-              <s.CheckIsDuplicateBtn disabled={!isEditMode} isEditMode={isEditMode}>중복확인</s.CheckIsDuplicateBtn>
+              <s.CheckIsDuplicateBtn 
+                onClick={onClickDuplicateNickname}>중복확인</s.CheckIsDuplicateBtn>
             </s.NicknameContainer>
 
             <s.AgeContainer>
               <s.EssentialColumn>나이</s.EssentialColumn>
               <s.AgeInput
-                disabled={!isEditMode} 
-                placeholder={`${age}`} 
+                 
+                placeholder="나이" 
                 type="number" 
-                value={age}
+                value={age ? age : ""}
                 onChange={onChangeAge} 
               />
             </s.AgeContainer>
@@ -308,13 +312,13 @@ const PostMyProfile = () => {
             <s.GenderContainer>
               <s.EssentialColumn>성별</s.EssentialColumn>
               <s.GenderMaleBtn
-                disabled={!isEditMode}
+                
                 isMale={gender === 0 ? true : false}
                 selected={gender === 0 ? true : false}
                 onClick={onClickMaleBtn}
               >남성</s.GenderMaleBtn>
               <s.GenderFemaleBtn
-                disabled={!isEditMode}
+                
                 isFemale={gender === 1 ? true : false}
                 selected={gender === 1 ? true : false}
                 onClick={onClickFemaleBtn}
@@ -329,7 +333,7 @@ const PostMyProfile = () => {
                 allPersonalities.map((item, idx) => { 
                   return (
                     <s.PersonalityItem 
-                      disabled={!isEditMode} 
+                       
                       isSelected={personality.includes(item)}
                       onClick={() => onClickPersonalityBtn(item)}
                     >{item}</s.PersonalityItem>
@@ -341,7 +345,7 @@ const PostMyProfile = () => {
             <s.HorizontalLine />
             <s.EssentialColumn2>메이트에게 자신을 소개 해 주세요.</s.EssentialColumn2>
             <s.IntroTextArea 
-              disabled={!isEditMode} 
+               
               placeholder={introduce} 
               onChange={(e) => onChangeIntroText(e)} 
               value={introduce}
@@ -363,7 +367,6 @@ const PostMyProfile = () => {
                 }
                 <s.OptionalColumn>직업 혹은 학교</s.OptionalColumn>
                 <s.JobInput 
-                  disabled={!isEditMode} 
                   placeholder={job} 
                   onChange={(e) => onChangeJob(e)} 
                   value={job}
@@ -378,8 +381,8 @@ const PostMyProfile = () => {
                 }
                 <s.OptionalColumn>주소</s.OptionalColumn>
                 <s.AddressSIGU 
+                  
                   onChange={(e) => onChangeSIDO(e)} 
-                  disabled={!isEditMode}
                 >
                   {
                     address_sido ?
@@ -399,8 +402,8 @@ const PostMyProfile = () => {
                   }
                 </s.AddressSIGU>
                 <s.AddressSIGUGUN 
+                  
                   onChange={(e) => setAddress_sigungu(e.target.value)}
-                  disabled={!isEditMode}
                 >
                   {
                     address_sido_sigugun && !isAddressChanged ?
@@ -429,7 +432,9 @@ const PostMyProfile = () => {
                 }
                 <s.OptionalColumn>나의 사진</s.OptionalColumn>
                 <s.ImageList>
-                  <s.ImageAddBox disabled={!isEditMode} onClick={onUploadImgBtnClick}>
+                  <s.ImageAddBox 
+                    
+                    onClick={onUploadImgBtnClick}>
                     <s.ImageInputBox
                       name="file" 
                       type="file" 

@@ -27,7 +27,7 @@ export const Title = styled.div`
 `;
 
 export const EditBtn = styled.div<IEditMode>`
-  display: ${(props) => props.isEditMode ? "none" : "flex"};
+  display: ${(props) => props.isEditMode ? "none" : "none"};
   width: 140px;
   height: 48px;
   font-size: 18px;
@@ -97,7 +97,7 @@ export const NicknameInput = styled.input`
   margin-left: 150px;
 `;
 
-export const CheckIsDuplicateBtn = styled.button<IEditMode>`
+export const CheckIsDuplicateBtn = styled.button`
   display: flex;
   width: 140px;
   height: 56px;
@@ -109,17 +109,9 @@ export const CheckIsDuplicateBtn = styled.button<IEditMode>`
   cursor: pointer;
   font-size: 18px;
   font-family: 'SUIT';
-
-  &:disabled {
-    background: #797979;
-    color: white;
-    font-weight: 500;
-    cursor: not-allowed;
-  };
-
   &:hover {
-    background: ${(props) => props.isEditMode? '#804DD3' : ''};
-    color: ${(props) => props.isEditMode? 'white' : ''};
+    background: #804DD3;
+    color: white;
   }
 `;
 
