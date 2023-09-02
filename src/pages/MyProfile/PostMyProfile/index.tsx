@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
 
-const MyProfile = () => {
+const PostMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -30,6 +30,7 @@ const MyProfile = () => {
       myProfileData = MyprofileAPI.getMyProfile(userIdx);
     } else {
       alert("로그인을 먼저 진행해 주세요.");
+      // navigate("/");
     }
   }, [userIdx]);
 
@@ -39,18 +40,18 @@ const MyProfile = () => {
     setNickname(e.target.value);
   }; // nickname
   
-  const [age, setAge] = useState<number | undefined>();
+  const [age, setAge] = useState<number>(0);
   const onChangeAge = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAge(+e.target.value);
   }; // age
 
   const [gender, setGender] = useState<number | undefined>();
   const [personality, setPersonality] = useState<string[]>([]);
-  const [allPersonalities, setAllPerosonalities] = useState<string[]>([]);
+  const [allPersonalities, setAllPersonalities] = useState<string[]>([]);
   useEffect(() => {
     MyprofileAPI.getAllPersonalities()
       .then((res) => {
-        setAllPerosonalities(res);
+        setAllPersonalities(res);
       })
       .catch((e) => {
         console.error({e});
@@ -149,10 +150,10 @@ const MyProfile = () => {
 
   const onClickSendBtn = () => {
 
-    if (!checkAllInfo()) {
-      alert("모든 정보를 기입해야 합니다.");
-      return;
-    }
+    // if (!checkAllInfo()) {
+    //   alert("모든 정보를 기입해야 합니다.");
+    //   return;
+    // }
 
     if (imgs && imgs.length > 0) {
       const formData = new FormData();
@@ -475,4 +476,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default PostMyProfile;

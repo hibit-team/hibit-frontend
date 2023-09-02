@@ -18,48 +18,30 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     if (error.response) {
       if (error.response.status === 401) { 
-        // 만료된 accessToken으로 요청한 경우
-        const atk = useRecoilValue(accessTokenState);
-        console.error({atk});
-        console.error("401 error. Accesstoken is not valid.");
-
-        try {
-          const response = await axios.post(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/token/access`);  
-            // refreshToken으로 ack 재발급 요청
-          if (200 <= response.status && response.status < 300) {
-            // 응답코드 2xx: accessToken 재발급 성공
-            const acceesToken = response.data.acceesToken;
+        await axios.post(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/token/access`)
+          .then((response) => {
+            const accessToken = response.data.acceesToken;
             const isProfileRegistered = response.data.isProfileRegistered;
             const userIdx = response.data.id;
-            console.log("accessToken 재발급: ", {acceesToken, isProfileRegistered, userIdx});
 
             const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
             const setUserIdx = useSetRecoilState(userIdxState);
             const setAccessToken = useSetRecoilState(accessTokenState);
 
-            axiosInstance.defaults.headers.common['Authorization'] = `${acceesToken}`;
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             setIsProfileRegistered(isProfileRegistered);
             setUserIdx(userIdx);
-            setAccessToken(acceesToken);
-            
-            return;
-          } else {
-            // 재발급 실패
-            console.log("재발급 실패")
+            setAccessToken(accessToken);
 
-            console.error({response});
-            alert("accessToken 재발급 실패. 재로그인 필요.");
-            window.location.href = "/";
+            
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('userIdx', userIdx);
+            localStorage.setItem('isProfileRegistered', isProfileRegistered);
+          })
+          .catch((e) => {
+            console.error({e});
             return;
-          }
-        } catch (e) {
-          // 재발급 실패
-          console.log("재발급 실패")
-          console.error({e});
-          alert("accessToken 재발급 실패. 재로그인 필요.");
-          window.location.href = "/";
-          return;
-        }
+          });
       }
     }
     return Promise.reject(error);

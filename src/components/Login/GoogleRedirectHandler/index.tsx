@@ -18,7 +18,6 @@ const GoogleRedirectHandler = () => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
 
-    console.log('Received code:', code);
     const body = {
       code: code,
       redirectUri: redirectUri
@@ -29,16 +28,19 @@ const GoogleRedirectHandler = () => {
       }
     })
       .then((res) => {
-        console.log("응답", {res});
         const accessToken = res.data.accessToken;
         const userIdx = res.data.id;
         const profileRegistered = res.data.isProfileRegistered;
 
-        axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
         setAccessToken(accessToken);
         setUserIdx(userIdx);
         setIsProfileRegistered(profileRegistered);
 
+        localStorage.setItem('accessToken', `Bearer ${accessToken}`);
+        localStorage.setItem('userIdx', userIdx);
+        localStorage.setItem('isProfileRegistered', profileRegistered);
+        
         navigate('/');
       })
       .catch((err) => {

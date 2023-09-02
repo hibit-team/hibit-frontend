@@ -15,49 +15,33 @@ import Report from './Report';
 import Event from './Event';
 import Remind from './Remind';
 import AlarmAPI from '../../api/AlarmAPI';
-import { useRecoilValue } from 'recoil';
-import { userIdxState } from '../../recoil/atom/LoginInfoState';
 import { IAlarm } from '../../interfaces/Alarm/IAlarm';
-import tmpAlarmData from '../../assets/data/alarm/tmpAlarmData';
+import useLoginInfo from '../../hooks/useLoginInfo';
 
 const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }) => {
-
   const navigate = useNavigate();
 
   const isMobile = useIsMobile();
   const AlarmStyles = isMobile ? s.MobileModalStyle : s.WebModalStyle;
+  const loginInfo = useLoginInfo();
 
-  // const userIdx = useRecoilValue(userIdxState);
   const [alarmState, setAlarmState] = useState<IAlarm[]>([]);
   useEffect(() => {
+    if(!loginInfo.isLoggedIn) return;
     const fetchAlarmList = async () => {
       try {
         const alarmList = await AlarmAPI.getAlarmList();
-        if(alarmList) {
-          setAlarmState(alarmList);
-        } else {
-          console.log("alarmList가 없음");
-        }
-        // if (userIdx) {
-        // } else {
-        //   console.log("userIdx가 없음");
-        // }
+        if(alarmList) setAlarmState(alarmList);
       } catch (error) {
         console.error({error});
       }
     }
-
     fetchAlarmList();
-  }, []);
-  
+  }, [loginInfo.isLoggedIn]);
 
   const [isTabLeft, setIsTabLeft] = useState(true);
-  const onClickLeftTab = () => {
-    setIsTabLeft(true);
-  };
-  const onClickRightTab = () => {
-    setIsTabLeft(false);
-  };
+  const onClickLeftTab = () => setIsTabLeft(true);
+  const onClickRightTab = () => setIsTabLeft(false);
 
   if(isMobile) {
     return (
@@ -70,7 +54,6 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
       </Modal>
     )
   }
-
 
   return (
       <Modal
@@ -100,7 +83,7 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
                 </s.Tabs>
                 <s.AlarmList>
                   {
-                    tmpAlarmData.map((data) => {
+                    alarmState.map((data) => {
                       switch(data.type) {
                         case "COMMENT":
                           return <Comment {...data}/>
@@ -132,7 +115,7 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
                 </s.Tabs>
                 <s.AlarmList>
                   {
-                    tmpAlarmData.map((data) => {
+                    alarmState.map((data) => {
                       switch(data.type) {
                         case "REPORT":
                           return <Report {...data}/>

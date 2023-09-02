@@ -14,8 +14,8 @@ import MyprofileAPI from "../../../api/MyprofileAPI";
 import { userIdxState } from "../../../recoil/atom/LoginInfoState";
 import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
-import useLoginInfo, { ILoginInfo } from "../../../hooks/useLoginInfo";
 import FileAPI from "../../../api/FileAPI";
+import { IImage } from "../../../interfaces/IImage";
 
 const PutMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -24,33 +24,41 @@ const PutMyProfile = () => {
 
   let myProfileData: Promise<IProfile>;
   const userIdx = useRecoilValue(userIdxState);
-  const loginInfo: ILoginInfo | undefined = useLoginInfo();
 
   useEffect(() => {
     if (userIdx) {
       myProfileData = MyprofileAPI.getMyProfile(userIdx);
     } else {
       alert("로그인을 먼저 진행해 주세요.");
+      navigate("/");
     }
   }, [userIdx]);
 
   /* 필수 정보 */
-  const [nickname, setNickname] = useState<string | undefined>(undefined);
-  const [age, setAge] = useState<number | undefined>(undefined);
-  const [gender, setGender] = useState<number | undefined>(undefined);
+  const [nickname, setNickname] = useState<string | undefined>();
+  const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNickname(e.target.value);
+  }; // nickname
+  
+  const [age, setAge] = useState<number>(0);
+  const onChangeAge = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAge(+e.target.value);
+  }; // age
+
+  const [gender, setGender] = useState<number | undefined>();
   const [personality, setPersonality] = useState<string[]>([]);
-  const [allPersonalities, setAllPerosonalities] = useState<string[]>([]);
+  const [allPersonalities, setAllPersonalities] = useState<string[]>([]);
   useEffect(() => {
     MyprofileAPI.getAllPersonalities()
       .then((res) => {
-        setAllPerosonalities(res);
+        setAllPersonalities(res);
       })
       .catch((e) => {
         console.error({e});
       });
   }, []);
 
-  const [introduce, setIntroduce] = useState<string | undefined>(undefined);
+  const [introduce, setIntroduce] = useState<string | undefined>();
 
   const onClickCancelBtn = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (window.confirm("변경 사항을 취소하시겠습니까?")) {
@@ -82,7 +90,7 @@ const PutMyProfile = () => {
 
 
   /* 선택 정보 */
-  const [job, setJob] = useState<string | undefined>(undefined);
+  const [job, setJob] = useState<string | undefined>();
   const [isJobChecked, setIsJobChecked] = useState<boolean | undefined>(false);
   const onClickJobCheck = () => {
     if (!isEditMode) return;
@@ -105,7 +113,8 @@ const PutMyProfile = () => {
   };
   // 주소
   
-  const [img, setImg]: any = useState();
+  const [imgURLs, setImgURLs]= useState<string[]>([]);
+  const [imgs, setImgs]= useState<File[]>([]);
   const [isImgChecked, setIsImgChecked] = useState<boolean | undefined>(false);
   const onClickImgCheck = () => {
     if (!isEditMode) return;
@@ -117,42 +126,60 @@ const PutMyProfile = () => {
       console.log("이미지 파일 없음");
       return;
     }
-    if (img?.length === 3) {
+    if (imgs?.length === 3) {
       alert("이미지는 최대 3장까지 추가할 수 있습니다.");
       return;
     }
 
+    const newImgs = [...(imgs) || []];
+    newImgs.push(e.target.files[0]);
+    setImgs(newImgs);
+
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
-    
     reader.onload = () => {
-      const newImg = [...(img || [])];
-      newImg.push(reader.result as string);
-      setImg(newImg);
+      const newImgURL = [...(imgURLs || [])];
+      newImgURL.push(reader.result as string);
+      setImgURLs(newImgURL);
     };
-  }, [img, setImg]);
+  }, [imgs, setImgs, imgURLs, setImgURLs]);
   const onUploadImgBtnClick = useCallback(() => {
     if(!imgInputRef.current) return;
     imgInputRef.current.click();
   }, [])
 
   const onClickSendBtn = () => {
-    // 폼데이터로 이미지 업로드
-    if (img && img.length > 0) {
+
+    // if (!checkAllInfo()) {
+    //   alert("모든 정보를 기입해야 합니다.");
+    //   return;
+    // }
+
+    if (imgs && imgs.length > 0) {
       const formData = new FormData();
-      img.forEach((imageData: any, index: number) => {
-        formData.append(`file${index}`, imageData);
+      imgs.forEach((imageData) => {
+        formData.append(`file`, imageData);
       });
+
+      console.log(formData.getAll(`file`));
   
       FileAPI.postFiles(0, formData)
         .then((res) => {
           console.log({res});
           // 이미지 업로드 된 url (응답) 받아서 최종 POST 요청
-
-          const imageResponse = {
-            mainImage: res?.data.mainImage,
-            subImages: res?.data.subImages
+          const imageResponse: IImage = {
+            mainImage: "",
+            subImages: []
           }
+
+          imageResponse.mainImage = res?.data[0];
+          if (res?.data[1].length > 0) {
+            res?.data[1].forEach((url: string) => {
+              imageResponse.subImages!.push(url);
+            });
+          }
+
+          console.log("업로드 완료", imageResponse);
 
           const body: IProfile = {
             nickname: nickname,
@@ -166,18 +193,14 @@ const PutMyProfile = () => {
             img: imageResponse
           }
 
-          if (userIdx) {
-            MyprofileAPI.putMyProfile(userIdx, body)
-              .then((res) => {
-                console.log("post my profile res: ", {res});
-              })
-              .catch((e) => {
-                console.error({e});
-              });
-          } else {
-            console.error("userIdx가 존재하지 않습니다.");
-            alert("userIdx가 존재하지 않습니다.");
-          }
+
+          MyprofileAPI.postMyProfile(body)
+            .then((res) => {
+              console.log("post my profile res: ", {res});
+            })
+            .catch((e) => {
+              console.error({e});
+            });
 
         })
         .catch((e) => {
@@ -188,6 +211,57 @@ const PutMyProfile = () => {
     
     else return;
   }
+
+
+  const checkAllInfo = () => {
+    if (nickname === undefined || nickname === "") {
+      alert("닉네임 정보를 입력해 주세요.");
+      return false;
+    }
+
+    if (age === undefined || age === 0) {
+      alert("나이 정보를 입력해 주세요.");
+      return false;
+    }
+
+    if (gender === undefined) {
+      alert("성별 정보를 입력해 주세요.");
+      return false;
+    }
+
+    if (personality.length === 0) {
+      alert("본인의 성격을 1개 이상 입력해 주세요.");
+      return false;
+    }
+
+    if (introduce === undefined || introduce === "") {
+      alert("자기소개 정보를 입력해 주세요.");
+      return false;
+    }
+
+    if (job === undefined || job === "") {
+      alert("직업 정보를 입력해 주세요.");
+      return false;
+    }
+
+    if (address_sido === undefined || address_sido === "") {
+      alert("시/도 정보를 입력해 주세요.");
+      return false;
+    }
+
+    if (address_sigungu === undefined || address_sigungu === "") {
+      // console.log("시군구 없음");
+      alert("시/군/구 정보를 입력해 주세요.");
+      return false;
+    }
+
+    if (imgURLs.length < 3) {
+      alert("이미지는 3장을 필수로 등록해야 합니다.");
+      return false;
+    }
+
+    return true;
+  };
 
   
   if(useIsMobile()) {
@@ -210,13 +284,24 @@ const PutMyProfile = () => {
           <s.EssentialInfoWrapper>
             <s.NicknameContainer>
               <s.EssentialColumn>닉네임</s.EssentialColumn>
-              <s.NicknameInput disabled={!isEditMode} placeholder={nickname} value={nickname} />
+              <s.NicknameInput 
+                disabled={!isEditMode} 
+                placeholder={nickname} 
+                value={nickname} 
+                onChange={onChangeNickname}
+                />
               <s.CheckIsDuplicateBtn disabled={!isEditMode} isEditMode={isEditMode}>중복확인</s.CheckIsDuplicateBtn>
             </s.NicknameContainer>
 
             <s.AgeContainer>
               <s.EssentialColumn>나이</s.EssentialColumn>
-              <s.AgeInput disabled={!isEditMode} placeholder={`${age}`} type="number" value={age} />
+              <s.AgeInput
+                disabled={!isEditMode} 
+                placeholder={`${age}`} 
+                type="number" 
+                value={age}
+                onChange={onChangeAge} 
+              />
             </s.AgeContainer>
 
             <s.GenderContainer>
@@ -344,7 +429,12 @@ const PutMyProfile = () => {
                 <s.OptionalColumn>나의 사진</s.OptionalColumn>
                 <s.ImageList>
                   <s.ImageAddBox disabled={!isEditMode} onClick={onUploadImgBtnClick}>
-                    <s.ImageInputBox type="file" accept="image/*" ref={imgInputRef} onChange={onUploadImg} />
+                    <s.ImageInputBox
+                      name="file" 
+                      type="file" 
+                      accept="image/*" 
+                      ref={imgInputRef} 
+                      onChange={onUploadImg} />
                     {
                       isEditMode ? 
                       <img src={GrayPlus} alt="gray" /> :
@@ -352,14 +442,14 @@ const PutMyProfile = () => {
                     }
                   </s.ImageAddBox>
                   {
-                    img &&
-                    img.map((item: string, idx: number) => (
+                    imgURLs &&
+                    imgURLs.map((item: string, idx: number) => (
                       <ProfileImage 
                         imgURL={item} 
                         isFirst={idx === 0 ? true : false}
                         isEditMode={isEditMode}
-                        imgList={img}
-                        setImgList={setImg}
+                        imgList={imgURLs}
+                        setImgList={setImgURLs}
                       />
                     ))
                   }

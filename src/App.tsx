@@ -4,7 +4,6 @@ import styled from "@emotion/styled";
 import { Global } from "@emotion/react";
 import globalStyles from "./fonts/GlobalStyles";
 import KaKao from "./pages/KaKao";
-import { RecoilRoot } from "recoil";
 import PostMyProfile from "./pages/MyProfile/PostMyProfile";
 import MatchingPage from "./pages/Matching";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -15,61 +14,69 @@ import PostPosting from "./pages/Posting/PostPosting";
 import 'react-day-picker/dist/style.css';
 import GoogleRedirectHandler from "./components/Login/GoogleRedirectHandler";
 import { Suspense, useEffect } from "react";
-import axios from "axios";
 import { axiosInstance } from "./services/HttpClient";
 import NotFound from "./pages/NotFound";
 import ReportModal from './components/MatchPost/ReportModal';
 import PutMyProfile from "./pages/MyProfile/PutMyProfile";
 import PutPosting from "./pages/Posting/PutPosting";
+import useLoginInfo from "./hooks/useLoginInfo";
 
 function App() {
   const queryClient = new QueryClient();
-  const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
+
+  const loginInfo = useLoginInfo();
+  const isLogin = loginInfo.isLoggedIn;
 
   /* 새로 고침 발생 시 accessToken 재발급 과정 */
-  // useEffect(() => {
-  //   console.log(document.cookie);
-  //   axiosInstance.post(`/api/auth/token/access`)
-  //     .then((res) => { 
-  //       // accessToken 재발급 및 header로 설정
-  //       console.log("new accessToken: ", res.data);
-  //       axiosInstance.defaults.headers.common['Authorization'] = res.data.accessToken;
-  //     })
-  //     .catch((e) => { 
-  //       console.error("유효하지 않은 refreshToken.", {e});
-  //       alert("유효하지 않은 refreshToken입니다. 다시 로그인을 시도하세요.");
-  //     });
-  //   return;
-  // }, []);
+  useEffect(() => {
+    if (!isLogin) return;
+
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      alert("다시 로그인 해 주세요.");
+      window.location.href = "/";
+      return;
+    }
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+    axiosInstance.post(`/api/auth/token/access`, {})
+      .then((res) => { 
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+      })
+      .catch((e) => { 
+        console.error("유효하지 않은 refreshToken.", {e});
+      });
+    return;
+  }, [loginInfo, isLogin]);
+
+
 
   return (
     <>
-      <RecoilRoot>
-        <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen/>
-          <Global styles={globalStyles}/>
-          <Suspense fallback={<div>Loading..</div>}>
-            <Container>
-              <Router>
-                <Routes>
-                  <Route path="/" element={<MainPage />} />
-                  <Route path='/matching' element={<MatchingPage></MatchingPage>}/>
-                  <Route path="/user/kakao-oauth" element={<KaKao />} />
-                  <Route path="/post-profile" element={<PostMyProfile />} />
-                  <Route path="/put-profile" element={<PutMyProfile />} />
-                  <Route path="/matchPost/:idx" element={<MatchingPostPage />} />
-                  <Route path="/others/:userID" element={<OtherProfile />} />
-                  <Route path="/post-posting" element={<PostPosting />} />
-                  <Route path="/put-posting" element={<PutPosting />} />
-                  <Route path="/google-callback" element={<GoogleRedirectHandler />} />
-                  <Route path="/report/:idx" element={<ReportModal />} />
-                  <Route path="/*" element={<NotFound />} />
-                </Routes>
-              </Router>
-            </Container>
-          </Suspense>
-        </QueryClientProvider>
-      </RecoilRoot>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen/>
+        <Global styles={globalStyles}/>
+        <Suspense fallback={<div>Loading..</div>}>
+          <Container>
+            <Router>
+              <Routes>
+                <Route path="/" element={<MainPage />} />
+                <Route path='/matching' element={<MatchingPage></MatchingPage>}/>
+                <Route path="/user/kakao-oauth" element={<KaKao />} />
+                <Route path="/post-profile" element={<PostMyProfile />} />
+                <Route path="/put-profile" element={<PutMyProfile />} />
+                <Route path="/matchPost/:idx" element={<MatchingPostPage />} />
+                <Route path="/others/:userID" element={<OtherProfile />} />
+                <Route path="/post-posting" element={<PostPosting />} />
+                <Route path="/put-posting" element={<PutPosting />} />
+                <Route path="/google-callback" element={<GoogleRedirectHandler />} />
+                <Route path="/report/:idx" element={<ReportModal />} />
+                <Route path="/*" element={<NotFound />} />
+              </Routes>
+            </Router>
+          </Container>
+        </Suspense>
+      </QueryClientProvider>
     </>
   );
 }

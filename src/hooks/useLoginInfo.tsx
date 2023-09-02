@@ -8,33 +8,52 @@ export interface ILoginInfo {
   isLoggedIn: boolean
 }
 
-const useLoginInfo = (): ILoginInfo | undefined => {
-  const [loginInfo, setLoginInfo] = useState<ILoginInfo | undefined>();
+const useLoginInfo = (): ILoginInfo => {
+  const [loginInfo, setLoginInfo] = useState<ILoginInfo>({
+    userIdx: null,
+    isProfileRegistered: null,
+    isLoggedIn: false
+  });
 
-  const userIdx = useRecoilValue(userIdxState);
-  const accessToken = useRecoilValue(accessTokenState);
-  const isProfileRegistered = useRecoilValue(profileRegisteredState);
+  const accessToken = localStorage.getItem('accessToken');
+
+  let userIdx: number | null = useRecoilValue(userIdxState);
+  if (localStorage.getItem('userIdx') === null) {
+    userIdx = null;
+  } else {
+    userIdx = +localStorage.getItem('userIdx')!;
+  }
+
+  let isProfileRegistered: number | null = useRecoilValue(profileRegisteredState);
+  if (accessToken && userIdx) {
+    if (localStorage.getItem('isProfileRegistered') === null) {
+      isProfileRegistered = 0;
+    } else {
+      isProfileRegistered = 1;
+    }
+  }
 
   useEffect(() => {
-    if (userIdx && accessToken && isProfileRegistered) {
-      const loginInfo = {
+    
+    if (userIdx !== null && accessToken !== null && isProfileRegistered !== null) {
+      const loginInfoRet: ILoginInfo = {
         userIdx: userIdx,
         isProfileRegistered: isProfileRegistered,
         isLoggedIn: true
       }
-      console.log({loginInfo});
-      setLoginInfo(loginInfo);
+      console.log({loginInfoRet});
+      setLoginInfo(loginInfoRet);
     }
     else {
-      const loginInfo = {
+      const loginInfoRet: ILoginInfo = {
         userIdx: null,
         isProfileRegistered: null,
         isLoggedIn: false
       };
-      console.log({loginInfo});
-      setLoginInfo(loginInfo);
+      console.log({loginInfoRet});
+      setLoginInfo(loginInfoRet);
     };
-  }, [accessToken, userIdx]);
+  }, [accessToken, userIdx, isProfileRegistered]);
 
   return loginInfo;
 };

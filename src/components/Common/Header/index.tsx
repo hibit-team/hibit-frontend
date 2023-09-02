@@ -16,43 +16,50 @@ import { axiosInstance } from '../../../services/HttpClient';
 
 const Header = () => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const [selectedCategory, setSelectedCategory] = useState<string>("메인");
 
-  // Login + Modal
-  const loginInfo = useLoginInfo();
-  const isLogin = loginInfo?.isLoggedIn;
-  const isProfileRegistered = loginInfo?.isProfileRegistered;
-  
-  const accessTokenAtom = useRecoilValue(accessTokenState);
   const resetAccessToken = useResetRecoilState(accessTokenState);
   const resetUserIdx = useResetRecoilState(userIdxState);
   const resetIsProfileRegistered = useResetRecoilState(profileRegisteredState);
-
+  
   const [modalOpen, setModalOpen] = useState(false);
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
-  // console.log(axiosInstance.defaults.headers.common)
+  
+  const loginInfo = useLoginInfo();
+  const [isLogin, setIsLogin] = useState<boolean>(useLoginInfo().isLoggedIn);
+  const isProfileRegistered: number | null = loginInfo.isProfileRegistered;
 
-  // Logout
+  useEffect(() => {
+    setIsLogin(loginInfo.isLoggedIn);
+  }, [loginInfo.isLoggedIn]);
+
   const onClickLogout = async () => {
     await axiosInstance.get(`/api/auth/logout`)
       .then((res) => {
-        console.log({res}) // ex)성공적으로 로그아웃되었습니다.
-        resetAccessToken(); // atom으로 관리되는 token값 null로 초기화
+        resetAccessToken();
         resetUserIdx();
         resetIsProfileRegistered();
-        clearTokenAndHeader(); // axiosInstance의 default header accessToken값 null로 초기화
-        alert("로그아웃 되었습니다.");
+        clearTokenAndHeader();
+
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userIdx');
+        localStorage.removeItem('isProfileRegistered');
+        setIsLogin(false);
+        alert("로그아웃 했어요!");
         return null;
       })
       .catch((e) => {
         console.error({e});
-        alert("로그아웃 실패. 재로그인 하세요.");
-        resetAccessToken(); // atom으로 관리되는 token값 null로 초기화
-        resetUserIdx(); // atom으로 관리되는 userIdx값 null로 초기화
-        resetIsProfileRegistered(); // atom으로 관리되는 isProfileRegistered값 null로 초기화
-        clearTokenAndHeader(); // axiosInstance의 default header accessToken값 null로 초기화
+        alert("로그인에 문제가 생겼어요. 같은 상황이 반복된다면 문의 주세요 :)");
+        resetAccessToken(); 
+        resetUserIdx(); 
+        resetIsProfileRegistered();
+        clearTokenAndHeader();
+
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userIdx');
+        localStorage.removeItem('isProfileRegistered');
+        setIsLogin(false);
         navigate("/");
         return null;
       }) 
@@ -76,18 +83,8 @@ const Header = () => {
   const [isAlarmOpen, setIsAlarmOpen] = useState<boolean>(false);
   const onClickAlarm = () => {
     setIsAlarmOpen(!isAlarmOpen);
-    console.log({isAlarmOpen});
   };
 
-
-
-  
-  /* Web View */
-  const onClickCategory = (title: string, link: string) => {
-    setSelectedCategory(title);
-    navigate(link);
-  };
-  
   /* Mobile View */
   const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -114,19 +111,18 @@ const Header = () => {
         <s.Category
          onClick={() => {
           if (isLogin) {
-            if (isProfileRegistered) {
+            if (isProfileRegistered !== null || isProfileRegistered === 1) {
               navigate("/put-profile");
             } else {
               navigate("/post-profile");
             }
           } else {
-            // navigate("/post-profile");
             alert("로그인 후에 진행 해 주세요.");
           }
         }}>프로필</s.Category>
         
       </s.LeftContainer>
-      {loginInfo?.isLoggedIn ?
+      {isLogin ?
         <s.RightContainer>
           <s.AlarmLogoContainer>
             <img onClick={onClickAlarm} src={AlarmIcon} alt='alarm-icon' />
