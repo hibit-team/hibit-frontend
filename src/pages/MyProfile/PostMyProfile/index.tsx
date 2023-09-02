@@ -11,8 +11,6 @@ import WhitePlus from "../../../images/components/Profile/WhitePlus.svg";
 import GrayPlus from "../../../images/components/Profile/GrayPlus.svg";
 import CautionIcon from "../../../images/components/Profile/CautionIcon.svg";
 import MyprofileAPI from "../../../api/MyprofileAPI";
-import { userIdxState } from "../../../recoil/atom/LoginInfoState";
-import { useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
@@ -23,14 +21,17 @@ const PostMyProfile = () => {
   const navigate = useNavigate();
 
   let myProfileData: Promise<IProfile>;
-  const userIdx = useRecoilValue(userIdxState);
-
+  let userIdx: number | null = null;
+  localStorage.getItem("userIdx");
+  if (localStorage.getItem("userIdx")) {
+    userIdx = +localStorage.getItem("userIdx")!;
+  }
   useEffect(() => {
     if (userIdx) {
       myProfileData = MyprofileAPI.getMyProfile(userIdx);
     } else {
       alert("로그인을 먼저 진행해 주세요.");
-      // navigate("/");
+      navigate("/");
     }
   }, [userIdx]);
 
