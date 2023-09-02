@@ -301,7 +301,6 @@ const PostMyProfile = () => {
             <s.AgeContainer>
               <s.EssentialColumn>나이</s.EssentialColumn>
               <s.AgeInput
-                 
                 placeholder="나이" 
                 type="number" 
                 value={age ? age : ""}

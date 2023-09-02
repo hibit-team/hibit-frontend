@@ -231,6 +231,11 @@ const PutMyProfile = () => {
       alert("닉네임 정보를 입력해 주세요.");
       return false;
     }
+    
+    if (isNicknameDuplicated) {
+      alert("닉네임 중복 확인을 먼저 해 주세요.");
+      return false;
+    }
 
     if (age === undefined || age === 0) {
       alert("나이 정보를 입력해 주세요.");
@@ -299,7 +304,7 @@ const PutMyProfile = () => {
               <s.EssentialColumn>닉네임</s.EssentialColumn>
               <s.NicknameInput 
                 disabled={!isEditMode} 
-                placeholder={nickname} 
+                placeholder={nickname ? `${nickname}` : "ex) 성수동프로감성러"} 
                 value={nickname} 
                 onChange={onChangeNickname}
                 />
@@ -310,9 +315,9 @@ const PutMyProfile = () => {
               <s.EssentialColumn>나이</s.EssentialColumn>
               <s.AgeInput
                 disabled={!isEditMode} 
-                placeholder={`${age}`} 
+                placeholder={age ? `${age}` : "나이"} 
                 type="number" 
-                value={age!}
+                value={age ? age : ""}
                 onChange={onChangeAge} 
               />
             </s.AgeContainer>
