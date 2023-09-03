@@ -7,7 +7,7 @@ import * as s  from "./styles";
 import AddBtn from "../../../images/components/Posting/AddBtn.svg";
 import OpenchatGuide from "../../../images/components/Posting/OpenchatGuide.svg";
 import GrayPlus from "../../../images/components/Profile/GrayPlus.svg";
-import ProfileImage from "../../../components/Profile";
+import ProfileImage from "../../../components/ProfileImage";
 
 const tmpExhibitionData = [
   "로그아웃 전시회", "전시회2", "전시회3", "전시회4"

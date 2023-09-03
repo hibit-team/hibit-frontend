@@ -7,31 +7,31 @@ import * as s  from "./styles";
 import AddBtn from "../../../images/components/Posting/AddBtn.svg";
 import OpenchatGuide from "../../../images/components/Posting/OpenchatGuide.svg";
 import GrayPlus from "../../../images/components/Profile/GrayPlus.svg";
-import ProfileImage from "../../../components/Profile";
-
-const tmpExhibitionData = [
-  "로그아웃 전시회", "전시회2", "전시회3", "전시회4"
-];
+import ExhibitionAPI from "../../../api/ExhibitionAPI";
+import PostingImage from "../../../components/PostingImage";
+import CreatableSelect from "react-select/creatable";
+import { css } from "@emotion/react";
+import { CSSObjectWithLabel, ControlProps, StylesConfig } from "react-select";
 
 const activityData_Imoji = [
   "맛집 가기😋", "카페 가기☕", "전시만 보기👓", "만나서 정해요!"
 ];
 
-const activityData = [
-  "맛집 가기", "카페 가기", "전시만 보기", "만나서 정해요!"
+const activityData_enum = [
+  "EAT", "CAFE", "ONLY", "LATER"
 ];
 
-const testImgs: string[] = [
-  // "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-1.png",
-  // "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-2.png",
-  // "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-3.png"
-];
+interface IExhibition {
+  value: string,
+  label: string
+};
+const OPENCHAT_GUIDELINK = "https://cs.kakao.com/helps_html/1073184404?locale=ko";
 
 const PostPosting = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState<string>("");
   const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     if(e.target.value.length >= 31) {
       alert("최대 30자까지 작성할 수 있어요.");
@@ -41,10 +41,51 @@ const PostPosting = () => {
     setTitle(e.target.value);
   };
 
-  const [exhibition, setExhibition] = useState(tmpExhibitionData[0])
-  const onChangeExhibition = (e: ChangeEvent<HTMLSelectElement>) => {
-    setExhibition(e.target.value);
+  const [exhibition, setExhibition] = useState<string>("")
+  const onChangeExhibition = (e: string) => {
+    console.log({e});
+    setExhibition(e);
   };
+  const [exhibitionList, setExhibitionList] = useState<IExhibition[]>([]);
+  useEffect(() => {
+    ExhibitionAPI.getExhibitions()
+      .then((res) => {
+        const exhibitionData = res as string[];
+        const newList = [...(exhibitionData || [])];
+        const newObjectList: IExhibition[] = [];
+        
+        newList.forEach((exhibition) => {
+          const newObject: IExhibition = {
+            value: exhibition,
+            label: exhibition
+          };
+          newObjectList.push(newObject);
+        });
+
+        setExhibitionList(newObjectList);
+      })
+      .catch((e) => {
+        console.error({e});
+      });
+  }, []);
+
+  const customControlStyles = (
+    base: CSSObjectWithLabel,
+  ) => {
+    return {
+      ...base,
+      width: '580px',
+      height: '56px',
+      marginLeft: "50px",
+      borderRadius: "10px",
+      borderColor: "#797979",
+      paddingLeft: "10px"
+    };
+  };
+  const customSelectStyles: StylesConfig<IExhibition, false, any> = {
+    control: customControlStyles
+  };
+
 
   const personCnt = [2, 3, 4, 5, 6, 7, 8, 9, 10];
   const [person, setPerson] = useState(personCnt[0]);
@@ -65,6 +106,9 @@ const PostPosting = () => {
   const onChangeOpenchat = (e: ChangeEvent<HTMLInputElement>) => {
     setOpenchat(e.target.value);
   };
+  const onClickOpenchatGuide = (e: MouseEvent<HTMLImageElement>) => {
+    window.open(OPENCHAT_GUIDELINK);
+  };
 
   const [isActivitySelect, setIsActivitySelect] = useState(-1);
   const onClickActivity = (idx: number) => {
@@ -82,26 +126,57 @@ const PostPosting = () => {
     setDetail(e.target.value);
   };
 
-  const [img, setImg] = useState<string[] | undefined | null>(testImgs);
+
+  const [imgURLs, setImgURLs]= useState<string[]>([]);
+  const [imgs, setImgs]= useState<File[]>([]);
   const imgInputRef = useRef<HTMLInputElement | null>(null);
   const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if(!e.target.files) return;
-    if(img?.length === 3) {
+    if (!e.target.files) {
+      console.log("이미지 파일 없음");
+      return;
+    }
+    if (imgURLs?.length === 3) {
       alert("이미지는 최대 3장까지 추가할 수 있습니다.");
       return;
     }
-    img?.push(e.target.files[0].name);
-    const newImgList = JSON.parse(JSON.stringify(img));
-    setImg(newImgList)
-    // console.log(e.target.files[0].name);
-  }, [img]);
+
+    const newImgs = [...(imgs) || []];
+    newImgs.push(e.target.files[0]);
+    setImgs(newImgs);
+
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = () => {
+      const newImgURL = [...(imgURLs || [])];
+      newImgURL.push(reader.result as string);
+      setImgURLs(newImgURL);
+    };
+  }, [imgs, setImgs, imgURLs, setImgURLs]);
   const onUploadImgBtnClick = useCallback(() => {
     if(!imgInputRef.current) return;
     imgInputRef.current.click();
   }, []);
 
+  const checkAllInfo = (): boolean => {
+    if (title === null) {
+      alert("제목을 입력해 주세요.");
+      return false;
+    }
+
+    if (exhibition === null) {
+      alert("전시회를 선택해 주세요.");
+      return false;
+    }
+
+
+    return true;
+  }
+
   const onClickSubmitBtn = () => {
     if (window.confirm("매칭 게시글을 등록하시겠습니까?")) {
+
+
+       
       alert("게시글이 등록되었습니다.");
       // submit api 추가 필요
       navigate(-1);
@@ -140,23 +215,14 @@ const PostPosting = () => {
 
             <s.ExhibitionContainer>
               <s.Column>가고싶은 전시회</s.Column>
-              <s.ExhibitionSelect 
-                onChange={onChangeExhibition}
-                value={exhibition}
-              >
-                {
-                  tmpExhibitionData.map((exhibit) => {
-                    return(
-                      <s.ExhibitionOption 
-                        value={exhibit}
-                        key={exhibit}
-                      >
-                        {exhibit}
-                      </s.ExhibitionOption>
-                    )
-                  })
-                }
-              </s.ExhibitionSelect>
+              <CreatableSelect 
+                styles={customSelectStyles}
+                isClearable={true} 
+                options={exhibitionList} 
+                isSearchable={true}
+                onChange={(inputValue) => onChangeExhibition(inputValue?.value!)}
+                placeholder="전시회를 검색하거나 선택해주세요 :)"
+                />
             </s.ExhibitionContainer>
 
             <s.PersonContainer>
@@ -202,8 +268,13 @@ const PostPosting = () => {
                 onChange={onChangeOpenchat}
                 value={openchat}
               />
-              <s.OpenchatGuideBtn src={OpenchatGuide} alt="guide" />
-              <s.OpenchatGuideMent>도움이 필요하세요?</s.OpenchatGuideMent>
+              <s.OpenchatGuideBtn 
+                src={OpenchatGuide}
+                alt="guide"
+                onClick={onClickOpenchatGuide} />
+              <s.OpenchatGuideMent
+                onClick={onClickOpenchatGuide}
+              >도움이 필요하세요?</s.OpenchatGuideMent>
             </s.OpenChatContainer>
 
             <s.ActivityContainer>
@@ -239,6 +310,7 @@ const PostPosting = () => {
               <s.ImageList>
                 <s.ImageAddBox onClick={onUploadImgBtnClick}>
                   <s.ImageInputBox 
+                    name="file"
                     type="file" 
                     accept="image/*" 
                     ref={imgInputRef} 
@@ -247,13 +319,14 @@ const PostPosting = () => {
                   <img src={GrayPlus} alt="gray" />
                 </s.ImageAddBox>
                 {
-                  img?.map((item, idx) => 
-                    <ProfileImage
+                  imgURLs &&
+                  imgURLs.map((item: string, idx: number) => 
+                    <PostingImage
                       imgURL={item} 
                       isFirst={idx === 0 ? true : false}
                       isEditMode={true}
-                      imgList={img}
-                      setImgList={setImg}
+                      imgList={imgURLs}
+                      setImgList={setImgURLs}
                     />
                   )
                 }

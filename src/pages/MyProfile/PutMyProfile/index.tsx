@@ -6,7 +6,7 @@ import { IProfile } from "../../../interfaces/Profile/IProfile";
 import CheckIcon from "../../../images/components/Profile/CheckIcon.svg";
 import UnCheckIcon from "../../../images/components/Profile/UnCheckIcon.svg";
 import address_sido_sigugun from "../../../assets/data/address/address";
-import ProfileImage from "../../../components/Profile";
+import ProfileImage from "../../../components/ProfileImage";
 import WhitePlus from "../../../images/components/Profile/WhitePlus.svg";
 import GrayPlus from "../../../images/components/Profile/GrayPlus.svg";
 import CautionIcon from "../../../images/components/Profile/CautionIcon.svg";
@@ -135,7 +135,7 @@ const PutMyProfile = () => {
       console.log("이미지 파일 없음");
       return;
     }
-    if (imgs?.length === 3) {
+    if (imgURLs?.length === 3) {
       alert("이미지는 최대 3장까지 추가할 수 있습니다.");
       return;
     }
@@ -159,10 +159,10 @@ const PutMyProfile = () => {
 
   const onClickSendBtn = () => {
 
-    // if (!checkAllInfo()) {
-    //   alert("모든 정보를 기입해야 합니다.");
-    //   return;
-    // }
+    if (!checkAllInfo()) {
+      alert("모든 정보를 기입해야 합니다.");
+      return;
+    }
 
     if (imgs && imgs.length > 0) {
       const formData = new FormData();

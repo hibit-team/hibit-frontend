@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
 export const Wrapper = styled.div`
@@ -216,6 +217,7 @@ export const OpenchatGuideMent = styled.div`
   font-size: 18px;
   font-weight: 500;
   margin-left: 8px;
+  cursor: pointer;
 `;
 
 export const ActivityContainer = styled.div`

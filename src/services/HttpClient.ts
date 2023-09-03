@@ -28,7 +28,7 @@ axiosInstance.interceptors.response.use(
             const setUserIdx = useSetRecoilState(userIdxState);
             const setAccessToken = useSetRecoilState(accessTokenState);
 
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+            axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
             setIsProfileRegistered(isProfileRegistered);
             setUserIdx(userIdx);
             setAccessToken(accessToken);
