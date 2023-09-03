@@ -42,13 +42,14 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
               }}
               css={{ userSelect: 'none', display: 'flex', padding: '6px 0px 6px 12px'}}
             >
-              <button css={{ userSelect: 'none', all: 'unset'}}>
-              <span css={{position:'relative',left: '9px'}}>{data?.status === 'N' ? '모집 중' : data?.status === 'C' ? '모집 완료' : '모집 취소'}</span>
+              <button css={{ userSelect: 'none', all: 'unset',
+            display:'flex',justifyContent:'space-evenly'}}>
+              <span css={{position:'relative',left: data?.status === 'N' ? 8 : 2}}>{data?.status === 'N' ? '모집 중' : data?.status === 'C' ? '모집 완료' : '모집 취소'}</span>
               </button>
               {!isStatusModalOpen ? (
-                <img css={{ position: 'relative', left: 16, bottom: 1 }} src={ArrownDown} alt="modalOpen-arrow"></img>
+                <img css={{ position: 'relative', left: data?.status === 'N' ? 14 : 4, bottom: 1 }} src={ArrownDown} alt="modalOpen-arrow"></img>
               ) : (
-                <img css={{ position: 'relative', left: 16, bottom: 1 }} src={ArrowUp} alt="modalClose-arrow"></img>
+                <img css={{ position: 'relative', left: data?.status === 'N' ? 14 : 4, bottom: 1 }} src={ArrowUp} alt="modalClose-arrow"></img>
               )}
             </div>
             <div css={{userSelect: 'none', display: isStatusModalOpen ? 'block' : 'none' }}>

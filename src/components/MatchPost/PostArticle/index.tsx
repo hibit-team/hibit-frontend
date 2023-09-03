@@ -24,8 +24,10 @@ import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchSt
 import { useNavigate } from 'react-router-dom';
 import { PostIDXAtom } from '../../../recoil/atom/PostIDXAtom';
 import useLoginInfo from '../../../hooks/useLoginInfo';
+import userDefaultImage from '../../../images/components/MatchPost/profileDefault.svg'
 export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
   const userIdxInfo = useLoginInfo()?.userIdx;
+  const userLoginInfo = useLoginInfo();
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   const [isInviteModalOpen, setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
@@ -55,7 +57,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
   };
   const { mutate: articleLikeMutate } = usePostMatchingArticleLikeMutation(postIDX);
   const isLikeStateOn = data?.likeUsers?.find(item => {
-    return item.idx === 2;
+    return item.idx === userIdxInfo;
   });
   useEffect(() => {
     return () => {
@@ -114,7 +116,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 bottom: 3,
               }}
               src={data?.writerImg}
-              alt="writer-profile-img"
+              alt="user-img"
             />
           </div>
 
@@ -123,10 +125,11 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
               font-size: 20px;
               color: #797979;
               font-weight: 700;
-              margin: 6px;
+              margin-right: 4px;
+              margin-left: 10px;
             `}
           >
-            {data?.writer}
+            {data?.writer ? data?.writer : 'undefined'}
           </div>
           <div
             css={css`
@@ -161,7 +164,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             <div
               ref={ref}
               css={{
-                userSelect:'none',
+                userSelect: 'none',
                 position: 'absolute',
                 top: '1rem',
                 right: '-3.5rem',
@@ -171,7 +174,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 boxSizing: 'border-box',
                 width: 56,
                 height: 'auto',
-                padding:'10px 0',
+                padding: '10px 0',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -282,8 +285,13 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             onClick={e => {
               e.stopPropagation();
               //게시글좋아요버튼
-              articleLikeMutate(postIDX);
-              alert(isLikeStateOn ? '해당 게시글의 `좋아요`를 취소했습니다.' : '해당 게시글에 `좋아요`를 눌렀습니다.');
+              if (userLoginInfo?.isLoggedIn) {
+                alert(isLikeStateOn ? '해당 게시글의 `좋아요`를 취소했습니다.' : '해당 게시글에 `좋아요`를 눌렀습니다.');
+                articleLikeMutate(postIDX);
+              }
+              else { 
+                alert('로그인이 필요합니다.')
+              }
             }}
             css={{
               all: 'unset',
@@ -321,14 +329,16 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
         </s.ArticleTextSection>
         <div css={{ width: 874, height: 1, background: COLORS.Gray2, margin: 'auto' }}></div>
         <div css={{ display: 'flex', justifyContent: 'center', padding: 32 }}>
-          {userIdxInfo === data?.writerImg ? <s.InviteBoxWrapper
-            onClick={e => {
-              e.stopPropagation();
-              setIsInviteModalOpen(!isInviteModalOpen);
-            }}
-          >
-            초대하기
-          </s.InviteBoxWrapper> : undefined}
+          {userIdxInfo === data?.writerIdx ? (
+            <s.InviteBoxWrapper
+              onClick={e => {
+                e.stopPropagation();
+                setIsInviteModalOpen(!isInviteModalOpen);
+              }}
+            >
+              초대하기
+            </s.InviteBoxWrapper>
+          ) : undefined}
         </div>
 
         <FsLightboxWrapper data={data} />
@@ -420,36 +430,50 @@ export const PostOptionComponent = ({
     color: COLORS.Gray3,
     '&:hover': { color: 'red', scale: '1.04' },
   });
-  const options = [['수정',0], ['삭제',1]];
+  const options = [
+    ['수정', 0],
+    ['삭제', 1],
+  ];
   //게시글 삭제
   const { mutate } = useDeleteMatchingPostMutation(postIDX);
   return (
     <>
-      {(userIdx === userIdxInfo) ? options.map((opt) => (
+      {userIdx === userIdxInfo ? (
+        options.map(opt => (
+          <button
+            //수정모드 라우트 처리 , 게시글 삭제 API 연동 , 신고 라우트 처리
+            key={opt[0]}
+            css={opt[1] === 0 ? postOption1 : postOption2}
+            onClick={() => {
+              switch (opt[1]) {
+                case 0: {
+                  //수정 라우트로 이동
+                  navigate('/matching');
+                  break;
+                }
+                //삭제
+                case 1: {
+                  const confirm = window.confirm('게시글을 삭제하시겠습니까?');
+                  if (confirm) mutate(postIDX);
+                  break;
+                }
+                default:
+              }
+            }}
+          >
+            {opt[0]}
+          </button>
+        ))
+      ) : (
         <button
-          //수정모드 라우트 처리 , 게시글 삭제 API 연동 , 신고 라우트 처리
-          key={opt[0]}
-          css={opt[1] === 0 ? postOption1 : postOption2 }
-          onClick={() => {  
-            switch (opt[1]) {
-              case 0: {
-                //수정 라우트로 이동
-                navigate('/matching')
-                break;
-              }
-              //삭제
-              case 1: {
-                const confirm = window.confirm('게시글을 삭제하시겠습니까?');
-                if (confirm) mutate(postIDX);
-                break;
-              }
-              default:
-            }
+          onClick={() => {
+            navigate(`/report/:${postIDX}`);
           }}
+          css={postOption3}
         >
-          {opt[0]}
+          신고
         </button>
-      )): <button onClick={()=>{navigate(`/report/:${postIDX}`)}}css={postOption3}>신고</button>}
+      )}
     </>
   );
 };
@@ -509,7 +533,7 @@ export const OptionComponent = ({
   return (
     <div css={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {/* //유저 식별 API인터페이스 */}
-      {(userIdxInfo === reply?.writerIdx && userIdxInfo === reReply?.writerIdx) ? (
+      {userIdxInfo === reply?.writerIdx && userIdxInfo === reReply?.writerIdx ? (
         options.map(opt => (
           <button
             onClick={() => {
