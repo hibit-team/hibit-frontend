@@ -43,7 +43,6 @@ const MatchingPage = () => {
         <MatchingFilterButton></MatchingFilterButton>
         <MatchingContainer hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} pages={data?.pages} fetchNextPage={fetchNextPage}></MatchingContainer>
       </LayoutTemplate>
-      {/* 딜레이가 너무 짧아서 써도 되는지 애매.. =>로딩용으로 바기 */}
       { isLoading || isFetching ||isFetchingNextPage ? <LottiePageRouting/> : undefined}
     </div>
   );

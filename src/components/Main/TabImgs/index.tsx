@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
-import Swimmer from "../../../images/components/swimmer.svg";
-import TwoPeople from "../../../images/components/people.svg";
-import PurpleBg from '../../../images/components/Purple.svg'
-import Arrow from '../../../images/components/Arrow.svg';
+import mainLeft from '../../../images/components/Main/mainLeft.svg';
+import mainRight from '../../../images/components/Main/mainRight.svg';
+import nowTogoButton from '../../../images/components/Main/nowTogoButton.svg';
+import { useSetRecoilState } from "recoil"
+import { MatchingControllerState } from "../../../recoil/atom/MatchingControllerState";
+import { useNavigate } from "react-router-dom";
+
 //slider기본세팅
 const settings = {
   arrows: false,
@@ -16,52 +19,43 @@ const settings = {
 };
 
 const TabImgs = () => {
+  const handleSortOption = useSetRecoilState(MatchingControllerState);
+  const navigate = useNavigate()
   return (
     <s.SliderContainer {...settings}>
       <s.SlideImgWrapper>
         <s.SlideImg>
-          <img src={Swimmer} alt="swimmer-img" />
+          <img src={mainLeft} alt="main-left" />
         </s.SlideImg>
         <s.SlideBottom css={{padding: '2rem'}}>
-          <h1 css={s.textCss1}>설명 문구</h1>
-          <h1 css={s.textCss2}>이번 주에 출발하는 전시회</h1>
+          <h1 css={s.textCss1}>우리 심심한데 전시나 볼과?</h1>
+          <h1 css={s.textCss2}>이번주에 출발하는 전시회</h1>
           <s.textCssContainer3>
-            <h1 css={s.textCss3}>매칭 바로가기</h1>
-            {/* <img src={Arrow} alt="arrow-img" /> */}
-            <s.ArrowImg src={Arrow} alt="arrow-img" />
+            <img onClick={()=>{
+            handleSortOption('thisweek')
+            navigate('/matching')
+            }}
+            css={s.textCss3} src={nowTogoButton} alt='togo-button'/>
           </s.textCssContainer3>
         </s.SlideBottom>
       </s.SlideImgWrapper>
 
       <s.SlideImgWrapper>
         <s.SlideImg >
-          <img src={TwoPeople} alt="people-img" />
+          <img src={mainRight} alt="main-right" />
         </s.SlideImg>
         <s.SlideBottom css={{padding: '2rem'}}>
-          <h1 css={s.textCss1}>설명 문구</h1>
-          <h1 css={s.textCss2}>이번 주에 출발하는 전시회</h1>
+          <h1 css={s.textCss1}>어떤 전시회가 인기가 많을까?</h1>
+          <h1 css={s.textCss2}>좋아요 많은 게시글</h1>
           <s.textCssContainer3>
-            <h1 css={s.textCss3}>매칭 바로가기</h1>
-            {/* <img src={Arrow} alt="arrow-img" /> */}
-            <s.ArrowImg src={Arrow} alt="arrow-img" />
+            <img onClick={()=>{
+            handleSortOption('like')
+            navigate('/matching')
+            }} css={s.textCss3} src={nowTogoButton} alt='togo-button'/>
           </s.textCssContainer3>
         </s.SlideBottom>
       </s.SlideImgWrapper>
 
-      <s.SlideImgWrapper>
-        <s.SlideImg>
-          <img src={PurpleBg} alt="swimmer-img" />
-        </s.SlideImg>
-        <s.SlideBottom css={{padding: '2rem'}}>
-          <h1 css={s.textCss1}>설명 문구</h1>
-          <h1 css={s.textCss2}>이번 주에 출발하는 전시회</h1>
-          <s.textCssContainer3>
-            <h1 css={s.textCss3}>매칭 바로가기</h1>
-            {/* <img src={Arrow} alt="arrow-img" /> */}
-            <s.ArrowImg src={Arrow} alt="arrow-img" />
-          </s.textCssContainer3>
-        </s.SlideBottom>
-      </s.SlideImgWrapper>
     </s.SliderContainer>
   );
 };

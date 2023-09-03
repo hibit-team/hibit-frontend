@@ -19,6 +19,8 @@ import axios from "axios";
 import { axiosInstance } from "./services/HttpClient";
 import NotFound from "./pages/NotFound";
 import ReportModal from './components/MatchPost/ReportModal';
+import LottiePageRouting from "./components/LottieFiles/LottiePageRouting";
+import { Suspense } from "react";
 
 function App() {
   const queryClient = new QueryClient();
@@ -45,6 +47,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen/>
           <Global styles={globalStyles}/>
+          <Suspense fallback={<div><LottiePageRouting/></div>}>
           <Container>
             <Router>
               <Routes>
@@ -61,6 +64,7 @@ function App() {
               </Routes>
             </Router>
           </Container>
+          </Suspense>
         </QueryClientProvider>
       </RecoilRoot>
     </>

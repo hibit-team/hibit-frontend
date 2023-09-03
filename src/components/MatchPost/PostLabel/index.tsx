@@ -10,6 +10,7 @@ import PostStateModal from '../PostStateModal';
 import { useRecoilState } from 'recoil';
 import { PostStateModalSwitch } from '../../../recoil/atom/PostStateModalSwitch';
 import { useUpdateMatchingStatusCancel } from '../../../hooks/MatchingPost/useUpdateMatchingStatusCancle';
+import useLoginInfo from '../../../hooks/useLoginInfo';
 
 export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPostPage; postIDX: string | undefined }) {
   const label = data?.number_and_What;
@@ -18,6 +19,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
   //게시글 모집취소 mutation hook
   const { mutate: cancelMutate } = useUpdateMatchingStatusCancel(postIDX);
+  const loginInfo = useLoginInfo();
 
   return (
     <div>
@@ -35,20 +37,22 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
           <s.MatchPostStatusContainer isStatusModalOpen={isStatusModalOpen}>
             <div
               onClick={() => {
-                setIsStatusModalOpen(!isStatusModalOpen);
+                if(data?.writerIdx === loginInfo?.userIdx) { setIsStatusModalOpen(!isStatusModalOpen);}
+                else { alert('게시글의 상태는 작성자만 변경할 수 있습니다.')}
               }}
-              css={{ userSelect: 'none', display: 'flex', padding: '6px 0px 6px 12px' }}
+              css={{ userSelect: 'none', display: 'flex', padding: '6px 0px 6px 12px'}}
             >
-              <button css={{ userSelect: 'none', all: 'unset' }}>
-                {data?.status === 'N' ? '모집 중' : data?.status === 'C' ? '모집 완료' : '모집 취소'}
+              <button css={{ userSelect: 'none', all: 'unset',
+            display:'flex',justifyContent:'space-evenly'}}>
+              <span css={{position:'relative',left: data?.status === 'N' ? 8 : 2}}>{data?.status === 'N' ? '모집 중' : data?.status === 'C' ? '모집 완료' : '모집 취소'}</span>
               </button>
               {!isStatusModalOpen ? (
-                <img css={{ position: 'relative', left: 5, bottom: 1 }} src={ArrownDown} alt="modalOpen-arrow"></img>
+                <img css={{ position: 'relative', left: data?.status === 'N' ? 14 : 4, bottom: 1 }} src={ArrownDown} alt="modalOpen-arrow"></img>
               ) : (
-                <img css={{ position: 'relative', left: 5, bottom: 1 }} src={ArrowUp} alt="modalClose-arrow"></img>
+                <img css={{ position: 'relative', left: data?.status === 'N' ? 14 : 4, bottom: 1 }} src={ArrowUp} alt="modalClose-arrow"></img>
               )}
             </div>
-            <div css={{ userSelect: 'none', display: isStatusModalOpen ? 'block' : 'none' }}>
+            <div css={{userSelect: 'none', display: isStatusModalOpen ? 'block' : 'none' }}>
               <div
                 onClick={e => {
                   e.stopPropagation();
@@ -81,7 +85,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                   boxSizing: 'border-box',
                 }}
               >
-                모집 중
+                <span css={{position:'relative',left: '9px'}}>모집 중 </span>
               </div>
               <div
                 onClick={e => {
@@ -118,7 +122,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                   borderBottom: `1px solid ${COLORS.main79}`,
                 }}
               >
-                모집 완료
+                <span css={{position:'relative',left: '8px'}}>모집 완료</span>
               </div>
               <div
                 onClick={e => {
@@ -155,7 +159,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                   boxSizing: 'border-box',
                 }}
               >
-                모집 취소
+                <span css={{position:'relative',left: '8px'}}>모집 취소</span>
               </div>
             </div>
           </s.MatchPostStatusContainer>

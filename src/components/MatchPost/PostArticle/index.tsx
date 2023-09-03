@@ -15,7 +15,7 @@ import WhiteLike from '../../../images/components/MatchPost/whiteLike.png';
 import FsLightbox from 'fslightbox-react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { FsImageBoxToggler } from '../../../recoil/atom/FsImageBoxToggler';
-import ReplySectionComponent from '../PostReplySection';
+import ReplySectionComponent, { IComments } from '../PostReplySection';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
 import { useDeleteReplyMutation } from '../../../hooks/MatchingPost/useDeleteReplyMutation';
 import { useDeleteMatchingPostMutation } from '../../../hooks/MatchingPost/useDeleteMatchingPostMutation';
@@ -23,7 +23,11 @@ import { usePostMatchingArticleLikeMutation } from '../../../hooks/MatchingPost/
 import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
 import { useNavigate } from 'react-router-dom';
 import { PostIDXAtom } from '../../../recoil/atom/PostIDXAtom';
+import useLoginInfo from '../../../hooks/useLoginInfo';
+import userDefaultImage from '../../../images/components/MatchPost/profileDefault.svg'
 export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
+  const userIdxInfo = useLoginInfo()?.userIdx;
+  const userLoginInfo = useLoginInfo();
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   const [isInviteModalOpen, setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
@@ -53,7 +57,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
   };
   const { mutate: articleLikeMutate } = usePostMatchingArticleLikeMutation(postIDX);
   const isLikeStateOn = data?.likeUsers?.find(item => {
-    return item.idx === 2;
+    return item.idx === userIdxInfo;
   });
   useEffect(() => {
     return () => {
@@ -112,7 +116,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 bottom: 3,
               }}
               src={data?.writerImg}
-              alt="writer-profile-img"
+              alt="user-img"
             />
           </div>
 
@@ -121,10 +125,11 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
               font-size: 20px;
               color: #797979;
               font-weight: 700;
-              margin: 6px;
+              margin-right: 4px;
+              margin-left: 10px;
             `}
           >
-            {data?.writer}
+            {data?.writer ? data?.writer : 'undefined'}
           </div>
           <div
             css={css`
@@ -159,6 +164,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             <div
               ref={ref}
               css={{
+                userSelect: 'none',
                 position: 'absolute',
                 top: '1rem',
                 right: '-3.5rem',
@@ -167,14 +173,15 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 background: 'white',
                 boxSizing: 'border-box',
                 width: 56,
-                height: 102,
+                height: 'auto',
+                padding: '10px 0',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <PostOptionComponent postIDX={postIDX}></PostOptionComponent>
+              <PostOptionComponent userIdx={data?.writerIdx} userIdxInfo={userIdxInfo} postIDX={postIDX}></PostOptionComponent>
             </div>
           )}
         </s.ArticleTitleSection>
@@ -272,15 +279,19 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
               overflowWrap: 'break-word',
             }}
           >
-            내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ내용요요요요용ㅇㄴㅁ움너우먼움너ㅜ어문엄ㄴ웜너움너우머누엄누엄누엄누엄누엄누엄누엄눠ㅜㅁㅇ너웜눙ㅁ너움나움니ㅏ우ㅏㅁ누어ㅏㅁ누아ㅓㅁ눠ㅏ움너ㅏ워ㅏㅁ
-            {/* {data?.content} */}
+            {data?.content}
           </article>
           <button
             onClick={e => {
               e.stopPropagation();
               //게시글좋아요버튼
-              articleLikeMutate(postIDX);
-              alert(isLikeStateOn ? '해당 게시글의 `좋아요`를 취소했습니다.' : '해당 게시글에 `좋아요`를 눌렀습니다.');
+              if (userLoginInfo?.isLoggedIn) {
+                alert(isLikeStateOn ? '해당 게시글의 `좋아요`를 취소했습니다.' : '해당 게시글에 `좋아요`를 눌렀습니다.');
+                articleLikeMutate(postIDX);
+              }
+              else { 
+                alert('로그인이 필요합니다.')
+              }
             }}
             css={{
               all: 'unset',
@@ -318,14 +329,16 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
         </s.ArticleTextSection>
         <div css={{ width: 874, height: 1, background: COLORS.Gray2, margin: 'auto' }}></div>
         <div css={{ display: 'flex', justifyContent: 'center', padding: 32 }}>
-          <s.InviteBoxWrapper
-            onClick={e => {
-              e.stopPropagation();
-              setIsInviteModalOpen(!isInviteModalOpen);
-            }}
-          >
-            초대하기
-          </s.InviteBoxWrapper>
+          {userIdxInfo === data?.writerIdx ? (
+            <s.InviteBoxWrapper
+              onClick={e => {
+                e.stopPropagation();
+                setIsInviteModalOpen(!isInviteModalOpen);
+              }}
+            >
+              초대하기
+            </s.InviteBoxWrapper>
+          ) : undefined}
         </div>
 
         <FsLightboxWrapper data={data} />
@@ -362,6 +375,9 @@ export const ArticleImageSlider = styled(Slider)`
 `;
 
 interface IOptionComponent {
+  reply?: IComments;
+  reReply?: IComments;
+  userIdxInfo?: number | null | undefined;
   replyIDX?: number;
   setIsModifyOn?: React.Dispatch<React.SetStateAction<boolean>>;
   isModifyOn?: boolean;
@@ -370,7 +386,15 @@ interface IOptionComponent {
 }
 
 //게시글 전용 option컴포넌트 분리
-export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }) => {
+export const PostOptionComponent = ({
+  userIdx,
+  userIdxInfo,
+  postIDX,
+}: {
+  userIdx?: number;
+  userIdxInfo?: number | null;
+  postIDX: string | undefined;
+}) => {
   const navigate = useNavigate();
   const postOption1 = css({
     //수정
@@ -392,7 +416,6 @@ export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }
     top: 2,
     fontSize: 18,
     padding: '6px',
-    borderBottom: `1px solid ${COLORS.Gray2}`,
     color: COLORS.Gray3,
     '&:hover': { color: COLORS.main79, scale: '1.04' },
   });
@@ -407,38 +430,64 @@ export const PostOptionComponent = ({ postIDX }: { postIDX: string | undefined }
     color: COLORS.Gray3,
     '&:hover': { color: 'red', scale: '1.04' },
   });
-  const options = ['수정', '삭제', '신고'];
+  const options = [
+    ['수정', 0],
+    ['삭제', 1],
+  ];
   //게시글 삭제
   const { mutate } = useDeleteMatchingPostMutation(postIDX);
   return (
     <>
-      {options.map((opt, i) => (
+      {userIdx === userIdxInfo ? (
+        options.map(opt => (
+          <button
+            //수정모드 라우트 처리 , 게시글 삭제 API 연동 , 신고 라우트 처리
+            key={opt[0]}
+            css={opt[1] === 0 ? postOption1 : postOption2}
+            onClick={() => {
+              switch (opt[1]) {
+                case 0: {
+                  //수정 라우트로 이동
+                  navigate('/matching');
+                  break;
+                }
+                //삭제
+                case 1: {
+                  const confirm = window.confirm('게시글을 삭제하시겠습니까?');
+                  if (confirm) mutate(postIDX);
+                  break;
+                }
+                default:
+              }
+            }}
+          >
+            {opt[0]}
+          </button>
+        ))
+      ) : (
         <button
-          //수정모드 라우트 처리 , 게시글 삭제 API 연동 , 신고 라우트 처리
-          key={i}
-          css={i === 0 ? postOption1 : i === 1 ? postOption2 : postOption3}
           onClick={() => {
-            switch (i) {
-              //삭제
-              case 1: {
-                const confirm = window.confirm('게시글을 삭제하시겠습니까?');
-                if (confirm) mutate(postIDX);
-                break;
-              }
-              case 2: {
-                navigate(`/report/${postIDX}`);
-              }
-            }
+            navigate(`/report/:${postIDX}`);
           }}
+          css={postOption3}
         >
-          {opt}
+          신고
         </button>
-      ))}
+      )}
     </>
   );
 };
 
-export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOptModalOpen, setIsReplyOptModalOpen }: IOptionComponent) => {
+export const OptionComponent = ({
+  userIdxInfo,
+  reply,
+  reReply,
+  replyIDX,
+  setIsModifyOn,
+  isModifyOn,
+  isReplyOptModalOpen,
+  setIsReplyOptModalOpen,
+}: IOptionComponent) => {
   //수정삭제신고 게시글 옵션
   const postOption1 = css({
     //수정
@@ -460,7 +509,6 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
     top: 2,
     fontSize: 18,
     padding: '6px',
-    borderBottom: `1px solid ${COLORS.Gray2}`,
     color: COLORS.Gray3,
     '&:hover': { color: COLORS.main79, scale: '1.04' },
   });
@@ -475,41 +523,49 @@ export const OptionComponent = ({ replyIDX, setIsModifyOn, isModifyOn, isReplyOp
     color: COLORS.Gray3,
     '&:hover': { color: 'red', scale: '1.04' },
   });
-  const options = ['수정', '삭제', '신고'];
+  const options = [
+    ['수정', 0],
+    ['삭제', 1],
+  ];
   const { mutate } = useDeleteReplyMutation(replyIDX);
   const navigate = useNavigate();
   const postIDX = useRecoilValue(PostIDXAtom);
   return (
-    <>
-      {options.map((opt, i) => (
+    <div css={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      {/* //유저 식별 API인터페이스 */}
+      {userIdxInfo === reply?.writerIdx && userIdxInfo === reReply?.writerIdx ? (
+        options.map(opt => (
+          <button
+            onClick={() => {
+              //옵션모달꺼주기
+              if (setIsReplyOptModalOpen) {
+                setIsReplyOptModalOpen(!isReplyOptModalOpen);
+              }
+              //수정모드On(i==0)
+              if (opt[1] === 0 && setIsModifyOn) setIsModifyOn(!isModifyOn);
+              //삭제버튼인 경우에(i==1)
+              if (opt[1] === 1) {
+                mutate(replyIDX);
+              }
+            }}
+            key={opt[1]}
+            css={opt[1] === 0 ? postOption1 : postOption2}
+          >
+            {opt[0]}
+          </button>
+        ))
+      ) : (
         <button
           onClick={() => {
-            //옵션모달꺼주기
-            if (setIsReplyOptModalOpen) {
-              setIsReplyOptModalOpen(!isReplyOptModalOpen);
-            }
-            //수정모드On(i==0)
-            if (i === 0 && setIsModifyOn) setIsModifyOn(!isModifyOn);
-            //삭제버튼인 경우에(i==1)
-            if (i === 1) {
-              mutate(replyIDX);
-            }
-            if (i === 2) {
-              // const openInNewTab = (url:string) => {
-              //   const newTab = window.open(url, '_blank');
-              //   newTab?.focus();
-              // };
-              // openInNewTab(`/report/${postIDX}?reply=${replyIDX}`)
-              navigate(`/report/${postIDX}?reply=${replyIDX}`);
-            }
+            //accessToken이 존재하는 경우만 요청이 가능하도록 할 예정 =>
+            navigate(`/report/${postIDX}?reply=${replyIDX}`);
           }}
-          key={i}
-          css={i === 0 ? postOption1 : i === 1 ? postOption2 : postOption3}
+          css={postOption3}
         >
-          {opt}
+          신고
         </button>
-      ))}
-    </>
+      )}
+    </div>
   );
 };
 

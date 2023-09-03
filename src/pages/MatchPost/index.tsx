@@ -5,7 +5,7 @@ import MatchPostLabel from '../../components/MatchPost/PostLabel';
 import MatchPostArticle from '../../components/MatchPost/PostArticle';
 import { useQuery } from '@tanstack/react-query';
 import HttpClient from '../../services/HttpClient';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import InviteModal from '../../components/MatchPost/InviteModal';
 import { PostIDXAtom } from '../../recoil/atom/PostIDXAtom';
@@ -18,6 +18,7 @@ export interface ILikeUsers {
 export interface IMatchingPostPage {
   idx: number; //게시글넘버
   writer: string; //게시글 작성자
+  writerIdx: number;
   writerImg: string; //작성자 프로필
   title: string; //게시글제목
   content: string; //본문텍스트
@@ -36,38 +37,39 @@ export interface IMatchingPostPage {
 }
 
 export default function MatchingPostPage() {
+  const navigate = useNavigate();
   //게시글정보
   const { idx } = useParams();
   const setIdxAtom = useSetRecoilState(PostIDXAtom);
-  useEffect(()=>{
-    if(idx) setIdxAtom(idx);
-  },[idx,setIdxAtom])
+  useEffect(() => {
+    if (idx) setIdxAtom(idx);
+  }, [idx, setIdxAtom]);
 
   const getPostInfoFn = async () => {
     try {
-      const res = await HttpClient.get(`/post/${idx}`)
+      const res = await HttpClient.get(`/post/${idx}`);
       return res;
-    }
-    catch(e){
-      console.error(`게시글 정보를 불러오지 못했습니다 : ${(e as AxiosError).message}`)
+    } catch (e) {
+      console.error(`게시글 정보를 불러오지 못했습니다 : ${(e as AxiosError).message}`);
       return;
     }
-    ;
   };
-  const { data, isError, error, isLoading, isFetching } = useQuery<IMatchingPostPage, AxiosError>(['post-info'], getPostInfoFn, {
+  const { data, isError, error, isLoading, isFetching, status } = useQuery<IMatchingPostPage, AxiosError>(['post-info'], getPostInfoFn, {
     staleTime: 1000,
     retry: 3,
     retryDelay: 2000,
-  });
+  },);
 
   useEffect(() => {
     window.scrollTo(0, 100); // x축은 0, y축은 0으로 설정하여 상단으로 스크롤
   }, []);
 
   if (isError) {
-    console.error(`게시글 정보를 불러오지 못했습니다 : ${(error as AxiosError).message}`)
+    console.error(`게시글 정보를 불러오지 못했습니다 : ${(error as AxiosError).message}`);
+    alert('존재하지 않는 게시글입니다.')
+    navigate('/matching')
   }
-
+  
   return (
     <div style={{ position: 'relative' }}>
       <LayoutTemplate>
@@ -77,9 +79,6 @@ export default function MatchingPostPage() {
           <InviteModal postIDX={idx}></InviteModal>
         </s.Wrapper>
       </LayoutTemplate>
-      {/* <div style={{ position: 'fixed', right: 100 , bottom: 5 }}>
-        <InviteBoxWrapper>초대하기</InviteBoxWrapper>
-      </div> */}
     </div>
   );
 }
