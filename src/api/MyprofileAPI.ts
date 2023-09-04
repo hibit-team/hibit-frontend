@@ -43,6 +43,17 @@ const MyprofileAPI = {
       console.error({e});
       return null;
     }
+  },
+
+  checkIsUniqueNickname: async (nickname: string) => {
+    try {
+      const path = `/api/profiles/nickname/exists?nickname=${nickname}`;
+      const response = await HttpClient.get(path);
+      return response;
+    } catch (e) {
+      console.error({e});
+      return null;
+    }
   }
 };
 

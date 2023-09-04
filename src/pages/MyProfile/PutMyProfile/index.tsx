@@ -43,10 +43,18 @@ const PutMyProfile = () => {
   const [isNicknameDuplicated, setIsNicknameDuplicated] = useState<boolean>(true);
   const onClickDuplicateNickname = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log("중복 확인 API");
-    // .then()
-    setIsNicknameDuplicated(false);
-    // .catch()
-    // setIsNicknameDuplicated(true);
+    if (nickname) {
+      MyprofileAPI.checkIsUniqueNickname(nickname)
+        .then((res) => {
+          if (res.unique === "true") setIsNicknameDuplicated(false);
+          else setIsNicknameDuplicated(true);
+        })
+        .catch((e) => {
+          console.error({e});
+          return;
+        })
+    }
+
   }; // nickname
   
   const [age, setAge] = useState<number | null>(null);
@@ -308,7 +316,11 @@ const PutMyProfile = () => {
                 value={nickname} 
                 onChange={onChangeNickname}
                 />
-              <s.CheckIsDuplicateBtn disabled={!isEditMode} isEditMode={isEditMode}>중복확인</s.CheckIsDuplicateBtn>
+              <s.CheckIsDuplicateBtn 
+                disabled={!isEditMode} 
+                isEditMode={isEditMode}
+                onClick={onClickDuplicateNickname}
+                >중복확인</s.CheckIsDuplicateBtn>
             </s.NicknameContainer>
 
             <s.AgeContainer>

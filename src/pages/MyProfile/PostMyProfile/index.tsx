@@ -34,10 +34,18 @@ const PostMyProfile = () => {
   const [isNicknameDuplicated, setIsNicknameDuplicated] = useState<boolean>(true);
   const onClickDuplicateNickname = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log("중복 확인 API");
-    // .then()
-    setIsNicknameDuplicated(false);
-    // .catch()
-    // setIsNicknameDuplicated(true);
+    if (nickname) {
+      MyprofileAPI.checkIsUniqueNickname(nickname)
+        .then((res) => {
+          if (res.unique === "true") setIsNicknameDuplicated(false);
+          else setIsNicknameDuplicated(true);
+        })
+        .catch((e) => {
+          console.error({e});
+          return;
+        })
+    }
+
   }; // nickname
   
   const [age, setAge] = useState<number | null>(null);
