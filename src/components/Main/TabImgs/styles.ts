@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import {css} from '@emotion/react';
+import COLORS from "../../../assets/color";
 
 
 export const SliderContainer = styled(Slider)`
@@ -22,14 +23,15 @@ export const SlideImgWrapper = styled.div`
   &:hover {
     transition: transform 0.5s ease 0s;
     transform: translate(0,-20px);
-    scale:1.01;
   }
+  overflow: hidden;
 `;
 
 export const SlideImg = styled.div`
   display: flex;
   width: 380px;
   height: 392px;
+  border: none;
 `;
 
 export const SlideBottom = styled.div`
@@ -39,13 +41,15 @@ export const SlideBottom = styled.div`
   width: 380px;
   height: 210px;
   background-color: #EEEEEE;
-  border-radius:1.5rem;
-`;
+  border-bottom-right-radius:1.5rem;
+  border-bottom-left-radius:1.5rem;
+  `;
 
 export const textCss1 = css`
   display: flex;
   font-size: 20px;
   font-weight: 500;
+  color: ${COLORS.Gray3};
 `;
 
 export const textCss2 = css`
@@ -53,6 +57,7 @@ export const textCss2 = css`
   margin-top: 12px;
   font-size: 28px;
   font-weight: 800;
+  color: #242424;
 `;
 
 export const textCssContainer3 = styled.div`
@@ -64,24 +69,21 @@ export const textCssContainer3 = styled.div`
   align-items: center;
   width: 100%;
   height: 26px;
-  &:hover {
-    scale:1.1;
-    transition: scale 0.1s ease 0s;
-  };
 `;
 
 export const textCss3 = css`
+  position: absolute;
+  left:-56%;
+  top:10%;
   display: flex;
+  width: 176px;
+  height: 45px;
+  flex-shrink: 0;
   font-size: 20px;
   font-weight: 500;  
-  color:#5E1EC7;
+  color: ${COLORS.Gray3};
   text-shadow: 0.5px 0.5px 1px #797979;
-  opacity:0.85;
-  margin-right: 10px;
+  user-select:none;
+  cursor:pointer;
 `;
 
-export const ArrowImg = styled.img`
-  display: flex;
-  width: 20px;
-  height: 8px;
-`;

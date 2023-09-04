@@ -20,6 +20,7 @@ import ReportModal from './components/MatchPost/ReportModal';
 import PutMyProfile from "./pages/MyProfile/PutMyProfile";
 import PutPosting from "./pages/Posting/PutPosting";
 import useLoginInfo from "./hooks/useLoginInfo";
+import LottiePageRouting from "./components/LottieFiles/LottiePageRouting";
 
 function App() {
   const queryClient = new QueryClient();
@@ -53,10 +54,10 @@ function App() {
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen/>
-        <Global styles={globalStyles}/>
-        <Suspense fallback={<div>Loading..</div>}>
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen/>
+          <Global styles={globalStyles}/>
+          <Suspense fallback={<div><LottiePageRouting/></div>}>
           <Container>
             <Router>
               <Routes>
@@ -75,8 +76,8 @@ function App() {
               </Routes>
             </Router>
           </Container>
-        </Suspense>
-      </QueryClientProvider>
+          </Suspense>
+        </QueryClientProvider>
     </>
   );
 }

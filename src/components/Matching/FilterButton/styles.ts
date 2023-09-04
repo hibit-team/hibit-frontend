@@ -8,7 +8,7 @@ box-sizing: border-box;
 font-weight:500px;
 color: #242424;
 position:relative;
-bottom:22px;
+bottom:42px;
 `
 export const FilterButtonWrapper =styled.div`
 display:flex;

@@ -2,16 +2,18 @@ import { Suspense, useEffect, useState } from 'react';
 import { IHeaderCategory } from '../../../interfaces/IHeaderCategories';
 import { useNavigate, useLocation } from "react-router-dom";
 import HibitLogo from "../../../images/components/HibitLogo.svg";
+import HibitLogoWhite from "../../../images/components/HibitLogoWhite.svg";
 import AlarmIcon from "../../../images/components/AlarmIcon.svg";
 import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
 import CustomModalAlarm from '../../Alarm';
 import * as s from "./styles";
-import { useRecoilValue, useRecoilValueLoadable, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, useRecoilValueLoadable, useResetRecoilState } from 'recoil';
 import { accessTokenState, profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
 import useLoginInfo from '../../../hooks/useLoginInfo';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
 import { axiosInstance } from '../../../services/HttpClient';
+import { LoginModalState } from '../../../recoil/atom/LoginModalState';
 
 
 const Header = () => {
@@ -95,6 +97,9 @@ const Header = () => {
     setIsMenuOpen(true);
   };
 
+  const { pathname: path } = useLocation();
+  console.log(path)
+
   if (isMobile) {
     return (
       <s.MobileWrapper>
@@ -102,12 +107,11 @@ const Header = () => {
       </s.MobileWrapper>
     );
   }
-
   return (
     <s.Wrapper>
-      <s.LeftContainer>
+      <s.LeftContainer style={{ color: path === '/matching' ? 'white' : 'black'}} >
         <s.LogoContainer onClick={() => navigate("/")}>
-          <img src={HibitLogo} alt='hibit-logo'/>
+          {path === '/matching' ? <img src={HibitLogoWhite} alt='logo-white'/> : <img src={HibitLogo} alt='hibit-logo'/> }
         </s.LogoContainer>
         <s.Category onClick={() => navigate("/intro")}>서비스 소개</s.Category>
         <s.Category onClick={() => navigate("/matching")}>매칭</s.Category>
@@ -144,9 +148,9 @@ const Header = () => {
           />
           <s.TextWrapper onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
         </s.RightContainer> :
-        <s.RightContainer>
-          <s.TextWrapper>회원가입</s.TextWrapper>
-          <s.TextWrapper onClick={() => onClickLogin()}>로그인</s.TextWrapper>
+        <s.RightContainer >
+          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}}>회원가입</s.TextWrapper>
+          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogin()}>로그인</s.TextWrapper>
           <LoginModal open={modalOpen} close={closeModal} />
         </s.RightContainer>
       }

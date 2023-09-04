@@ -9,11 +9,13 @@ import MobileNavbar from "../../components/Main/Mobile/MobileNavbar";
 import MobileTab from "../../components/Main/Mobile/MobileTab";
 import MobileSlider from "../../components/Main/Mobile/MobileSlider";
 import { GlobalModal } from "../../components/GlobalModal";
+import useLoginInfo from "../../hooks/useLoginInfo";
 const MainPage = () => {
   const [toggleState, setToggleState] = useRecoilState<boolean>(toggleNavState);
   const onToggle: Function = () => {
     setToggleState(!toggleState);
   }
+  const isLoggedIn = useLoginInfo()?.isLoggedIn;
 
   if (useIsMobile()) {
     if (toggleState) {
@@ -28,7 +30,7 @@ const MainPage = () => {
     return (
       <>    
         <MoHeaderComponent onToggle={onToggle}></MoHeaderComponent>
-        <GlobalModal/>
+        { isLoggedIn === false ? <GlobalModal/> : undefined }
         <MobileTab></MobileTab>
         <MobileSlider></MobileSlider>
       </>
