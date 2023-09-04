@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ChangeEvent, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LayoutTemplateGray from "../../../components/Common/LayoutTemplateGray";
@@ -7,31 +8,37 @@ import * as s  from "./styles";
 import AddBtn from "../../../images/components/Posting/AddBtn.svg";
 import OpenchatGuide from "../../../images/components/Posting/OpenchatGuide.svg";
 import GrayPlus from "../../../images/components/Profile/GrayPlus.svg";
-import ProfileImage from "../../../components/ProfileImage";
-
-const tmpExhibitionData = [
-  "로그아웃 전시회", "전시회2", "전시회3", "전시회4"
-];
+import ExhibitionAPI from "../../../api/ExhibitionAPI";
+import PostingImage from "../../../components/PostingImage";
+import CreatableSelect from "react-select/creatable";
+import { CSSObjectWithLabel, StylesConfig } from "react-select";
+import { IDateFormat } from "../../../interfaces/Posting/IDateFormat";
 
 const activityData_Imoji = [
   "맛집 가기😋", "카페 가기☕", "전시만 보기👓", "만나서 정해요!"
 ];
 
-const activityData = [
-  "맛집 가기", "카페 가기", "전시만 보기", "만나서 정해요!"
+const activityData_enum = [
+  "EAT", "CAFE", "ONLY", "LATER"
 ];
 
-const testImgs: string[] = [
-  // "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-1.png",
-  // "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-2.png",
-  // "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-3.png"
-];
+interface IExhibition {
+  value: string,
+  label: string
+};
+const OPENCHAT_GUIDELINK = "https://cs.kakao.com/helps_html/1073184404?locale=ko";
+
+type CalendarState = {
+  selectedDate: Date | undefined;
+  isCalendarOpen: boolean;
+  isMorning: boolean;
+};
 
 const PutPosting = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState<string>("");
   const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     if(e.target.value.length >= 31) {
       alert("최대 30자까지 작성할 수 있어요.");
@@ -41,10 +48,51 @@ const PutPosting = () => {
     setTitle(e.target.value);
   };
 
-  const [exhibition, setExhibition] = useState(tmpExhibitionData[0])
-  const onChangeExhibition = (e: ChangeEvent<HTMLSelectElement>) => {
-    setExhibition(e.target.value);
+  const [exhibition, setExhibition] = useState<string>("")
+  const onChangeExhibition = (e: string) => {
+    console.log({e});
+    setExhibition(e);
   };
+  const [exhibitionList, setExhibitionList] = useState<IExhibition[]>([]);
+  useEffect(() => {
+    ExhibitionAPI.getExhibitions()
+      .then((res) => {
+        const exhibitionData = res as string[];
+        const newList = [...(exhibitionData || [])];
+        const newObjectList: IExhibition[] = [];
+        
+        newList.forEach((exhibition) => {
+          const newObject: IExhibition = {
+            value: exhibition,
+            label: exhibition
+          };
+          newObjectList.push(newObject);
+        });
+
+        setExhibitionList(newObjectList);
+      })
+      .catch((e) => {
+        console.error({e});
+      });
+  }, []);
+
+  const customControlStyles = (
+    base: CSSObjectWithLabel,
+  ) => {
+    return {
+      ...base,
+      width: '580px',
+      height: '56px',
+      marginLeft: "50px",
+      borderRadius: "10px",
+      borderColor: "#797979",
+      paddingLeft: "10px"
+    };
+  };
+  const customSelectStyles: StylesConfig<IExhibition, false, any> = {
+    control: customControlStyles
+  };
+
 
   const personCnt = [2, 3, 4, 5, 6, 7, 8, 9, 10];
   const [person, setPerson] = useState(personCnt[0]);
@@ -52,18 +100,55 @@ const PutPosting = () => {
     setPerson(Number(e.target.value));
   };
 
-  const [dateCnt, setDateCnt] = useState<number[]>([1]);
+
+  // CalendarComponent의 개수를 관리하는 상태
+  const [calendarCount, setCalendarCount] = useState(1);
+
+  // 각 CalendarComponent의 상태 배열을 관리하는 배열
+  const [calendarStates, setCalendarStates] = useState([{
+    selectedDate: undefined,
+    isCalendarOpen: false,
+    isMorning: true,
+  }]);
+
   const onClickAddBtn = () => {
-    if(dateCnt.length === 5) {
-      alert("최대 5개까지 등록할 수 있어요.");
+    if (calendarStates.length === 5) {
+      alert("날짜는 최대 5개까지 선택할 수 있어요.");
       return;
-    };
-    setDateCnt([...dateCnt, 1]);
+    }
+    setCalendarCount(calendarCount + 1);
+    setCalendarStates([...calendarStates, {
+      selectedDate: undefined,
+      isCalendarOpen: false,
+      isMorning: true,
+    }]);
+  };
+
+  // CalendarComponent의 상태 업데이트 함수
+  const updateCalendarState = (index: number, newState: any) => {
+    const updatedStates = [...calendarStates];
+    updatedStates[index] = newState;
+    setCalendarStates(updatedStates);
+  };
+  // CalendarComponent 렌더링 함수
+  const renderCalendarComponents = () => {
+    return calendarStates.map((calendarState, index) => (
+      <CalendarComponent
+        key={index}
+        selectedDate={calendarState.selectedDate}
+        isCalendarOpen={calendarState.isCalendarOpen}
+        isMorning={calendarState.isMorning}
+        onUpdateState={(newState) => updateCalendarState(index, newState)}
+      />
+    ));
   };
 
   const [openchat, setOpenchat] = useState("");
   const onChangeOpenchat = (e: ChangeEvent<HTMLInputElement>) => {
     setOpenchat(e.target.value);
+  };
+  const onClickOpenchatGuide = (e: MouseEvent<HTMLImageElement>) => {
+    window.open(OPENCHAT_GUIDELINK);
   };
 
   const [isActivitySelect, setIsActivitySelect] = useState(-1);
@@ -82,27 +167,61 @@ const PutPosting = () => {
     setDetail(e.target.value);
   };
 
-  const [img, setImg] = useState<string[] | undefined | null>(testImgs);
+
+  const [imgURLs, setImgURLs]= useState<string[]>([]);
+  const [imgs, setImgs]= useState<File[]>([]);
   const imgInputRef = useRef<HTMLInputElement | null>(null);
   const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if(!e.target.files) return;
-    if(img?.length === 3) {
+    if (!e.target.files) {
+      console.log("이미지 파일 없음");
+      return;
+    }
+    if (imgURLs?.length === 3) {
       alert("이미지는 최대 3장까지 추가할 수 있습니다.");
       return;
     }
-    img?.push(e.target.files[0].name);
-    const newImgList = JSON.parse(JSON.stringify(img));
-    setImg(newImgList)
-    // console.log(e.target.files[0].name);
-  }, [img]);
+
+    const newImgs = [...(imgs) || []];
+    newImgs.push(e.target.files[0]);
+    setImgs(newImgs);
+
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = () => {
+      const newImgURL = [...(imgURLs || [])];
+      newImgURL.push(reader.result as string);
+      setImgURLs(newImgURL);
+    };
+  }, [imgs, setImgs, imgURLs, setImgURLs]);
   const onUploadImgBtnClick = useCallback(() => {
     if(!imgInputRef.current) return;
     imgInputRef.current.click();
   }, []);
 
+  const checkAllInfo = (): boolean => {
+    if (title === null) {
+      alert("제목을 입력해 주세요.");
+      return false;
+    }
+
+    if (exhibition === null || exhibition.length === 0) {
+      alert("전시회를 선택해 주세요.");
+      return false;
+    }
+
+    // if (dateCnt.length === 1) {
+    //   alert
+    // }
+
+    return true;
+  }
+
   const onClickSubmitBtn = () => {
-    if (window.confirm("매칭 게시글을 수정하시겠습니까?")) {
-      alert("게시글이 수정되었습니다.");
+    if (window.confirm("매칭 게시글을 등록하시겠습니까?")) {
+
+
+       
+      alert("게시글이 등록되었습니다.");
       // submit api 추가 필요
       navigate(-1);
     }
@@ -140,23 +259,14 @@ const PutPosting = () => {
 
             <s.ExhibitionContainer>
               <s.Column>가고싶은 전시회</s.Column>
-              <s.ExhibitionSelect 
-                onChange={onChangeExhibition}
-                value={exhibition}
-              >
-                {
-                  tmpExhibitionData.map((exhibit) => {
-                    return(
-                      <s.ExhibitionOption 
-                        value={exhibit}
-                        key={exhibit}
-                      >
-                        {exhibit}
-                      </s.ExhibitionOption>
-                    )
-                  })
-                }
-              </s.ExhibitionSelect>
+              <CreatableSelect 
+                styles={customSelectStyles}
+                isClearable={true} 
+                options={exhibitionList} 
+                isSearchable={true}
+                onChange={(inputValue) => onChangeExhibition(inputValue?.value!)}
+                placeholder="전시회를 검색하거나 선택해주세요 :)"
+                />
             </s.ExhibitionContainer>
 
             <s.PersonContainer>
@@ -167,7 +277,7 @@ const PutPosting = () => {
               >
                 {
                   personCnt.map((person) => {
-                    return (
+                    return ( 
                       <s.PersonOption
                         value={person}
                         key={person}
@@ -184,9 +294,7 @@ const PutPosting = () => {
               <s.DateColumn>관람 희망 날짜</s.DateColumn>
               <s.DateContainer>
                 <s.DateSelectorGrid>
-                  {
-                    dateCnt.map(() => <CalendarComponent />)
-                  }
+                {renderCalendarComponents()}
                   <s.AddDateBtn 
                     src={AddBtn} 
                     alt="add" 
@@ -202,8 +310,13 @@ const PutPosting = () => {
                 onChange={onChangeOpenchat}
                 value={openchat}
               />
-              <s.OpenchatGuideBtn src={OpenchatGuide} alt="guide" />
-              <s.OpenchatGuideMent>도움이 필요하세요?</s.OpenchatGuideMent>
+              <s.OpenchatGuideBtn 
+                src={OpenchatGuide}
+                alt="guide"
+                onClick={onClickOpenchatGuide} />
+              <s.OpenchatGuideMent
+                onClick={onClickOpenchatGuide}
+              >도움이 필요하세요?</s.OpenchatGuideMent>
             </s.OpenChatContainer>
 
             <s.ActivityContainer>
@@ -239,6 +352,7 @@ const PutPosting = () => {
               <s.ImageList>
                 <s.ImageAddBox onClick={onUploadImgBtnClick}>
                   <s.ImageInputBox 
+                    name="file"
                     type="file" 
                     accept="image/*" 
                     ref={imgInputRef} 
@@ -247,13 +361,14 @@ const PutPosting = () => {
                   <img src={GrayPlus} alt="gray" />
                 </s.ImageAddBox>
                 {
-                  img?.map((item, idx) => 
-                    <ProfileImage
+                  imgURLs &&
+                  imgURLs.map((item: string, idx: number) => 
+                    <PostingImage
                       imgURL={item} 
                       isFirst={idx === 0 ? true : false}
                       isEditMode={true}
-                      imgList={img}
-                      setImgList={setImg}
+                      imgList={imgURLs}
+                      setImgList={setImgURLs}
                     />
                   )
                 }

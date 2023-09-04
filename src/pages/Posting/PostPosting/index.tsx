@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ChangeEvent, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LayoutTemplateGray from "../../../components/Common/LayoutTemplateGray";
@@ -10,8 +11,12 @@ import GrayPlus from "../../../images/components/Profile/GrayPlus.svg";
 import ExhibitionAPI from "../../../api/ExhibitionAPI";
 import PostingImage from "../../../components/PostingImage";
 import CreatableSelect from "react-select/creatable";
-import { css } from "@emotion/react";
-import { CSSObjectWithLabel, ControlProps, StylesConfig } from "react-select";
+import { CSSObjectWithLabel, StylesConfig } from "react-select";
+import { ICalendarState, IDateFormat } from "../../../interfaces/Posting/IDateFormat";
+import FileAPI from "../../../api/FileAPI";
+import { IImage } from "../../../interfaces/IImage";
+import { IPosting } from "../../../interfaces/Posting/IPosting";
+import PostingAPI from "../../../api/PostingAPI";
 
 const activityData_Imoji = [
   "맛집 가기😋", "카페 가기☕", "전시만 보기👓", "만나서 정해요!"
@@ -93,16 +98,68 @@ const PostPosting = () => {
     setPerson(Number(e.target.value));
   };
 
-  const [dateCnt, setDateCnt] = useState<number[]>([1]);
+
+  // CalendarComponent의 개수를 관리하는 상태
+  const [calendarCount, setCalendarCount] = useState(1);
+
+  // 각 CalendarComponent의 상태 배열을 관리하는 배열
+  const [calendarStates, setCalendarStates] = useState([{
+    selectedDate: new Date(),
+    isCalendarOpen: false,
+    isMorning: true,
+  }]);
+
   const onClickAddBtn = () => {
-    if(dateCnt.length === 5) {
-      alert("최대 5개까지 등록할 수 있어요.");
+    if (calendarStates.length === 5) {
+      alert("날짜는 최대 5개까지 선택할 수 있어요.");
       return;
-    };
-    setDateCnt([...dateCnt, 1]);
+    }
+    setCalendarCount(calendarCount + 1);
+    setCalendarStates([...calendarStates, {
+      selectedDate: new Date(),
+      isCalendarOpen: false,
+      isMorning: true,
+    }]);
+
+    console.log({calendarStates});
   };
 
-  const [openchat, setOpenchat] = useState("");
+  // CalendarComponent의 상태 업데이트 함수
+  const updateCalendarState = (index: number, newState: any) => {
+    const updatedStates = [...calendarStates];
+    updatedStates[index] = newState;
+    setCalendarStates(updatedStates);
+  };
+  // CalendarComponent 렌더링 함수
+  const renderCalendarComponents = () => {
+    return calendarStates.map((calendarState, index) => (
+      <CalendarComponent
+        key={index}
+        selectedDate={calendarState.selectedDate}
+        isCalendarOpen={calendarState.isCalendarOpen}
+        isMorning={calendarState.isMorning}
+        onUpdateState={(newState) => updateCalendarState(index, newState)}
+      />
+    ));
+  };
+  const [filteredDateList, setFilteredDateList] = useState<IDateFormat[]>([]);
+  const getFilteredDateList = () => {
+    const filteredDates = calendarStates
+      .filter((calendarState) => calendarState.selectedDate !== undefined)
+      .map((calendarState) => {
+        const isoDate: string = calendarState.selectedDate!.toISOString().split('T')[0];
+
+        return {
+          date: isoDate,
+          timeSlot: calendarState.isMorning ? "AM" : "PM",
+        };
+      });
+    const newDates = [...(filteredDates || [])];
+
+    setFilteredDateList(newDates);
+  };
+
+  const [openchat, setOpenchat] = useState<string | null>(null);
   const onChangeOpenchat = (e: ChangeEvent<HTMLInputElement>) => {
     setOpenchat(e.target.value);
   };
@@ -110,13 +167,16 @@ const PostPosting = () => {
     window.open(OPENCHAT_GUIDELINK);
   };
 
-  const [isActivitySelect, setIsActivitySelect] = useState(-1);
+  const [selectedActivity, setSelectedActivity] = useState<number | null>(null);
   const onClickActivity = (idx: number) => {
-    setIsActivitySelect(idx);
+    setSelectedActivity(idx);
+    console.log(selectedActivity);
   };
 
+
+
   const detailPlaceholder = "본인의 전시 관람 스타일, 메이트를 구하는 목적을 자세히 작성하면 매칭 성공률이 높아져요.";
-  const [detail, setDetail] = useState("");
+  const [detail, setDetail] = useState<string | null>(null);
   const onChangeDetail = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if(e.target.value.length >= 201) {
       alert("최대 200자까지 작성할 수 있어요.");
@@ -163,23 +223,105 @@ const PostPosting = () => {
       return false;
     }
 
-    if (exhibition === null) {
+    if (exhibition === null || exhibition.length === 0) {
       alert("전시회를 선택해 주세요.");
       return false;
     }
 
+    getFilteredDateList();
+    if (calendarStates.length === 0) {
+      alert("관람 희망 날짜를 선택해 주세요.");
+      return false;
+    }
+
+    if (!openchat) {
+      alert("오픈 채팅방 URL을 입력해 주세요.");
+      return false;
+    }
+
+    if (selectedActivity === null) {
+      alert("함께 하고싶은 활동을 선택해 주세요.");
+      return false;
+    }
+
+    if (!detail) {
+      alert("상세 내용을 작성해 주세요.");
+      return false;
+    }
+
+    if (imgURLs.length !== 3) {
+      alert("이미지는 3장을 필수로 등록해 주세요.");
+      return false;
+    }
 
     return true;
   }
 
+
+
   const onClickSubmitBtn = () => {
     if (window.confirm("매칭 게시글을 등록하시겠습니까?")) {
+      if (!checkAllInfo()) {
+        return;
+      }
 
+      if (imgs && imgs.length > 0) {
+        const formData = new FormData();
+        imgs.forEach((imageData) => {
+          formData.append(`file`, imageData);
+        });
+  
+        console.log(formData.getAll(`file`));
+    
+        FileAPI.postFiles(0, formData)
+          .then((res) => {
+            const imageResponse: IImage = {
+              mainImage: "",
+              subImages: []
+            }
+  
+            imageResponse.mainImage = res?.data[0];
+            if (res?.data[1].length > 0) {
+              res?.data[1].forEach((url: string) => {
+                imageResponse.subImages!.push(url);
+              });
+            }
+  
+            console.log("이미지 업로드 완료", imageResponse);
+
+            
+            const body: IPosting = {
+              title: title,
+              content: detail!,
+              exhibition: exhibition,
+              number: person,
+              openchat: openchat!,
+              what_do: activityData_enum[selectedActivity!],
+              dateTimeSlots: filteredDateList ,
+              mainimg: imageResponse.mainImage,
+              subimg: imageResponse.subImages!
+            }
+
+            const userIdx = +localStorage.getItem('userIdx')!;
+            PostingAPI.postPosting(userIdx, body)
+              .then((res) => {
+                console.log({res});
+              })
+              .catch((e) => {
+                console.error({e});
+              });
+  
+          })
+          .catch((e) => {
+            console.error({e});
+          });
+      }
+      // 이미지 등록
 
        
       alert("게시글이 등록되었습니다.");
       // submit api 추가 필요
-      navigate(-1);
+      // navigate(-1);
     }
     else return;
   };
@@ -233,7 +375,7 @@ const PostPosting = () => {
               >
                 {
                   personCnt.map((person) => {
-                    return (
+                    return ( 
                       <s.PersonOption
                         value={person}
                         key={person}
@@ -250,9 +392,7 @@ const PostPosting = () => {
               <s.DateColumn>관람 희망 날짜</s.DateColumn>
               <s.DateContainer>
                 <s.DateSelectorGrid>
-                  {
-                    dateCnt.map(() => <CalendarComponent />)
-                  }
+                {renderCalendarComponents()}
                   <s.AddDateBtn 
                     src={AddBtn} 
                     alt="add" 
@@ -266,7 +406,7 @@ const PostPosting = () => {
               <s.Column>오픈 채팅방 URL</s.Column>
               <s.OpenChatInput 
                 onChange={onChangeOpenchat}
-                value={openchat}
+                value={openchat!}
               />
               <s.OpenchatGuideBtn 
                 src={OpenchatGuide}
@@ -284,7 +424,7 @@ const PostPosting = () => {
                   activityData_Imoji.map((activity, idx) => 
                     <s.Activity 
                       onClick={() => onClickActivity(idx)}
-                      isSelected={isActivitySelect === idx ? true : false}
+                      isSelected={selectedActivity === idx ? true : false}
                     >{activity}</s.Activity>)
                 }
               </s.ActivityGrid>
@@ -295,11 +435,17 @@ const PostPosting = () => {
               <s.DetailInputWrapper>
                 <s.DetailInput 
                   placeholder={detailPlaceholder}
-                  value={detail}
+                  value={detail!}
                   onChange={onChangeDetail}
                 />
                 <s.DetailLengthChecker>
-                  <s.DetailLengthNum>{detail.length}</s.DetailLengthNum>
+                  <s.DetailLengthNum>
+                    {
+                      detail ?
+                      detail.length :
+                      0
+                    }
+                  </s.DetailLengthNum>
                   <s.DetailLengthNum>/200</s.DetailLengthNum>
                 </s.DetailLengthChecker>
               </s.DetailInputWrapper>

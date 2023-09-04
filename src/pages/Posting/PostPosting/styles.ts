@@ -173,6 +173,7 @@ export const AddDateBtn = styled.img`
   display: flex;
   margin-left: 10px;
   margin-top: 16px;
+  cursor: pointer;
 `;
 
 export const DateSelectorGrid = styled.div`

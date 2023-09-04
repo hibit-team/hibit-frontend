@@ -50,9 +50,9 @@ const PostingAPI = {
     }
   },
 
-  postPosting: async (body: any) => {
+  postPosting: async (member_idx: number ,body: any) => {
     try {
-      const path = `/post/write`;
+      const path = `/post/write/${member_idx}`;
       const response = await HttpClient.post(path, body);
       if (response.status === 200) {
         const data = response.data;

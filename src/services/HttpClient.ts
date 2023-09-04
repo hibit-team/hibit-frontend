@@ -54,7 +54,9 @@ const HttpClient = {
     return response.data;
   },
 
-  post: async (path: string, body?: unknown, headers = {}) => {
+  post: async (path: string, body?: unknown, headers = {
+    "Content-Type": "application/json"
+  }) => {
     const response = await axiosInstance.post(path, JSON.stringify(body), { headers });
     return response.data;
   },
