@@ -61,7 +61,7 @@ const MatchingFilterButton = () => {
           </div>
         </s.FilterButtonWrapper>
       </s.FilterWrapper>
-      {isProfileRegistered === true ? undefined : <GlobalModal />}
+      {isProfileRegistered ? undefined : <GlobalModal />}
     </>
   );
 };
