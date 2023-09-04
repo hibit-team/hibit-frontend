@@ -257,8 +257,6 @@ const PostPosting = () => {
     return true;
   }
 
-
-
   const onClickSubmitBtn = () => {
     if (window.confirm("매칭 게시글을 등록하시겠습니까?")) {
       if (!checkAllInfo()) {
@@ -316,12 +314,9 @@ const PostPosting = () => {
             console.error({e});
           });
       }
-      // 이미지 등록
-
        
       alert("게시글이 등록되었습니다.");
-      // submit api 추가 필요
-      // navigate(-1);
+      navigate(-1);
     }
     else return;
   };

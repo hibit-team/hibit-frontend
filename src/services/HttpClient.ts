@@ -61,7 +61,9 @@ const HttpClient = {
     return response.data;
   },
 
-  put: async (path: string, body?: unknown, headers = {}) => {
+  put: async (path: string, body?: unknown, headers = {
+    "Content-Type": "application/json"
+  }) => {
     const response = await axiosInstance.put(path, body, { headers });
     return response.data;
   },

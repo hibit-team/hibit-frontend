@@ -4,14 +4,7 @@ const PostingAPI = {
   getPostings: async (post_id: number) => {
     try {
       const path = `/post/${post_id}`;
-      const response = await HttpClient.get(path);
-
-      if (response.status === 200) {
-        const data = response.data;
-        return data;
-      } else {
-        console.error('Failed to fetch data: ', response.status);
-      }
+      return await HttpClient.get(path);
     } catch (e) {
       console.error({e});
       return null;
@@ -21,13 +14,15 @@ const PostingAPI = {
   putPosting: async (post_id: number, body: any) => {
     try {
       const path = `/post/${post_id}`;
-      const response = await HttpClient.put(path, body);
-      if (response.status === 200) {
-        const data = response.data;
-        return data;
-      } else {
-        console.error('Failed to fetch data: ', response.status);
-      }
+      await HttpClient.put(path, body)
+        .then((res) => {
+          // console.log({res})
+          return res;
+        })
+        .catch((e) => {
+          console.error({e});
+          return null;
+        });
     } catch (e) {
       console.error({e});
       return null;
@@ -53,13 +48,15 @@ const PostingAPI = {
   postPosting: async (member_idx: number ,body: any) => {
     try {
       const path = `/post/write/${member_idx}`;
-      const response = await HttpClient.post(path, body);
-      if (response.status === 200) {
-        const data = response.data;
-        return data;
-      } else {
-        console.error('Failed to fetch data: ', response.status);
-      }
+      await HttpClient.post(path, body)
+        .then((res) => {
+          // console.log({res})
+          return res;
+        })
+        .catch((e) => {
+          console.error({e});
+          return null;
+        });
     } catch (e) {
       console.error({e});
       return null;

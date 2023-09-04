@@ -68,7 +68,7 @@ function App() {
                 <Route path="/matchPost/:idx" element={<MatchingPostPage />} />
                 <Route path="/others/:userID" element={<OtherProfile />} />
                 <Route path="/post-posting" element={<PostPosting />} />
-                <Route path="/put-posting" element={<PutPosting />} />
+                <Route path="/put-posting/:idx" element={<PutPosting />} />
                 <Route path="/google-callback" element={<GoogleRedirectHandler />} />
                 <Route path="/report/:idx" element={<ReportModal />} />
                 <Route path="/*" element={<NotFound />} />
