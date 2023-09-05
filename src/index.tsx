@@ -5,15 +5,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import "./fonts/font.css";
 import Modal from "react-modal";
+import { RecoilRoot } from 'recoil';
 Modal.setAppElement("#root");
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  // <React.StrictMode>
-    <App />
-  // </React.StrictMode>
+  <React.StrictMode>
+    <RecoilRoot>
+      <App />
+    </RecoilRoot>
+  </React.StrictMode>
 );
 
 reportWebVitals();

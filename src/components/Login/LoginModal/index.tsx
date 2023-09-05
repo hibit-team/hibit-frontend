@@ -53,7 +53,7 @@ const LoginModal = (props: ILoginModalProps) => {
           </s.IntroText>
           <s.LoginBtnWrapper>
             <GoogleLoginButton />
-            <KaKaoLogin />
+            {/* <KaKaoLogin /> */}
           </s.LoginBtnWrapper>
         </s.Bottom>
 

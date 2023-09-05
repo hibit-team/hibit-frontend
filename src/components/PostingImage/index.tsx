@@ -1,11 +1,11 @@
-import { IimgProps } from "../../pages/MyProfile";
+import { IimgProps } from "../../interfaces/Profile/IimgProps";
 import * as s from "./styles";
 import CloseBtn from "../../images/components/Profile/CloseBtn.svg";
 
-const ProfileImage = ({imgURL, isFirst, isEditMode, imgList, setImgList}: IimgProps) => {
+const PostingImage = ({imgURL, isFirst, isEditMode, imgList, setImgList}: IimgProps) => {
   
   const onClickCloseBtn = () => {
-    const newImgList = imgList.filter((item) => item !==imgURL);
+    const newImgList = imgList.filter((item) => item !== imgURL);
     if(newImgList.length === 0) setImgList([]);
     else setImgList(newImgList);
     console.log(newImgList)
@@ -28,4 +28,4 @@ const ProfileImage = ({imgURL, isFirst, isEditMode, imgList, setImgList}: IimgPr
   );
 };
 
-export default ProfileImage;
+export default PostingImage;

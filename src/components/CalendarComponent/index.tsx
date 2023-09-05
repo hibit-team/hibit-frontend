@@ -1,32 +1,61 @@
-import { useState } from "react";
 import * as s from "./styles";
 import { DayPicker } from "react-day-picker";
 import 'react-day-picker/dist/style.css';
 import { format } from "date-fns";
-import AddCalendarIcon from "../../images/components/Posting/AddCalendarIcon.svg";
 import AddCalendarIconGray from "../../images/components/Posting/AddCalendarIconGray.svg";
 
-const CalendarComponent = () => {
-  const [selected, setSelected] = useState<Date>();
+type CalendarComponentProps = {
+  selectedDate: Date | undefined;
+  isCalendarOpen: boolean;
+  isMorning: boolean;
+  onUpdateState: (newState: {
+    selectedDate: Date | undefined;
+    isCalendarOpen: boolean;
+    isMorning: boolean;
+  }) => void;
+};
+
+const CalendarComponent: React.FC<CalendarComponentProps> = ({
+  selectedDate,
+  isCalendarOpen,
+  isMorning,
+  onUpdateState,
+}) => {
+
   let Text = <></>;
-  if(selected) {
-    Text = <>{format(selected, 'PP')}</>
+  if(selectedDate) {
+    Text = <>{format(selectedDate, 'PP')}</>
   }
 
-  const [isOpenCalendar ,setIsOpenCalendar] = useState(false);
   const onClickOpenBtn = () => {
-    setIsOpenCalendar(!isOpenCalendar);
-  };
-  const onClickDate = () => {
-    setIsOpenCalendar(false);
+    onUpdateState({
+      selectedDate,
+      isCalendarOpen: !isCalendarOpen,
+      isMorning,
+    })
   };
 
-  const [isMorning, setIsMorning] = useState<boolean>(true);
+  const onClickDate = () => {
+    onUpdateState({
+      selectedDate,
+      isCalendarOpen: false,
+      isMorning,
+    });
+  };
+
   const onClickMorning = () => {
-    setIsMorning(true);
+    onUpdateState({
+      selectedDate,
+      isCalendarOpen,
+      isMorning: true,
+    });
   };
   const onClickAfternoon = () => {
-    setIsMorning(false);
+    onUpdateState({
+      selectedDate,
+      isCalendarOpen,
+      isMorning: false,
+    });
   };
 
   return (
@@ -41,12 +70,16 @@ const CalendarComponent = () => {
           </s.DateInfoText>
         </s.CalendarInfoWrapper>
         {
-          isOpenCalendar ?
+          isCalendarOpen ?
           <>
             <DayPicker 
               mode="single"
-              selected={selected}
-              onSelect={setSelected}
+              selected={selectedDate}
+              onSelect={(date) => onUpdateState({
+                selectedDate: date,
+                isCalendarOpen,
+                isMorning,
+              })}              
               onDayClick={onClickDate}
             />
             <s.MorningAfternoonWrapper>
