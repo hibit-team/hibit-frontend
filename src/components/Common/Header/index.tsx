@@ -23,7 +23,8 @@ const Header = () => {
   const resetUserIdx = useResetRecoilState(userIdxState);
   const resetIsProfileRegistered = useResetRecoilState(profileRegisteredState);
   
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useRecoilState(LoginModalState);
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
   

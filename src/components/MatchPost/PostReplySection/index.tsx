@@ -67,13 +67,12 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
   if (isError) {
     console.error(`댓글리스트를 불러오지 못했습니다 :  ${error as AxiosError}`);
   }
-  const userLoginInfo =useLoginInfo();
-
+  const userLoginInfo = useLoginInfo()
   return (
     <div css={{ position: 'relative', paddingBottom: 100 }}>
       {/* 유저 댓글입력창 */}
       {/* 3번유저 : b */}
-      <InputReplyWrapper postIDX={postIDX}/>
+      <InputReplyWrapper postIDX={postIDX} userLoginInfo={userLoginInfo} />
       {/* //댓글영역 */}
       <s.ReplySection>
         {replyData?.map(reply => (
@@ -153,7 +152,7 @@ export const InputReplyWrapper = ({ postIDX,userLoginInfo}: { postIDX?: string; 
         <div
           onClick={(e) => {
             e.stopPropagation();
-            if(userLoginInfo?.isLoggedIn){
+            if(userLoginInfo?.isLoggedIn && userLoginInfo?.isProfileRegistered === 1){
                 replyInputMutate({ postIDX, body: { content: textState } });
             }
             else{
@@ -234,6 +233,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, [setIsReplyOptModalOpen, handleClickOutside]);
+  console.log(reply.writer)
   return (
     <div css={{ paddingBottom: 10 }}>
       <s.OriginalReplyWrapper>
@@ -266,7 +266,6 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             <div
               onClick={e => {
                 //댓글 좋아요
-                e.stopPropagation();
                 if (userLoginInfo?.isLoggedIn) {
                   //로그인한 경우만 좋아요가능
                   mutate(reply.idx);

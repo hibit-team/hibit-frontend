@@ -12,11 +12,13 @@ import { LoginModalState } from '../../recoil/atom/LoginModalState';
 import helloSmile from '../../images/components/Main/helloSmile.png'
 import { useNavigate } from 'react-router-dom';
 import { GlobalModalOpenSwitch } from '../../recoil/atom/GlobalModalOpenSwitch';
+import useLoginInfo from '../../hooks/useLoginInfo';
 //글로벌모달(회원가입/프로필등록유도)
 export const GlobalModal = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [loginModalOpen,setLoginModalOpen] = useRecoilState(LoginModalState);
+  const userLoginInfo = useLoginInfo();
   //회원가입유도: (Home)
   const modalText1 = useMemo(()=>([
     '메이트의 추가 사진과 정보를 보려면',
@@ -48,7 +50,12 @@ export const GlobalModal = () => {
     //홈화면
     if( pathName === '/') {
       setModalText(modalText1)
-      setModalIsOpen(true)
+      //홈에서 로그인완료시 모달이 다시 뜨면안됨 로그인값 false일때만 OPEN 
+      //현재 isLoggedIn false에러발생
+      if(!userLoginInfo?.isLoggedIn){
+        setModalIsOpen(true)
+      }
+      else{setModalIsOpen(false)}
     }
     else if (pathName ==='/matching'){
       setModalText(modalText2)

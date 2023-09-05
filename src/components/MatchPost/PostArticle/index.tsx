@@ -59,6 +59,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
   const isLikeStateOn = data?.likeUsers?.find(item => {
     return item.idx === userIdxInfo;
   });
+  console.log(useLoginInfo())
   useEffect(() => {
     return () => {
       //컴포넌트 언마운트시 모달 clear해주기
@@ -232,7 +233,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 width: 250px;
                 height: 320px;
                 background-image: url(${data?.mainimg});
-                background-size: cover;
+                background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
               `}
@@ -242,7 +243,17 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 width: 250px;
                 height: 320px;
                 background-image: url(${data?.subimg[0]});
-                background-size: cover;
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+              `}
+            ></div>
+              <div
+              css={css`
+                width: 250px;
+                height: 320px;
+                background-image: url(${data?.subimg[1]});
+                background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
               `}
@@ -530,10 +541,13 @@ export const OptionComponent = ({
   const { mutate } = useDeleteReplyMutation(replyIDX);
   const navigate = useNavigate();
   const postIDX = useRecoilValue(PostIDXAtom);
+  console.log(reply?.writerIdx)
+  console.log(reReply?.writerIdx)
   return (
     <div css={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {/* //유저 식별 API인터페이스 */}
-      {userIdxInfo === reply?.writerIdx && userIdxInfo === reReply?.writerIdx ? (
+      {/* 책갈피1*/}
+      {(userIdxInfo === reply?.writerIdx) || (userIdxInfo === reReply?.writerIdx) ? (
         options.map(opt => (
           <button
             onClick={() => {
