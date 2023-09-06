@@ -24,10 +24,9 @@ import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchSt
 import { useNavigate } from 'react-router-dom';
 import { PostIDXAtom } from '../../../recoil/atom/PostIDXAtom';
 import useLoginInfo from '../../../hooks/useLoginInfo';
-import userDefaultImage from '../../../images/components/MatchPost/profileDefault.svg'
-export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
-  const userIdxInfo = useLoginInfo()?.userIdx;
-  const userLoginInfo = useLoginInfo();
+import { ILoginInfo } from '../../../hooks/useLoginInfo';
+export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { userLoginInfo?: ILoginInfo; data?: IMatchingPostPage; postIDX?: string | undefined }) {
+  const userIdxInfo = userLoginInfo?.userIdx;
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   const [isInviteModalOpen, setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
@@ -146,7 +145,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
           >
             {data?.time}
           </div>
-          <img
+          { userLoginInfo?.isLoggedIn ? <img
             onClick={e => {
               e.stopPropagation();
               if (isPurpleKebapOptionOpen) setIsPurpleKebapOptionOpen(false);
@@ -160,7 +159,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             }}
             src={PurpleKebap}
             alt="ellipsis"
-          />
+          /> : undefined }
           {isPurpleKebapOptionOpen && (
             <div
               ref={ref}

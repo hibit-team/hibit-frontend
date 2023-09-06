@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import COLORS from '../../../assets/color';
+import { ILoginInfo } from '../../../hooks/useLoginInfo';
 
 export const InputReplyWrapperCss = css({
   boxSizing: 'border-box',
@@ -44,6 +45,7 @@ export const OriginalReplyModifiedTextCss = css({
 });
 
 export const SecondaryReplyText = styled.div({
+  userSelect:'none',
   width: 790,
   color: COLORS.Gray3,
   fontSize: 20,
@@ -66,6 +68,7 @@ export const OriginalReplyWrapper = styled.div({
 export const SecondaryReplyWrapper = styled.div<{
   isSecondModifyOn: boolean;
 }>(props =>({
+  userSelect:'none',
   boxSizing: 'border-box',
   margin: '24px 24px 16px 24px',
   position: 'relative',

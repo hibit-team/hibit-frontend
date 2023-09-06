@@ -4,7 +4,6 @@ import * as s from './styles';
 import COLORS from '../../../assets/color';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import PEPE from '../../../images/components/MatchPost/pepe.jpeg';
 import EmptyRoundLike from '../../../images/components/MatchPost/EmptyRoundLike.png';
 import YellowRoundLike from '../../../images/components/MatchPost/YellowRoundLike.svg';
 import ReplyArrow from '../../../images/components/MatchPost/replyArrow.svg';
@@ -20,7 +19,7 @@ import { usePostReplyLikeMutation } from '../../../hooks/MatchingPost/usePostRep
 import { motion } from 'framer-motion';
 import useLoginInfo from '../../../hooks/useLoginInfo';
 import { ILoginInfo } from '../../../hooks/useLoginInfo';
-import userDefaultImage from '../../../images/components/MatchPost/profileDefault.svg'
+import userDefaultImage from '../../../images/components/MatchPost/profileDefault.svg';
 //좋아요한 유저들
 export interface ILikeUsers {
   idx: number;
@@ -67,7 +66,7 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
   if (isError) {
     console.error(`댓글리스트를 불러오지 못했습니다 :  ${error as AxiosError}`);
   }
-  const userLoginInfo = useLoginInfo()
+  const userLoginInfo = useLoginInfo();
   return (
     <div css={{ position: 'relative', paddingBottom: 100 }}>
       {/* 유저 댓글입력창 */}
@@ -83,12 +82,12 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
   );
 }
 //댓글입력창
-export const InputReplyWrapper = ({ postIDX,userLoginInfo}: { postIDX?: string; userLoginInfo?: ILoginInfo; }) => {
+export const InputReplyWrapper = ({ postIDX, userLoginInfo }: { postIDX?: string; userLoginInfo?: ILoginInfo }) => {
   const [textState, setTextState] = useState('');
   const textRef = useRef<HTMLTextAreaElement>(null);
   //댓글입력api
   const postMatchingReplyInput = async (params: IMutationParams) => {
-    const { postIDX,body } = params;
+    const { postIDX, body } = params;
     try {
       const path = `comment/${postIDX}`;
       const response = await HttpClient.post(path, body, { 'Content-Type': 'application/json;charset=utf-8' });
@@ -101,7 +100,7 @@ export const InputReplyWrapper = ({ postIDX,userLoginInfo}: { postIDX?: string; 
   };
   if (textState.length > 250) setTextState(prev => prev.slice(0, 250));
   const queryClient = useQueryClient();
-  const { mutate : replyInputMutate } = useMutation<string, AxiosError, IMutationParams>(postMatchingReplyInput, {
+  const { mutate: replyInputMutate } = useMutation<string, AxiosError, IMutationParams>(postMatchingReplyInput, {
     onMutate: () => {
       queryClient.cancelQueries();
     },
@@ -117,6 +116,7 @@ export const InputReplyWrapper = ({ postIDX,userLoginInfo}: { postIDX?: string; 
   });
   return (
     <div css={s.InputReplyWrapperCss}>
+      {/* 로그인상태값으로 프로필 이미지 가져오기 */}
       <ImageBox width={32} height={32} source={userDefaultImage} />
       <textarea
         onChange={e => {
@@ -150,13 +150,13 @@ export const InputReplyWrapper = ({ postIDX,userLoginInfo}: { postIDX?: string; 
       <div css={{ position: 'absolute', left: '78.5%', top: '78%', color: COLORS.Gray3 }}>{textState.length} / 250</div>
       <div css={{ gridColumn: '2', display: 'flex', justifyContent: 'flex-end', position: 'relative', right: 0, top: 12 }}>
         <div
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
-            if(userLoginInfo?.isLoggedIn && userLoginInfo?.isProfileRegistered === 1){
-                replyInputMutate({ postIDX, body: { content: textState } });
-            }
-            else{
-              alert('로그인이 필요합니다.')
+            if (userLoginInfo?.isLoggedIn && userLoginInfo?.isProfileRegistered === 1) {
+              if(textState === '') { alert('댓글 내용을 입력해 주세요.')}
+              else{ replyInputMutate({ postIDX, body: { content: textState } })};
+            } else {
+              alert('로그인이 필요합니다.');
             }
           }}
         >
@@ -233,12 +233,12 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, [setIsReplyOptModalOpen, handleClickOutside]);
-  console.log(reply.writer)
+  console.log(reply.writer);
   return (
     <div css={{ paddingBottom: 10 }}>
       <s.OriginalReplyWrapper>
         <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 30px', justifyContent: 'space-between' }}>
-          <ImageBox width={32} height={32} source={reply.writerImg} />
+          <ImageBox width={32} height={32} source={ reply.writerImg = userDefaultImage } />
           <div css={{ display: 'flex', flex: '0 1 187px' }}>
             <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
               {/* 닉네임 */}
@@ -250,7 +250,6 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             </div>
           </div>
           {/* LIKE BUTTON */}
-
           <div css={{ display: 'flex', flex: '1 1 255px', alignItems: 'center', justifyContent: 'flex-end' }}>
             <div
               onClick={e => {
@@ -279,7 +278,10 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             {/* REPLY BUTTON */}
             <div
               onClick={() => {
-                setIsDaetgulOpen(!isDaetgulOpen);
+                if(userLoginInfo?.isLoggedIn === true) {
+                  setIsDaetgulOpen(!isDaetgulOpen);
+                }
+                else { alert('로그인이 필요합니다.')}
               }}
               css={{
                 margin: '0 6px 0 12px',
@@ -299,21 +301,23 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
               <div css={{ userSelect: 'none', marginLeft: 4 }}>답글</div>
             </div>
             {/* KEBAP BUTTON */}
-            <img
-              onClick={e => {
-                e.stopPropagation();
-                if (isReplyOptModalOpen) setIsReplyOptModalOpen(false);
-                else {
-                  setIsReplyOptModalOpen(true);
-                }
-              }}
-              css={{
-                cursor: 'pointer',
-                margin: '0 6px',
-              }}
-              src={PurpleKebap}
-              alt="purple-kebap"
-            />
+            {userLoginInfo?.isLoggedIn === true ? (
+              <img
+                onClick={e => {
+                  e.stopPropagation();
+                  if (isReplyOptModalOpen) setIsReplyOptModalOpen(false);
+                  else {
+                    setIsReplyOptModalOpen(true);
+                  }
+                }}
+                css={{
+                  cursor: 'pointer',
+                  margin: '0 6px',
+                }}
+                src={PurpleKebap}
+                alt="purple-kebap"
+              />
+            ) : undefined}
           </div>
           {/* 게시글OPTION */}
           {isReplyOptModalOpen && (
@@ -365,8 +369,9 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
         {isDaetgulOpen && (
           <div>
             <SecondaryReplyInputComponent
+              userLoginInfo={userLoginInfo}
               replyIDX={reply.idx}
-              userIDX={3}
+              userIDX={userLoginInfo.userIdx}
               isDaetgulOpen={isDaetgulOpen}
               setIsDaetgulOpen={setIsDaetgulOpen}
             ></SecondaryReplyInputComponent>
@@ -391,7 +396,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             marginLeft: 32,
           }}
         >
-          {isOpen && reply.childComments.length > 3 ? <p css={{}}>접기</p> : `> 답글 +${reply.childComments.length - 3} 개`}
+          {isOpen && reply.childComments.length > 3 ? <p css={{userSelect:'none'}}>접기</p> : <p css={{userSelect:'none'}}>&gt; 답글 +{reply.childComments.length - 3} 개</p>}
         </span>
       ) : undefined}
       {reply.childComments.map((reReply, lineNumber) => {
@@ -411,13 +416,15 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
 
 // 대댓글입력창(input)컴포넌트
 export const SecondaryReplyInputComponent = ({
+  userLoginInfo,
   replyIDX,
   userIDX,
   isDaetgulOpen,
   setIsDaetgulOpen,
 }: {
+  userLoginInfo: ILoginInfo;
   replyIDX: number | undefined;
-  userIDX: number | undefined;
+  userIDX: number | null;
   isDaetgulOpen: boolean;
   setIsDaetgulOpen: React.Dispatch<SetStateAction<boolean>>;
 }) => {
@@ -460,7 +467,7 @@ export const SecondaryReplyInputComponent = ({
       if (currentTextAreaRef) currentTextAreaRef.value = '';
     };
   }, [isDaetgulOpen]);
-  //대댓글작성mutation (임시유저3 = b)
+  //대댓글작성mutation
   const { mutate } = usePostSecondaryReplyInputMutation({ replyIDX, userIDX, body: { content: secondaryReplyText } });
   return (
     <div
@@ -503,9 +510,13 @@ export const SecondaryReplyInputComponent = ({
         }}
       ></textarea>
       <div
-        onClick={() => {
-          setIsDaetgulOpen(false);
-          mutate({ replyIDX, userIDX, body: { content: secondaryReplyText } });
+        onClick={e => {
+          e.stopPropagation();
+          if (userLoginInfo?.isLoggedIn === true) {
+            setIsDaetgulOpen(false);
+            mutate({ replyIDX, userIDX, body: { content: secondaryReplyText } });
+          }
+          else { alert('로그인이 필요합니다')}
         }}
         css={{ display: 'flex', alignItems: 'flex-end' }}
       >
@@ -685,7 +696,7 @@ export const SecondaryReplyComponent = ({
       <s.SecondaryReplyWrapper isSecondModifyOn={isSecondModifyOn}>
         <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 15px', justifyContent: 'space-between' }}>
           <img css={{ marginRight: 12 }} src={EmptyReplyArrow} alt="reply-arrow-empty" />
-          <ImageBox width={32} height={32} source={reReply.writerImg} />
+          <ImageBox width={32} height={32} source={reReply.writerImg = userDefaultImage} />
           <div css={{ display: 'flex', flex: '0 1 187px' }}>
             <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
               {/* 닉네임 */}
@@ -719,22 +730,24 @@ export const SecondaryReplyComponent = ({
             >
               {isInclude ? <ReplyEmptyRoundLikeButton isReplyLikeOn={true} /> : <ReplyEmptyRoundLikeButton isReplyLikeOn={false} />}
             </div>
-            <img
-              onClick={e => {
-                e.stopPropagation();
-                if (isReplyOptModalOpen) {
-                  setIsReplyOptModalOpen(false);
-                } else {
-                  setIsReplyOptModalOpen(true);
-                }
-              }}
-              css={{
-                cursor: 'pointer',
-                margin: '0 0 0px 12px ',
-              }}
-              src={PurpleKebap}
-              alt="purple-kebap"
-            />
+            {userLoginInfo?.isLoggedIn === true ? (
+              <img
+                onClick={e => {
+                  e.stopPropagation();
+                  if (isReplyOptModalOpen) {
+                    setIsReplyOptModalOpen(false);
+                  } else {
+                    setIsReplyOptModalOpen(true);
+                  }
+                }}
+                css={{
+                  cursor: 'pointer',
+                  margin: '0 0 0px 12px ',
+                }}
+                src={PurpleKebap}
+                alt="purple-kebap"
+              />
+            ) : undefined}
           </div>
           {isReplyOptModalOpen && (
             <div
