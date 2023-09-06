@@ -14,6 +14,7 @@ import MyprofileAPI from "../../../api/MyprofileAPI";
 import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
+import useLoginInfo from "../../../hooks/useLoginInfo";
 
 const PostMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -26,6 +27,18 @@ const PostMyProfile = () => {
     userIdx = +localStorage.getItem("userIdx")!;
   }
 
+  const isProfileRegistered = useLoginInfo().isProfileRegistered;
+  useEffect(() => {
+    if (!userIdx) {
+      alert("로그인을 먼저 진행해 주세요.");
+      navigate("/");
+    } 
+    if (isProfileRegistered === 1) {
+      console.log("프로필정보가 등록되어 있어 put-profile로 이동")
+      navigate("/put-profile");
+    }
+  }, [userIdx]);
+
   /* 필수 정보 */
   const [nickname, setNickname] = useState<string>("");
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,12 +46,17 @@ const PostMyProfile = () => {
   }; 
   const [isNicknameDuplicated, setIsNicknameDuplicated] = useState<boolean>(true);
   const onClickDuplicateNickname = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("중복 확인 API");
     if (nickname) {
       MyprofileAPI.checkIsUniqueNickname(nickname)
         .then((res) => {
-          if (res.unique === "true") setIsNicknameDuplicated(false);
-          else setIsNicknameDuplicated(true);
+          if (res.unique) {
+            alert("사용 가능한 닉네임입니다.");
+            setIsNicknameDuplicated(false);
+          }
+          else {
+            alert("이미 존재하는 닉네임입니다.");
+            setIsNicknameDuplicated(true);
+          }
         })
         .catch((e) => {
           console.error({e});
@@ -476,10 +494,10 @@ const PostMyProfile = () => {
         </s.OptionalInfoContainer>
         <s.ButtonContainer>
           <s.CancelBtn 
-            isEditMode={isEditMode}
+            isEditMode={true}
             onClick={onClickCancelBtn}>취소</s.CancelBtn>
           <s.SaveBtn
-           isEditMode={isEditMode}
+           isEditMode={true}
            onClick={onClickSendBtn}>저장하기</s.SaveBtn>
         </s.ButtonContainer>
       </s.Wrapper>
