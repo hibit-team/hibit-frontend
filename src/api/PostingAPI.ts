@@ -45,9 +45,9 @@ const PostingAPI = {
     }
   },
 
-  postPosting: async (member_idx: number ,body: any) => {
+  postPosting: async (body: any) => {
     try {
-      const path = `/post/write/${member_idx}`;
+      const path = `/post/write`;
       await HttpClient.post(path, body)
         .then((res) => {
           // console.log({res})
