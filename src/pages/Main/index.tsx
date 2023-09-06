@@ -30,7 +30,7 @@ const MainPage = () => {
     return (
       <>    
         <MoHeaderComponent onToggle={onToggle}></MoHeaderComponent>
-        { isLoggedIn === false ? <GlobalModal/> : undefined }
+        { isLoggedIn === true ? undefined : <GlobalModal/> }
         <MobileTab></MobileTab>
         <MobileSlider></MobileSlider>
       </>

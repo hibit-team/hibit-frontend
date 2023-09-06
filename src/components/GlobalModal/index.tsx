@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import * as s from './styles';
-import { useState, useEffect ,useMemo} from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Modal from 'react-modal';
 import { css } from '@emotion/react';
 import COLORS from '../../assets/color';
@@ -9,7 +9,7 @@ import { GlobalModalTextState } from '../../recoil/atom/GlobalModalTextState';
 import { useRecoilState } from 'recoil';
 import { useLocation } from 'react-router-dom';
 import { LoginModalState } from '../../recoil/atom/LoginModalState';
-import helloSmile from '../../images/components/Main/helloSmile.png'
+import helloSmile from '../../images/components/Main/helloSmile.png';
 import { useNavigate } from 'react-router-dom';
 import { GlobalModalOpenSwitch } from '../../recoil/atom/GlobalModalOpenSwitch';
 import useLoginInfo from '../../hooks/useLoginInfo';
@@ -17,57 +17,62 @@ import useLoginInfo from '../../hooks/useLoginInfo';
 export const GlobalModal = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const [loginModalOpen,setLoginModalOpen] = useRecoilState(LoginModalState);
+  const [loginModalOpen, setLoginModalOpen] = useRecoilState(LoginModalState);
   const userLoginInfo = useLoginInfo();
   //회원가입유도: (Home)
-  const modalText1 = useMemo(()=>([
-    '메이트의 추가 사진과 정보를 보려면',
-    '회원가입이 필요해요.',
-    '히빗의 회원이 되어 매칭 서비스를 이용해보세요!',
-    '회원가입 하러가기',
-  ]),[])
+  const modalText1 = useMemo(
+    () => ['메이트의 추가 사진과 정보를 보려면', '회원가입이 필요해요.', '히빗의 회원이 되어 매칭 서비스를 이용해보세요!', '회원가입 하러가기'],
+    []
+  );
   //프로필등록유도1 (게시글작성버튼 클릭)
-  const modalText2 = useMemo(()=>([
-    '회원가입 완료!',
-    '지금프로필을 등록하러 가볼까요?',
-    '프로필을 완성하면 메이트를 모집하고 댓글을 작성 할 수 있어요!',
-    '내 프로필 등록하기',
-  ]),[])
+  const modalText2 = useMemo(
+    () => [
+      '회원가입 완료!',
+      '지금프로필을 등록하러 가볼까요?',
+      '프로필을 완성하면 메이트를 모집하고 게시글을 작성 할 수 있어요!',
+      '내 프로필 등록하기',
+    ],
+    []
+  );
 
   //프로필등록유도2 (타인프로필)
-  const modalText3 = useMemo(()=>( [
-    '회원가입이 완료된 상태입니다!',
-    '지금프로필을 등록하러 가볼까요?',
-    '프로필을 완성하면 메이트의 추가 사진과 정보를 확인할 수 있어요!',
-    '내 프로필 등록하기',
-  ]),[])
-  
+  const modalText3 = useMemo(
+    () => [
+      '회원가입이 완료된 상태입니다!',
+      '지금프로필을 등록하러 가볼까요?',
+      '프로필을 완성하면 메이트의 추가 사진과 정보를 확인할 수 있어요!',
+      '내 프로필 등록하기',
+    ],
+    []
+  );
+
   //유저로그인 상태값으로부터 회원/프로필 유무 boolean값으로 받아서 setState
   const [modalText, setModalText] = useRecoilState<string[]>(GlobalModalTextState);
-
   // 모달텍스트 셋팅 & 언마운트시 모달클리어
   useEffect(() => {
     //홈화면
-    if( pathName === '/') {
-      setModalText(modalText1)
-      //홈에서 로그인완료시 모달이 다시 뜨면안됨 로그인값 false일때만 OPEN 
-      //현재 isLoggedIn false에러발생
-      if(!userLoginInfo?.isLoggedIn){
-        setModalIsOpen(true)
+    if (pathName === '/') {
+      if (modalText[0] !== modalText1[0]) setModalText(modalText1);
+      //이미 로그인한 경우 모달 Close
+      if (userLoginInfo && userLoginInfo.isLoggedIn === true) {
+        setModalIsOpen(false);
+      } else if (userLoginInfo.isLoggedIn) {
+        setModalIsOpen(true);
       }
-      else{setModalIsOpen(false)}
-    }
-    else if (pathName ==='/matching'){
-      setModalText(modalText2)
+    } else if (pathName === '/matching') {
+      if (modalText[0] !== modalText2[0]) setModalText(modalText2);
     }
     //타인프로필페이지
-    else{
-      setModalIsOpen(true)
-      setModalText(modalText3)
+    else {
+      if (modalText[0] !== modalText3[0]) setModalText(modalText3);
+      if (userLoginInfo && userLoginInfo.isProfileRegistered === 1) {
+        setModalIsOpen(false);
+      } else if (userLoginInfo.isLoggedIn === false || userLoginInfo.isProfileRegistered === 0) {
+        // 로그인하지 않거나  프로필 미등록시에
+        setModalIsOpen(true);
+      }
     }
-    
   }, [modalText]);
-
 
   const pathName = useLocation().pathname;
 
@@ -106,7 +111,7 @@ export const GlobalModal = () => {
         <s.ModalHeader>
           <div css={{ userSelect: 'none', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             Say "Hi", a 'bit' slowly.
-            <img src={helloSmile} css={{ position: 'relative', left: 10, top: 2 }} alt="helloSmile"/>
+            <img src={helloSmile} css={{ position: 'relative', left: 10, top: 2 }} alt="helloSmile" />
           </div>
           <p
             onClick={e => {
@@ -139,8 +144,8 @@ export const GlobalModal = () => {
               margin: '20px 0 36px 0',
               color: COLORS.Gray3,
               fontSize: '1.25em',
-              '@media (max-width: 768px)':{
-                fontSize : '1em'
+              '@media (max-width: 768px)': {
+                fontSize: '1em',
               },
               fontWeight: 500,
             }}
@@ -148,18 +153,24 @@ export const GlobalModal = () => {
             {modalText[2]}
           </div>
           <div
-            onClick={(e)=>{
+            onClick={e => {
               e.stopPropagation();
               //홈화면에서 초기 비회원 유저의 초기 회원 유도모달이면
-              if(modalText[3] === '회원가입 하러가기' ) {
+              if (modalText[3] === '회원가입 하러가기') {
                 setModalIsOpen(false);
                 setLoginModalOpen(true);
               }
-              if(modalText[3] === '내 프로필 등록하기') {
+              if (modalText[3] === '내 프로필 등록하기') {
                 setModalIsOpen(false);
-                navigate('/post-posting');
+                if (userLoginInfo.isLoggedIn === true) {
+                  navigate('/post-posting');
+                }
+                else {
+                  alert('로그인이 필요합니다.');
+                  navigate('/');
+                  setLoginModalOpen(true);
+                }
               }
-
             }}
             css={{
               cursor: 'pointer',
