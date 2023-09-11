@@ -49,7 +49,11 @@ const MatchingFilterButton = () => {
                 alert('비회원은 게시글을 작성할 수 없습니다.');
                 return;
               }
-              if (isProfileRegistered) navigate('/post-posting');
+              // 프로필 등록유저일 경우
+              if (isProfileRegistered === 1) {
+                navigate('/post-posting');
+              }
+              // 프로필 미등록시 유도모달 오픈
               else {
                 setModalIsOpen(true);
               }
@@ -61,7 +65,7 @@ const MatchingFilterButton = () => {
           </div>
         </s.FilterButtonWrapper>
       </s.FilterWrapper>
-      {isProfileRegistered ? undefined : <GlobalModal />}
+      {isProfileRegistered === 1 ? undefined : <GlobalModal />}
     </>
   );
 };

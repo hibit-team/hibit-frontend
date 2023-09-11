@@ -21,6 +21,5 @@ export const useGetInviteModalList =(postIDX:string|undefined)=>{
     return useQuery<IInvitationProps[], AxiosError,IInvitationProps[],string[]>(['invitation-list'], invitationQueryFn, {
     staleTime: 1000 * 10,
     refetchOnWindowFocus: false,
-    retry: 2,
   });
 }

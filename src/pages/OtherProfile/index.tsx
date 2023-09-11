@@ -12,10 +12,8 @@ import { Global } from "@emotion/react";
 const OtherProfile = () => {
   const idParams = useParams();
   const userID = idParams.userID;
-  // console.log(userID);
 
-  // 프로필 등록 or 미등록 유저에 따른 조건부 렌더링
-  const [isProfileRegistered, setIsProfileRegistered] = useState(true);
+  const userLoginInfo = useLoginInfo();
 
   // 타인 선택정보 공개 여부에 따른 조건부 렌더링
   const [isAddressPrivate, setIsAddressPrivate] = useState(true);
@@ -100,7 +98,7 @@ const OtherProfile = () => {
 
               </s.NotRegisterContainer>
 
-              <s.ProfileContainer isRegistered={isProfileRegistered ? isProfileRegistered : false }>
+              <s.ProfileContainer isRegistered={userLoginInfo?.isProfileRegistered === 1 ? true : false }>
                 <s.TopInfoContainer>
                   <s.CarouselWrapper>
                     <ImageCarousel />
@@ -183,7 +181,7 @@ const OtherProfile = () => {
           )
         }
       </s.Wrapper>
-      { isProfileRegistered !== false ? <GlobalModal/> : undefined }
+      { userLoginInfo?.isProfileRegistered === 1 ? undefined : <GlobalModal/> }
     </LayoutTemplate>
   )
 };

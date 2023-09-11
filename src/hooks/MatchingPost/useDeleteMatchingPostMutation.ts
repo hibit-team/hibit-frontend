@@ -33,7 +33,5 @@ export const useDeleteMatchingPostMutation = (postIDX: string | undefined) => {
       navigate('/matching')
       return;
     },
-    retry: 3,
-    retryDelay:3000,
   })
 }

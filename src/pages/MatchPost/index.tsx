@@ -10,6 +10,7 @@ import { AxiosError } from 'axios';
 import InviteModal from '../../components/MatchPost/InviteModal';
 import { PostIDXAtom } from '../../recoil/atom/PostIDXAtom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
+import useLoginInfo from '../../hooks/useLoginInfo';
 export interface ILikeUsers {
   idx: number;
   id: string;
@@ -37,6 +38,7 @@ export interface IMatchingPostPage {
 }
 
 export default function MatchingPostPage() {
+  const userLoginInfo = useLoginInfo();
   const navigate = useNavigate();
   //게시글정보
   const { idx } = useParams();
@@ -75,7 +77,7 @@ export default function MatchingPostPage() {
       <LayoutTemplate>
         <s.Wrapper>
           <MatchPostLabel postIDX={idx} data={data}></MatchPostLabel>
-          <MatchPostArticle postIDX={idx} data={data}></MatchPostArticle>
+          <MatchPostArticle userLoginInfo={userLoginInfo} postIDX={idx} data={data}></MatchPostArticle>
           <InviteModal postIDX={idx}></InviteModal>
         </s.Wrapper>
       </LayoutTemplate>

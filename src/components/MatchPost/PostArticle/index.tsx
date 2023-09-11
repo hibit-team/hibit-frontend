@@ -24,13 +24,13 @@ import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchSt
 import { useNavigate } from 'react-router-dom';
 import { PostIDXAtom } from '../../../recoil/atom/PostIDXAtom';
 import useLoginInfo from '../../../hooks/useLoginInfo';
-import userDefaultImage from '../../../images/components/MatchPost/profileDefault.svg'
-export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPostPage; postIDX?: string | undefined }) {
-  const userIdxInfo = useLoginInfo()?.userIdx;
-  const userLoginInfo = useLoginInfo();
+import { ILoginInfo } from '../../../hooks/useLoginInfo';
+export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { userLoginInfo?: ILoginInfo; data?: IMatchingPostPage; postIDX?: string | undefined }) {
+  const userIdxInfo = userLoginInfo?.userIdx;
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   const [isInviteModalOpen, setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
+  const navigate = useNavigate();
   const settings = {
     dots: true,
     infinite: true,
@@ -99,21 +99,25 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             {data?.title}
           </div>
           <div
+            onClick={()=>{
+              navigate(`/others/:${data?.writerIdx}`)
+              window.scrollTo(0, 0)
+            }}
             css={{
               boxSizing: 'border-box',
               width: 35,
               height: 35,
               borderRadius: '50%',
               overflow: 'hidden',
+              position: 'relative',
+              bottom:3,
+              cursor:'pointer',
             }}
           >
             <img
               css={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'fill',
-                position: 'relative',
-                bottom: 3,
               }}
               src={data?.writerImg}
               alt="user-img"
@@ -145,7 +149,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
           >
             {data?.time}
           </div>
-          <img
+          { userLoginInfo?.isLoggedIn ? <img
             onClick={e => {
               e.stopPropagation();
               if (isPurpleKebapOptionOpen) setIsPurpleKebapOptionOpen(false);
@@ -159,7 +163,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
             }}
             src={PurpleKebap}
             alt="ellipsis"
-          />
+          /> : undefined }
           {isPurpleKebapOptionOpen && (
             <div
               ref={ref}
@@ -232,7 +236,7 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 width: 250px;
                 height: 320px;
                 background-image: url(${data?.mainimg});
-                background-size: cover;
+                background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
               `}
@@ -242,7 +246,17 @@ export default function MatchPostArticle({ data, postIDX }: { data?: IMatchingPo
                 width: 250px;
                 height: 320px;
                 background-image: url(${data?.subimg[0]});
-                background-size: cover;
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+              `}
+            ></div>
+              <div
+              css={css`
+                width: 250px;
+                height: 320px;
+                background-image: url(${data?.subimg[1]});
+                background-size: contain;
                 background-position: center;
                 background-repeat: no-repeat;
               `}
@@ -533,7 +547,8 @@ export const OptionComponent = ({
   return (
     <div css={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {/* //유저 식별 API인터페이스 */}
-      {userIdxInfo === reply?.writerIdx && userIdxInfo === reReply?.writerIdx ? (
+      {/* 책갈피1*/}
+      {(userIdxInfo === reply?.writerIdx) || (userIdxInfo === reReply?.writerIdx) ? (
         options.map(opt => (
           <button
             onClick={() => {
