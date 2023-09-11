@@ -20,6 +20,7 @@ import { motion } from 'framer-motion';
 import useLoginInfo from '../../../hooks/useLoginInfo';
 import { ILoginInfo } from '../../../hooks/useLoginInfo';
 import userDefaultImage from '../../../images/components/MatchPost/profileDefault.svg';
+import { useNavigate } from 'react-router-dom';
 //좋아요한 유저들
 export interface ILikeUsers {
   idx: number;
@@ -70,7 +71,6 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
   return (
     <div css={{ position: 'relative', paddingBottom: 100 }}>
       {/* 유저 댓글입력창 */}
-      {/* 3번유저 : b */}
       <InputReplyWrapper postIDX={postIDX} userLoginInfo={userLoginInfo} />
       {/* //댓글영역 */}
       <s.ReplySection>
@@ -100,6 +100,7 @@ export const InputReplyWrapper = ({ postIDX, userLoginInfo }: { postIDX?: string
   };
   if (textState.length > 250) setTextState(prev => prev.slice(0, 250));
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { mutate: replyInputMutate } = useMutation<string, AxiosError, IMutationParams>(postMatchingReplyInput, {
     onMutate: () => {
       queryClient.cancelQueries();
@@ -117,7 +118,12 @@ export const InputReplyWrapper = ({ postIDX, userLoginInfo }: { postIDX?: string
   return (
     <div css={s.InputReplyWrapperCss}>
       {/* 로그인상태값으로 프로필 이미지 가져오기 */}
-      <ImageBox width={32} height={32} source={userDefaultImage} />
+      <div css={{ cursor:'pointer' }} onClick={()=>{
+        navigate(`/others/:${userLoginInfo?.userIdx}`)
+        window.scrollTo(0,0)
+      }}>
+        <ImageBox width={32} height={32} source={userDefaultImage} />
+      </div>
       <textarea
         onChange={e => {
           setTextState(e.target.value);
@@ -152,11 +158,19 @@ export const InputReplyWrapper = ({ postIDX, userLoginInfo }: { postIDX?: string
         <div
           onClick={e => {
             e.stopPropagation();
-            if (userLoginInfo?.isLoggedIn && userLoginInfo?.isProfileRegistered === 1) {
-              if(textState === '') { alert('댓글 내용을 입력해 주세요.')}
-              else{ replyInputMutate({ postIDX, body: { content: textState } })};
-            } else {
+            // 로그인 + 프로필등록 완료시에 댓글작성 OK
+            if (userLoginInfo?.isLoggedIn === false ){
               alert('로그인이 필요합니다.');
+            }
+            else if (userLoginInfo?.isLoggedIn && userLoginInfo?.isProfileRegistered === 0){
+              alert('댓글 작성시 프로필을 등록이 필요합니다.')
+            }
+            else if (userLoginInfo?.isLoggedIn && userLoginInfo?.isProfileRegistered === 1) {
+              if (textState === '') {
+                alert('댓글 내용을 입력해 주세요.');
+              } else {
+                replyInputMutate({ postIDX, body: { content: textState } });
+              }
             }
           }}
         >
@@ -213,7 +227,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   });
   // 대댓글 unfold ==true면 펼치기
   const [isOpen, setIsOpen] = useState(false);
-
+  const navigate = useNavigate();
   //(대)댓글 옵션컴포넌트 외부클릭시 꺼주기
   const ref = useRef<HTMLDivElement>(null);
   const handleClickOutside = useCallback(
@@ -233,13 +247,17 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, [setIsReplyOptModalOpen, handleClickOutside]);
-  console.log(reply.writer);
   return (
     <div css={{ paddingBottom: 10 }}>
       <s.OriginalReplyWrapper>
         <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 30px', justifyContent: 'space-between' }}>
-          <ImageBox width={32} height={32} source={ reply.writerImg = userDefaultImage } />
-          <div css={{ display: 'flex', flex: '0 1 187px' }}>
+          <div css={{ cursor:'pointer' }} onClick={()=>{
+        navigate(`/others/:${reply?.writerIdx}`)
+        window.scrollTo(0, 0)
+        }}>
+          <ImageBox width={32} height={32} source={(reply.writerImg = userDefaultImage)} />
+        </div>
+          <div css={{ display: 'flex', flex: '0 1 auto' }}>
             <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
               {/* 닉네임 */}
               {reply.writer}
@@ -278,10 +296,11 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             {/* REPLY BUTTON */}
             <div
               onClick={() => {
-                if(userLoginInfo?.isLoggedIn === true) {
+                if (userLoginInfo?.isLoggedIn === true) {
                   setIsDaetgulOpen(!isDaetgulOpen);
+                } else {
+                  alert('로그인이 필요합니다.');
                 }
-                else { alert('로그인이 필요합니다.')}
               }}
               css={{
                 margin: '0 6px 0 12px',
@@ -396,7 +415,11 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             marginLeft: 32,
           }}
         >
-          {isOpen && reply.childComments.length > 3 ? <p css={{userSelect:'none'}}>접기</p> : <p css={{userSelect:'none'}}>&gt; 답글 +{reply.childComments.length - 3} 개</p>}
+          {isOpen && reply.childComments.length > 3 ? (
+            <p css={{ userSelect: 'none' }}>접기</p>
+          ) : (
+            <p css={{ userSelect: 'none' }}>&gt; 답글 +{reply.childComments.length - 3} 개</p>
+          )}
         </span>
       ) : undefined}
       {reply.childComments.map((reReply, lineNumber) => {
@@ -515,8 +538,9 @@ export const SecondaryReplyInputComponent = ({
           if (userLoginInfo?.isLoggedIn === true) {
             setIsDaetgulOpen(false);
             mutate({ replyIDX, userIDX, body: { content: secondaryReplyText } });
+          } else {
+            alert('로그인이 필요합니다');
           }
-          else { alert('로그인이 필요합니다')}
         }}
         css={{ display: 'flex', alignItems: 'flex-end' }}
       >
@@ -672,6 +696,7 @@ export const SecondaryReplyComponent = ({
       return false;
     }
   });
+  const navigate = useNavigate();
   const ref = useRef<HTMLDivElement>(null);
   const handleClickOutside = useCallback(
     (e: MouseEvent) => {
@@ -694,10 +719,15 @@ export const SecondaryReplyComponent = ({
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <s.SecondaryReplyWrapper isSecondModifyOn={isSecondModifyOn}>
-        <div css={{ gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 15px', justifyContent: 'space-between' }}>
+        <div css={{ userSelect: 'none', gridColumn: 1, display: 'flex', alignItems: 'center', margin: '0 15px', justifyContent: 'space-between' }}>
           <img css={{ marginRight: 12 }} src={EmptyReplyArrow} alt="reply-arrow-empty" />
-          <ImageBox width={32} height={32} source={reReply.writerImg = userDefaultImage} />
-          <div css={{ display: 'flex', flex: '0 1 187px' }}>
+          <div css={{ cursor:'pointer' }} onClick={()=>{
+            navigate(`/others/:${reReply?.writerIdx}`)
+            window.scrollTo(0, 0)
+            }}>
+            <ImageBox width={32} height={32} source={(reReply.writerImg = userDefaultImage)} />
+          </div>
+          <div css={{ display: 'flex', flex: '0 1 auto' }}>
             <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
               {/* 닉네임 */}
               {reReply.writer}
@@ -869,7 +899,7 @@ export const ReplyButton = styled.button<ButtonProps>(({ buttonCord, modifyTypes
   },
   borderRadius: 60,
   position: 'relative',
-  right: modifyTypes === 'original' ? 0 : buttonCord.right,
+  right: modifyTypes === 'original' ? -30 : buttonCord.right,
   bottom: modifyTypes === 'original' ? 0 : buttonCord.bottom,
 }));
 

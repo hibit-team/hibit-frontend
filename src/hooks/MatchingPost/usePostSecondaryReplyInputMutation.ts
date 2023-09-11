@@ -9,11 +9,11 @@ interface ISecondaryReplyMutationParams {
   body: { content: string };
 }
 export const usePostSecondaryReplyInputMutation = (params: ISecondaryReplyMutationParams) => {
-  const { replyIDX, userIDX, body } = params;
+  const { replyIDX, body } = params;
   const queryClient = useQueryClient();
   const secondaryReplyInputMutationFn = async () => {
     try {
-      const path = `/comment/replies/${replyIDX}/${userIDX}`;
+      const path = `/comment/replies/${replyIDX}`;
       const res = HttpClient.post(path, body, { 'Content-Type': 'application/json;charset=utf-8' });
       return res;
     } catch (e) {

@@ -99,7 +99,6 @@ const Header = () => {
   };
 
   const { pathname: path } = useLocation();
-  console.log(path)
 
   if (isMobile) {
     return (

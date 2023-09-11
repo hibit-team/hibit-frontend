@@ -45,7 +45,6 @@ export const OriginalReplyModifiedTextCss = css({
 });
 
 export const SecondaryReplyText = styled.div({
-  userSelect:'none',
   width: 790,
   color: COLORS.Gray3,
   fontSize: 20,
@@ -54,7 +53,6 @@ export const SecondaryReplyText = styled.div({
   overFlow: 'hidden',
   whiteSpace:'pre-wrap',
   wordBreak: 'break-all',
-  // overflowWrap: 'break-word',
   position: 'relative',
   left: 8,
 });
@@ -68,7 +66,6 @@ export const OriginalReplyWrapper = styled.div({
 export const SecondaryReplyWrapper = styled.div<{
   isSecondModifyOn: boolean;
 }>(props =>({
-  userSelect:'none',
   boxSizing: 'border-box',
   margin: '24px 24px 16px 24px',
   position: 'relative',

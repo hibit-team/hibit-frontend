@@ -30,6 +30,7 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   const [isInviteModalOpen, setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
+  const navigate = useNavigate();
   const settings = {
     dots: true,
     infinite: true,
@@ -58,7 +59,6 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
   const isLikeStateOn = data?.likeUsers?.find(item => {
     return item.idx === userIdxInfo;
   });
-  console.log(useLoginInfo())
   useEffect(() => {
     return () => {
       //컴포넌트 언마운트시 모달 clear해주기
@@ -99,21 +99,25 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
             {data?.title}
           </div>
           <div
+            onClick={()=>{
+              navigate(`/others/:${data?.writerIdx}`)
+              window.scrollTo(0, 0)
+            }}
             css={{
               boxSizing: 'border-box',
               width: 35,
               height: 35,
               borderRadius: '50%',
               overflow: 'hidden',
+              position: 'relative',
+              bottom:3,
+              cursor:'pointer',
             }}
           >
             <img
               css={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'fill',
-                position: 'relative',
-                bottom: 3,
               }}
               src={data?.writerImg}
               alt="user-img"
@@ -540,8 +544,6 @@ export const OptionComponent = ({
   const { mutate } = useDeleteReplyMutation(replyIDX);
   const navigate = useNavigate();
   const postIDX = useRecoilValue(PostIDXAtom);
-  console.log(reply?.writerIdx)
-  console.log(reReply?.writerIdx)
   return (
     <div css={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {/* //유저 식별 API인터페이스 */}

@@ -7,7 +7,7 @@ export const usePostReplyLikeMutation = (replyIDX: number | undefined) => {
   const queryClient = useQueryClient();
   const replyLikeMutationFn = async (replyIDX: number | undefined) => {
     try {
-      const path = `/comment/like/${replyIDX}/10`;
+      const path = `/comment/like/${replyIDX}`;
       const res = HttpClient.get(path);
       return res;
     } catch (e) {
