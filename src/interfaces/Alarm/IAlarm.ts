@@ -1,5 +1,7 @@
 export interface IAlarm {
   idx: number,
+  matchingIdx: number,
+  postIdx: number,
   nickname: string,
   type: string,
   imglink: string,
