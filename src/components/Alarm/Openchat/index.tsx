@@ -1,14 +1,30 @@
 import { useNavigate } from "react-router";
 import openchat from "../../../images/components/Alarm/Imoji/openchat.svg";
 import * as s from "./styles";
+import { IAlarm } from "../../../interfaces/Alarm/IAlarm";
+import AlarmAPI from "../../../api/AlarmAPI";
 
-const Openchat = ({nickname, imglink, time, link}: any) => {
+const Openchat = (props: IAlarm) => {
+
   const navigate = useNavigate();
+  const alarms = props;
+  
+  const onClickAlarm = () => {
+    AlarmAPI.putAlarmRead(alarms.idx)
+      .then((res) => {
+        console.log({res});
+      })
+      .catch((e) => {
+        console.error({e});
+      });
+    
+  };
+
   return (
-    <s.Wrapper>
+    <s.Wrapper onClick={() => onClickAlarm()}>
       <s.ProfileImgWrapper>
         <s.ProfileImg 
-          src={imglink}
+          src={alarms.imglink}
           alt="profile"
         />
         <s.Imoji 
@@ -19,13 +35,13 @@ const Openchat = ({nickname, imglink, time, link}: any) => {
 
       <s.ContentsWrapper>
         <s.MainContents>
-          {nickname}님의 오픈채팅방 링크가 도착했습니다.
+          {alarms.nickname}님의 오픈채팅방 링크가 도착했습니다.
         </s.MainContents>
 
         <s.BottomContainer>
-          <s.Time>{time}</s.Time>
+          <s.Time>{alarms.time}</s.Time>
           <s.Link
-            onClick={() => navigate(link)}
+            onClick={() => navigate(alarms.url)}
           >이동하기</s.Link>
         </s.BottomContainer>
         

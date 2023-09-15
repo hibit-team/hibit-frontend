@@ -22,25 +22,25 @@ const CommentHeart = (props: IAlarm) => {
   };
 
   return (
-    <s.Wrapper>
-    <s.ProfileImgWrapper>
-      <s.ProfileImg 
-        src={alarms.imglink}
-        alt="profile"
-      />
-      <s.Imoji 
-        src={heart}
-        alt="imoji"
-      />
-    </s.ProfileImgWrapper>
+    <s.Wrapper onClick={() => onClickAlarm()}>
+      <s.ProfileImgWrapper>
+        <s.ProfileImg 
+          src={alarms.imglink}
+          alt="profile"
+        />
+        <s.Imoji 
+          src={heart}
+          alt="imoji"
+        />
+      </s.ProfileImgWrapper>
 
-    <s.ContentsWrapper>
-      <s.MainContents>
-        {alarms.nickname}님이 회원님의 댓글을 좋아합니다.
-      </s.MainContents>
-      <s.Time>{alarms.time}</s.Time>
-    </s.ContentsWrapper>
-</s.Wrapper>
+      <s.ContentsWrapper>
+        <s.MainContents>
+          {alarms.nickname}님이 회원님의 댓글을 좋아합니다.
+        </s.MainContents>
+        <s.Time>{alarms.time}</s.Time>
+      </s.ContentsWrapper>
+    </s.Wrapper>
   )
 };
 
