@@ -1,11 +1,23 @@
+import AlarmAPI from "../../../api/AlarmAPI";
 import accept from "../../../images/components/Alarm/Imoji/accept.svg";
 import { IAlarm } from "../../../interfaces/Alarm/IAlarm";
 import * as s from "./styles";
 
 const Accept = (props: IAlarm) => {
   const alarms = props;
+
+  const onClickAlarm = () => {
+    AlarmAPI.putAlarmRead(alarms.idx)
+      .then((res) => {
+        console.log({res});
+      })
+      .catch((e) => {
+        console.error({e});
+      });
+  };
+
   return (
-    <s.Wrapper>
+    <s.Wrapper onClick={() => onClickAlarm()}>
       <s.ProfileImgWrapper>
         <s.ProfileImg 
           src={alarms.imglink}
