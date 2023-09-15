@@ -8,5 +8,6 @@ export interface IAlarm {
   content: string,
   time: string,
   url: string,
-  readed: boolean
+  readed: boolean,
+  history: string
 }

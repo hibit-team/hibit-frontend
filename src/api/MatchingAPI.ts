@@ -34,10 +34,10 @@ const MatchingAPI = {
     }
   },
 
-  putMatchingOK: async (post_id: number, body: any) => {
+  putMatchingOK: async (matchingIdx: number) => {
     try {
-      const path = `/matching/${post_id}/ok`;
-      const response = await HttpClient.put(path, body);
+      const path = `/matching/${matchingIdx}/ok`;
+      const response = await HttpClient.put(path);
       return response;
     } catch (e) {
       console.error({ e });
@@ -45,10 +45,10 @@ const MatchingAPI = {
     }
   },
 
-  putMatchingNO: async (post_id: number, body: any) => {
+  putMatchingNO: async (matchingIdx: number) => {
     try {
-      const path = `/matching/${post_id}/no`;
-      const response = await HttpClient.put(path, body);
+      const path = `/matching/${matchingIdx}/no`;
+      const response = await HttpClient.put(path);
       return response;
     } catch (e) {
       console.error({ e });
