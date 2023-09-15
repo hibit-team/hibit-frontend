@@ -56,9 +56,3 @@ export const useUpdateStateAndPostUserList = (postIDX: string | undefined, userL
     },
   });
 };
-
-// export const usePostCompelteUserList = (postIDX: string | undefined, userList: [] | number[]) => {
-//   const queryClient = useQueryClient();
-
-//   return;
-// };

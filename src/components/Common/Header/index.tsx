@@ -23,7 +23,8 @@ const Header = () => {
   const resetUserIdx = useResetRecoilState(userIdxState);
   const resetIsProfileRegistered = useResetRecoilState(profileRegisteredState);
   
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useRecoilState(LoginModalState);
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
   
@@ -98,7 +99,6 @@ const Header = () => {
   };
 
   const { pathname: path } = useLocation();
-  console.log(path)
 
   if (isMobile) {
     return (
@@ -146,7 +146,7 @@ const Header = () => {
             isOpen={isAlarmOpen}
             onRequestClose={onClickAlarm}
           />
-          <s.TextWrapper onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
+          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
         </s.RightContainer> :
         <s.RightContainer >
           <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}}>회원가입</s.TextWrapper>

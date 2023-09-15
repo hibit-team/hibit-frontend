@@ -21,6 +21,8 @@ import PutMyProfile from "./pages/MyProfile/PutMyProfile";
 import PutPosting from "./pages/Posting/PutPosting";
 import useLoginInfo from "./hooks/useLoginInfo";
 import LottiePageRouting from "./components/LottieFiles/LottiePageRouting";
+import useIsMobile from "./hooks/useIsMobile";
+import MobileLanding from "./pages/MobileLanding";
 
 function App() {
   const queryClient = new QueryClient();
@@ -50,7 +52,8 @@ function App() {
     return;
   }, [loginInfo, isLogin]);
 
-
+  const isMobile = useIsMobile();
+  if(isMobile) return <MobileLanding/>;
 
   return (
     <>

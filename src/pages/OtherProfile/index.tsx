@@ -14,7 +14,8 @@ import OtherprofileAPI from "../../api/OtherprofileAPI";
 const OtherProfile = () => {
   const idParams = useParams();
   const userID = idParams.userID;
-  // console.log(userID);
+
+  const userLoginInfo = useLoginInfo();
   
   const [isTabLeft, setIsTabLeft] = useState<boolean>(true);
   const onClickTab = () => {
@@ -165,7 +166,7 @@ const OtherProfile = () => {
 
               </s.NotRegisterContainer>
 
-              <s.ProfileContainer isRegistered={isProfileRegistered ? isProfileRegistered : false }>
+              <s.ProfileContainer isRegistered={userLoginInfo?.isProfileRegistered === 1 ? true : false }>
                 <s.TopInfoContainer>
                   <s.CarouselWrapper>
                     <ImageCarousel />
@@ -256,7 +257,7 @@ const OtherProfile = () => {
           )
         }
       </s.Wrapper>
-      { isProfileRegistered !== false ? <GlobalModal/> : undefined }
+      { userLoginInfo?.isProfileRegistered === 1 ? undefined : <GlobalModal/> }
     </LayoutTemplate>
   )
 };

@@ -37,6 +37,8 @@ export const MatchingCardImgCss = css`
   cursor: pointer;
   box-sizing: border-box;
   opacity: 0.9;
+  background-position:center;
+  background-size:contain;
 `;
 
 //카드 하단부 info
