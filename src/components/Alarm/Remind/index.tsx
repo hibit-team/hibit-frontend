@@ -18,29 +18,29 @@ const Remind = (props: IAlarm) => {
         console.error({e});
       });
     
-    navigate(`/matchPost/${alarms.matchingIdx}`);
+    navigate(`/matchPost/${alarms.postIdx}`);
   };
   
   return (
     <s.Wrapper onClick={() => onClickAlarm()}>
-    <s.ProfileImgWrapper>
-      <s.ProfileImg 
-        src={defaultProfile}
-        alt="profile"
-      />
-      <s.Imoji 
-        src={heart}
-        alt="imoji"
-      />
-    </s.ProfileImgWrapper>
+      <s.ProfileImgWrapper>
+        <s.ProfileImg 
+          src={defaultProfile}
+          alt="profile"
+        />
+        <s.Imoji 
+          src={heart}
+          alt="imoji"
+        />
+      </s.ProfileImgWrapper>
 
-    <s.ContentsWrapper>
-      <s.MainContents>
-        {alarms.content}
-      </s.MainContents>
-      <s.Time>{alarms.time}</s.Time>
-    </s.ContentsWrapper>
-</s.Wrapper>
+      <s.ContentsWrapper>
+        <s.MainContents>
+          {alarms.content}
+        </s.MainContents>
+        <s.Time>{alarms.time}</s.Time>
+      </s.ContentsWrapper>
+    </s.Wrapper>
   )
 };
 
