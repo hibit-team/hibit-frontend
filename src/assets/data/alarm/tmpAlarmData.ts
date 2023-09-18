@@ -1,6 +1,6 @@
 import { IAlarm } from "../../../interfaces/Alarm/IAlarm";
 
-const tmpAlarmData: IAlarm[] = [
+const tmpAlarmData: any = [
   {nickname: "애옹이", type: "COMMENT", content:" ", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전", url: "https://naver.com", readed: true},
   {nickname: "개죽이", type: "RECOMMENT", content:" ", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전", url: "https://naver.com", readed: false},
   {nickname: "시면준", type: "COMMENTHEART", content:" ", imglink: "https://i.imgur.com/fsyrScY.jpg", time: "1시간 전", url: "https://naver.com", readed: true},

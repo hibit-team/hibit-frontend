@@ -14,6 +14,7 @@ import MyprofileAPI from "../../../api/MyprofileAPI";
 import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
+import useLoginInfo from "../../../hooks/useLoginInfo";
 
 const PutMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -26,28 +27,28 @@ const PutMyProfile = () => {
   if (localStorage.getItem("userIdx")) {
     userIdx = +localStorage.getItem("userIdx")!;
   }
-  useEffect(() => {
-    if (userIdx) {
-      myProfileData = MyprofileAPI.getMyProfile(userIdx);
-    } else {
-      alert("로그인을 먼저 진행해 주세요.");
-      navigate("/");
-    }
-  }, [userIdx]);
+
+
 
   /* 필수 정보 */
-  const [nickname, setNickname] = useState<string>();
+  const [nickname, setNickname] = useState<string>("");
+  const [firstNickname, setFirstNickname] = useState<string>("");
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
-  };
+  }; 
   const [isNicknameDuplicated, setIsNicknameDuplicated] = useState<boolean>(true);
   const onClickDuplicateNickname = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("중복 확인 API");
     if (nickname) {
       MyprofileAPI.checkIsUniqueNickname(nickname)
         .then((res) => {
-          if (res.unique === "true") setIsNicknameDuplicated(false);
-          else setIsNicknameDuplicated(true);
+          if (res.unique) {
+            alert("사용 가능한 닉네임입니다.");
+            setIsNicknameDuplicated(false);
+          }
+          else {
+            alert("이미 존재하는 닉네임입니다.");
+            setIsNicknameDuplicated(true);
+          }
         })
         .catch((e) => {
           console.error({e});
@@ -166,24 +167,24 @@ const PutMyProfile = () => {
   }, [])
 
   const onClickSendBtn = () => {
-
+    
     if (!checkAllInfo()) {
       alert("모든 정보를 기입해야 합니다.");
       return;
     }
-
-    if (imgs && imgs.length > 0) {
+    console.log("???")
+    
+    if (imgURLs && imgURLs.length > 0) {
       const formData = new FormData();
       imgs.forEach((imageData) => {
         formData.append(`file`, imageData);
       });
-
+      
       console.log(formData.getAll(`file`));
   
       FileAPI.postFiles(0, formData)
         .then((res) => {
           console.log({res});
-          // 이미지 업로드 된 url (응답) 받아서 최종 POST 요청
           const imageResponse: IImage = {
             mainImage: "",
             subImages: []
@@ -196,7 +197,7 @@ const PutMyProfile = () => {
             });
           }
 
-          console.log("업로드 완료", imageResponse);
+          console.log("이미지 업로드 완료", imageResponse);
 
           const body: IProfile = {
             nickname: nickname,
@@ -214,10 +215,10 @@ const PutMyProfile = () => {
             subImgVisibility: isImgChecked ? 1 : 0,
           }
 
-
-          MyprofileAPI.postMyProfile(body)
+          const userIdx = +localStorage.getItem('userIdx')!;
+          MyprofileAPI.putMyProfile(userIdx, body)
             .then((res) => {
-              console.log("post my profile res: ", {res});
+              console.log("put my profile res: ", {res});
             })
             .catch((e) => {
               console.error({e});
@@ -240,11 +241,9 @@ const PutMyProfile = () => {
       return false;
     }
     
-    if (isNicknameDuplicated) {
-      alert("닉네임 중복 확인을 먼저 해 주세요.");
-      return false;
-    }
 
+
+    loop1:
     if (age === undefined || age === 0) {
       alert("나이 정보를 입력해 주세요.");
       return false;
@@ -286,8 +285,56 @@ const PutMyProfile = () => {
       return false;
     }
 
+    if (isNicknameDuplicated) {
+      if (firstNickname === nickname) {
+        return true;
+      }  
+      alert("닉네임 중복 확인을 먼저 해 주세요.");
+      return false;
+    }
+
     return true;
   };
+
+  const isProfileRegistered = useLoginInfo().isProfileRegistered;
+  useEffect(() => {
+    if (userIdx) {
+      MyprofileAPI.getMyProfile(userIdx)
+        .then((res) => {
+          setNickname(res.nickname);
+          setFirstNickname(res.nickname)
+          setAge(res.age);
+          setGender(res.gender);
+          setPersonality([...res.personality]);
+          setIntroduce(res.introduce);
+          setJob(res.job);
+          setIsJobChecked(res.jobVisibility);
+          setAddress_sido(res.addressCity);
+          setAddress_sigungu(res.addressDistrict);
+          setIsAddressChecked(res.addressVisibility);
+          
+          const ret_ImgURLs = [];
+          ret_ImgURLs.push(res.mainImg);
+
+          const subImgArrayString: string = res.subImg;
+          const arrayWithoutBrackets = subImgArrayString.slice(1, -1);
+          const subImgArray = arrayWithoutBrackets.split(',').map(item => item.trim());
+          ret_ImgURLs.push(subImgArray[0]);
+          ret_ImgURLs.push(subImgArray[1]);
+          setImgURLs(ret_ImgURLs);
+          setIsImgChecked(res.subImgVisibility);
+        })
+      
+    } else {
+      alert("로그인을 먼저 진행해 주세요.");
+      navigate("/");
+    }
+
+    if (isProfileRegistered === 0) {
+      console.log("프로필정보가 등록되어 있지 않아 post-profile로 이동")
+      navigate("/post-profile");
+    }
+  }, [userIdx]);
 
   
   if(useIsMobile()) {

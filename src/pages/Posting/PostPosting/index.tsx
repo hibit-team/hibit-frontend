@@ -300,8 +300,7 @@ const PostPosting = () => {
               subimg: imageResponse.subImages!
             }
 
-            const userIdx = +localStorage.getItem('userIdx')!;
-            PostingAPI.postPosting(userIdx, body)
+            PostingAPI.postPosting(body)
               .then((res) => {
                 console.log({res});
               })
