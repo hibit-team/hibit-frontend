@@ -315,6 +315,7 @@ export const CheckBox = styled.img`
   display: flex;
   width: 24px;
   height: 24px;
+  cursor: pointer;
 `;
 
 export const JobContainer = styled.div`

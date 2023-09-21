@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import COLORS from '../../../assets/color';
+import { ILoginInfo } from '../../../hooks/useLoginInfo';
 
 export const InputReplyWrapperCss = css({
   boxSizing: 'border-box',
@@ -52,7 +53,6 @@ export const SecondaryReplyText = styled.div({
   overFlow: 'hidden',
   whiteSpace:'pre-wrap',
   wordBreak: 'break-all',
-  // overflowWrap: 'break-word',
   position: 'relative',
   left: 8,
 });

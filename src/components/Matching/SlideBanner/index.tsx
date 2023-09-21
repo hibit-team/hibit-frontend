@@ -2,6 +2,8 @@
 import { css } from '@emotion/react';
 import * as s from './styles'
 import '../../../assets/slick.css';
+import banner from '../../../images/components/Matching/banner.svg';
+
 
 
 const settings = {
@@ -32,10 +34,7 @@ const settings = {
 const MatchingSlideBanner = () => {
   return (
     <s.MatchSlideContainer {...settings} >
-        <div css={css`background-color:#EEEEEE; width:100vw;height:400px`}>1</div>
-        <div css={css`background-color:#EEEEEE; width:100vw;height:400px`}>2</div>
-        <div css={css`background-color:#EEEEEE; width:100vw;height:400px`}>3</div>
-        <div css={css`background-color:#EEEEEE; width:100vw;height:400px`}>4</div>
+        <img src={banner} alt='matching-banner'/>
     </s.MatchSlideContainer>
       )
   }

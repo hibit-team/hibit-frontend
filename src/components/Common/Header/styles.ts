@@ -3,17 +3,15 @@ import styled from "@emotion/styled";
 export const Wrapper = styled.div`
   position: absolute;
   top: 0px;
-  bottom: 0px;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  width: 100vw;
-  max-width: 1000px;
+  width:90%;
+  max-width: 100vw;
   height: 100px;
-  font-family: "SUIT";
-  font-weight: 500;
   overflow-x: hidden;
+  background:transparent;
+  z-index:100;
 `;
 
 export const LeftContainer = styled.div`
@@ -21,6 +19,7 @@ export const LeftContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 437px;
+  height:100px;
 `;
 
 export const LogoContainer = styled.div``;
@@ -34,6 +33,7 @@ export const Category = styled.div`
   font-size: 18px;
   font-weight: 500;
   cursor: pointer;
+  user-select:none;
 `;
 
 export const RightContainer = styled.div`
@@ -42,6 +42,7 @@ export const RightContainer = styled.div`
   justify-content: end;
   align-items: center;
   width: 230px;
+  user-select:none;
 `;
 
 export const AlarmLogoContainer = styled.div`
@@ -74,6 +75,7 @@ export const TextWrapper = styled.div`
   border-radius: 20px;
   margin-left: 24px;
   cursor: pointer;
+  font-weight: 600;
 `;
 
 export const MobileWrapper = styled.div`

@@ -1,12 +1,26 @@
+import AlarmAPI from "../../../api/AlarmAPI";
 import refuse from "../../../images/components/Alarm/Imoji/refuse.svg";
+import { IAlarm } from "../../../interfaces/Alarm/IAlarm";
 import * as s from "./styles";
 
-const Refuse = ({nickname, imglink, time}: any) => {
+const Refuse = (props: IAlarm) => {
+  const alarms = props;
+
+  const onClickAlarm = () => {
+    AlarmAPI.putAlarmRead(alarms.idx)
+      .then((res) => {
+        console.log({res});
+      })
+      .catch((e) => {
+        console.error({e});
+      });
+  };
+  
   return (
-    <s.Wrapper>
+    <s.Wrapper onClick={() => onClickAlarm()}>
       <s.ProfileImgWrapper>
         <s.ProfileImg 
-          src={imglink}
+          src={alarms.imglink}
           alt="profile"
         />
         <s.Imoji 
@@ -16,8 +30,8 @@ const Refuse = ({nickname, imglink, time}: any) => {
       </s.ProfileImgWrapper>
 
       <s.ContentsWrapper>
-        <s.MainContents>{nickname}님이 초대를 거절했어요.</s.MainContents>
-        <s.Time>{time}</s.Time>
+        <s.MainContents>{alarms.nickname}님이 초대를 거절했어요.</s.MainContents>
+        <s.Time>{alarms.time}</s.Time>
       </s.ContentsWrapper>
   </s.Wrapper>
   )

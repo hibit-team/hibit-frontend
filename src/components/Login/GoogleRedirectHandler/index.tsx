@@ -18,7 +18,6 @@ const GoogleRedirectHandler = () => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
 
-    console.log('Received code:', code);
     const body = {
       code: code,
       redirectUri: redirectUri
@@ -29,7 +28,6 @@ const GoogleRedirectHandler = () => {
       }
     })
       .then((res) => {
-        console.log(res);
         const accessToken = res.data.accessToken;
         const userIdx = res.data.id;
         const profileRegistered = res.data.isProfileRegistered;
@@ -39,13 +37,17 @@ const GoogleRedirectHandler = () => {
         setUserIdx(userIdx);
         setIsProfileRegistered(profileRegistered);
 
+        localStorage.setItem('accessToken', `${accessToken}`);
+        localStorage.setItem('userIdx', userIdx);
+        localStorage.setItem('isProfileRegistered', profileRegistered);
+        
         navigate('/');
       })
       .catch((err) => {
         console.error({err});
       });
 
-    }, [location.search, navigate, redirectUri, setAccessToken, setUserIdx]);
+    }, [location.search]);
     
   return (
     <div>

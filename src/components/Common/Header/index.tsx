@@ -2,60 +2,70 @@ import { Suspense, useEffect, useState } from 'react';
 import { IHeaderCategory } from '../../../interfaces/IHeaderCategories';
 import { useNavigate, useLocation } from "react-router-dom";
 import HibitLogo from "../../../images/components/HibitLogo.svg";
+import HibitLogoWhite from "../../../images/components/HibitLogoWhite.svg";
 import AlarmIcon from "../../../images/components/AlarmIcon.svg";
 import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
 import CustomModalAlarm from '../../Alarm';
 import * as s from "./styles";
-import { useRecoilValue, useRecoilValueLoadable, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, useRecoilValueLoadable, useResetRecoilState } from 'recoil';
 import { accessTokenState, profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
 import useLoginInfo from '../../../hooks/useLoginInfo';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
 import { axiosInstance } from '../../../services/HttpClient';
+import { LoginModalState } from '../../../recoil/atom/LoginModalState';
 
-const CATEGORIES: IHeaderCategory[] = [
-  { title: "서비스 소개", link: "/intro" },
-  { title: "매칭", link: "/matching" },
-  { title: "프로필", link: "/profile"},
-];
 
 const Header = () => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const [selectedCategory, setSelectedCategory] = useState<string>("메인");
 
-  // Login + Modal
-  const loginInfo = useLoginInfo();
-  
-  const accessTokenAtom = useRecoilValue(accessTokenState);
   const resetAccessToken = useResetRecoilState(accessTokenState);
   const resetUserIdx = useResetRecoilState(userIdxState);
   const resetIsProfileRegistered = useResetRecoilState(profileRegisteredState);
-
-  const [modalOpen, setModalOpen] = useState(false);
+  
+  // const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useRecoilState(LoginModalState);
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
-  console.log(axiosInstance.defaults.headers.common)
+  
+  const loginInfo = useLoginInfo();
+  const [isLogin, setIsLogin] = useState<boolean>(useLoginInfo().isLoggedIn);
+  let isProfileRegistered: number | null = null
+  if (localStorage.getItem('isProfileRegistered')) {
+    isProfileRegistered = +localStorage.getItem('isProfileRegistered')!;
+  }
 
-  // Logout
+  useEffect(() => {
+    setIsLogin(loginInfo.isLoggedIn);
+  }, [loginInfo.isLoggedIn]);
+
   const onClickLogout = async () => {
-    await axiosInstance.post(`/api/auth/token/access?logout=true`, {})
+    await axiosInstance.get(`/api/auth/logout`)
       .then((res) => {
-        // console.log({res}) // ex)성공적으로 로그아웃되었습니다.
-        resetAccessToken(); // atom으로 관리되는 token값 null로 초기화
+        resetAccessToken();
         resetUserIdx();
         resetIsProfileRegistered();
-        clearTokenAndHeader(); // axiosInstance의 default header accessToken값 null로 초기화
-        alert("로그아웃 되었습니다.");
+        clearTokenAndHeader();
+
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userIdx');
+        localStorage.removeItem('isProfileRegistered');
+        setIsLogin(false);
+        alert("로그아웃 했어요!");
         return null;
       })
       .catch((e) => {
         console.error({e});
-        alert("로그아웃 실패. 재로그인 하세요.");
-        resetAccessToken(); // atom으로 관리되는 token값 null로 초기화
-        resetUserIdx(); // atom으로 관리되는 userIdx값 null로 초기화
-        resetIsProfileRegistered(); // atom으로 관리되는 isProfileRegistered값 null로 초기화
-        clearTokenAndHeader(); // axiosInstance의 default header accessToken값 null로 초기화
+        alert("로그인에 문제가 생겼어요. 같은 상황이 반복된다면 문의 주세요 :)");
+        resetAccessToken(); 
+        resetUserIdx(); 
+        resetIsProfileRegistered();
+        clearTokenAndHeader();
+
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userIdx');
+        localStorage.removeItem('isProfileRegistered');
+        setIsLogin(false);
         navigate("/");
         return null;
       }) 
@@ -79,31 +89,16 @@ const Header = () => {
   const [isAlarmOpen, setIsAlarmOpen] = useState<boolean>(false);
   const onClickAlarm = () => {
     setIsAlarmOpen(!isAlarmOpen);
-    console.log({isAlarmOpen});
   };
 
-
-
-  
-  /* Web View */
-  const onClickCategory = (title: string, link: string) => {
-    setSelectedCategory(title);
-    navigate(link);
-  };
-  
-  useEffect(() => {
-    CATEGORIES.map((selected: IHeaderCategory) => {
-      if (pathname.includes(selected.link)) setSelectedCategory(selected.title);
-      return null;
-    });
-  }, [pathname]);
-  
   /* Mobile View */
   const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const toggleSide = () => {
     setIsMenuOpen(true);
   };
+
+  const { pathname: path } = useLocation();
 
   if (isMobile) {
     return (
@@ -112,25 +107,29 @@ const Header = () => {
       </s.MobileWrapper>
     );
   }
-
   return (
     <s.Wrapper>
-      <s.LeftContainer>
-        <s.LogoContainer onClick={() => onClickCategory("메인", "/")}>
-          <img src={HibitLogo} alt='hibit-logo'/>
+      <s.LeftContainer style={{ color: path === '/matching' ? 'white' : 'black'}} >
+        <s.LogoContainer onClick={() => navigate("/")}>
+          {path === '/matching' ? <img src={HibitLogoWhite} alt='logo-white'/> : <img src={HibitLogo} alt='hibit-logo'/> }
         </s.LogoContainer>
-         {CATEGORIES.map((selected: IHeaderCategory, index: number) => {
-            return (
-              <s.Category 
-                key={index}
-                onClick={() => onClickCategory(selected.title, selected.link)}
-              >
-                {selected.title}
-              </s.Category> 
-            )
-          })}
+        <s.Category onClick={() => navigate("/intro")}>서비스 소개</s.Category>
+        <s.Category onClick={() => navigate("/matching")}>매칭</s.Category>
+        <s.Category
+         onClick={() => {
+          if (isLogin) {
+            if (isProfileRegistered !== null && isProfileRegistered === 1) {
+              navigate("/put-profile");
+            } else {
+              navigate("/post-profile");
+            }
+          } else {
+            alert("로그인 후에 진행 해 주세요.");
+          }
+        }}>프로필</s.Category>
+        
       </s.LeftContainer>
-      {loginInfo?.isLoggedIn ?
+      {isLogin ?
         <s.RightContainer>
           <s.AlarmLogoContainer>
             <img onClick={onClickAlarm} src={AlarmIcon} alt='alarm-icon' />
@@ -147,11 +146,11 @@ const Header = () => {
             isOpen={isAlarmOpen}
             onRequestClose={onClickAlarm}
           />
-          <s.TextWrapper onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
+          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
         </s.RightContainer> :
-        <s.RightContainer>
-          <s.TextWrapper>회원가입</s.TextWrapper>
-          <s.TextWrapper onClick={() => onClickLogin()}>로그인</s.TextWrapper>
+        <s.RightContainer >
+          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}}>회원가입</s.TextWrapper>
+          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogin()}>로그인</s.TextWrapper>
           <LoginModal open={modalOpen} close={closeModal} />
         </s.RightContainer>
       }

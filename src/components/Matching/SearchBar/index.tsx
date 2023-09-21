@@ -25,7 +25,7 @@ const CustomSearchBar = () => {
         font-weight: 500px;
         position: relative;
         right: 6rem;
-        bottom: 4.25rem;
+        bottom: 5.45rem;
         height: 0;
       `}
     >
@@ -74,7 +74,7 @@ const CustomSearchBar = () => {
           height: 32px;
           position: relative;
           left: 394px;
-          bottom: 4.4rem;
+          bottom: 5.6rem;
           &: hover {
             scale: 1.05;
             cursor: pointer;

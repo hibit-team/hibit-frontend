@@ -1,13 +1,14 @@
-import { selector } from 'recoil';
+import { selector, useRecoilValue } from 'recoil';
 import AlarmAPI from '../../api/AlarmAPI';
-import { userIdxState } from './LoginInfoState';
+import { profileRegisteredState, userIdxState } from './LoginInfoState';
 
 export const alarmCountState = selector({
   key: 'alarmCountState',
   get: async ({get}) => {
-    const userIdx = get(userIdxState);
-    if(userIdx) {
-      const alarmList = await AlarmAPI.getAlarmList(userIdx);
+    let userIdx: number | null = get(userIdxState);
+    let isProfileRegistered: number | null = get(profileRegisteredState);
+    if(userIdx && isProfileRegistered) {
+      const alarmList = await AlarmAPI.getAlarmList();
       if(alarmList) {
         return alarmList.length;
       } else {

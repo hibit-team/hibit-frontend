@@ -1,38 +1,110 @@
 import { useNavigate, useParams } from "react-router-dom";
 import * as s from "./styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LayoutTemplate from "../../components/Common/LayoutTemplate";
 import FsLightbox from "fslightbox-react";
 import ImageCarousel from "../../components/OtherProfile/ImageCarousel";
 import ZoomInIcon from "../../images/components/OtherProfile/ZoomInIcon.svg";
 import LockIcon from "../../images/components/OtherProfile/LockIcon.png";
+import { GlobalModal } from "../../components/GlobalModal";
+import useLoginInfo from "../../hooks/useLoginInfo";
+import { Global } from "@emotion/react";
+import OtherprofileAPI from "../../api/OtherprofileAPI";
 
 const OtherProfile = () => {
   const idParams = useParams();
   const userID = idParams.userID;
-  // console.log(userID);
 
-  // 프로필 등록 or 미등록 유저에 따른 조건부 렌더링
-  const [isProfileRegistered, setIsProfileRegistered] = useState(true);
-
-
+  const userLoginInfo = useLoginInfo();
+  
   const [isTabLeft, setIsTabLeft] = useState<boolean>(true);
   const onClickTab = () => {
     setIsTabLeft(true);
   };
 
+  const loginInfo = useLoginInfo();
+  // 프로필 등록 or 미등록 유저에 따른 조건부 렌더링
+  const [isProfileRegistered, setIsProfileRegistered] = useState(false);
+  useEffect(() => {
+    if(loginInfo.isProfileRegistered === 1) setIsProfileRegistered(true);
+    else setIsProfileRegistered(false);
+  }, [loginInfo]);
+  
   // 이미지 미리보기 toggle
   const [imgToggler, setImgToggler] = useState(false);
+  
+  const [nickname, setNickname] = useState("");
+  const [age, setAge] = useState();
+  const [gender, setGender] = useState("");
+  const [address, setAddress] = useState("");
+  const [job, setJob] = useState("");
+  const [personalities, setPersonalities] = useState<string[]>([]);
+  const [introduce, setIntroduce] = useState("");
+  const [imgs, setImgs] = useState<string[]>([]);
+  
+  // 타인 선택정보 공개 여부에 따른 조건부 렌더링
+  const [isAddressPrivate, setIsAddressPrivate] = useState(true);
+  const [isJobPrivate, setIsJobPrivate] = useState(true);
+  const [isImgPrivate, setIsImgPrivate] = useState(true);
 
-  const [nickname, setNickname] = useState("제임스는 행복해요");
-  const [age, setAge] = useState(20);
-  const [gender, setGender] = useState("남성");
-  const [address, setAddress] = useState("면준구 상준동");
-  const [job, setJob] = useState("골드만삭스 애널리스트");
-  const [personalities, setPersonalities] = useState([
-    "차분한", "유머있는", "낙천적인", "외향적인", "개멋짐(?)"
-  ]);
-  const [introduce, setIntroduce] = useState("안녕하세요. 해치지 않아요. 함께 해요");
+  useEffect(() => {
+    if(!userID) {
+      console.log("userID 없음.");
+    }
+    else {
+      OtherprofileAPI.getOtherProfile(+userID)
+        .then((res) => {
+          console.log({res});
+          setNickname(res.nickname);
+          setAge(res.age);
+          if(res.gender === 0) {
+            setGender("남성");
+          }
+          else {
+            setGender("여성");
+          }
+
+          setAddress(`${res.addressCity} ${res.addressDistrict}`);
+          setJob(res.job);
+
+          const newPersonalities: string[] = [...(res.personality || [])];
+          setPersonalities(newPersonalities);
+
+          setIntroduce(res.introduce);
+
+          const mainImg: string = res.mainImg;
+          const subImgs: string[] = res.subImg;
+          const newImgs: string[] = [];
+          newImgs.push(mainImg, ...subImgs);
+          setImgs(newImgs);
+
+          if(res.addressVisibility === 0) {
+            setIsAddressPrivate(true);
+          } else {
+            setIsAddressPrivate(false);
+          }
+
+          if(res.subImgVisibility === 0) {
+            setIsImgPrivate(true);
+          } else {
+            setIsImgPrivate(false);
+          }
+
+          if(res.jobVisibility === 0) {
+            setIsJobPrivate(true);
+          } else {
+            setIsJobPrivate(false);
+          }
+
+          
+        })
+        .catch((e) => {
+          console.error({e});
+          return;
+        })
+    }
+
+  }, []);
 
   const LockStr1 = "저런, ";
   const LockStr2 = "추가 사진";
@@ -42,14 +114,14 @@ const OtherProfile = () => {
   const LockStr6 = "회원님의 프로필 정보";
   const LockStr7 = "를 등록해야 해요.";
 
-  const navigate = useNavigate();
-  const onClickRegisterBtn = () => {
-    navigate("/profile");
-  };
 
   const onClickUserHistoryTab = () => {
     alert("추후 공개될 기능입니다.");
     setIsTabLeft(true);
+  };
+  const navigate = useNavigate();
+  const onClickRegisterBtn = () => {
+    navigate("/post-profile");
   };
 
   return (
@@ -94,7 +166,7 @@ const OtherProfile = () => {
 
               </s.NotRegisterContainer>
 
-              <s.ProfileContainer isRegistered={isProfileRegistered}>
+              <s.ProfileContainer isRegistered={userLoginInfo?.isProfileRegistered === 1 ? true : false }>
                 <s.TopInfoContainer>
                   <s.CarouselWrapper>
                     <ImageCarousel />
@@ -102,14 +174,22 @@ const OtherProfile = () => {
                       <img src={ZoomInIcon} alt="zoom-in" />
                     </s.CarouselZoomInBtn>
                   </s.CarouselWrapper>
-                  <FsLightbox 
-                    toggler={imgToggler}
-                    sources={[
-                      'https://i.imgur.com/fsyrScY.jpg',
-					            'https://i.imgur.com/fsyrScY.jpg',
-                      'https://i.imgur.com/fsyrScY.jpg'
-                    ]}  
-                  />
+                  {
+                    isProfileRegistered ?
+                      <FsLightbox 
+                      toggler={imgToggler}
+                      sources={imgs}  
+                      />
+                      :
+                      <FsLightbox 
+                      toggler={imgToggler}
+                      sources={[
+                        "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/blur1.jpg",
+                        "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/blur2.jpg",
+                        "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/blur3.jpg"
+                      ]}  
+                      />
+                  }
 
                   <s.UserInfoContainer>
                     <s.Row1>
@@ -124,14 +204,22 @@ const OtherProfile = () => {
                     
                     <s.Row2>
                       <s.Title>주소</s.Title>
-                      <s.Address>{address} 거주</s.Address>
+                      {
+                        isAddressPrivate ?
+                        <s.Address>비공개</s.Address> :
+                        <s.Address>{address} 거주</s.Address>
+                      }
                     </s.Row2>
                     
                     <s.HorizontalLine2 />
 
                     <s.Row3>
                       <s.Title>직업 혹은 학교</s.Title>
-                      <s.Job>{job}</s.Job>
+                      {
+                        isJobPrivate ?
+                        <s.Job>비공개</s.Job> :
+                        <s.Job>{job}</s.Job>
+                      }
                     </s.Row3>
 
                     <s.HorizontalLine3 />
@@ -169,6 +257,7 @@ const OtherProfile = () => {
           )
         }
       </s.Wrapper>
+      { userLoginInfo?.isProfileRegistered === 1 ? undefined : <GlobalModal/> }
     </LayoutTemplate>
   )
 };
