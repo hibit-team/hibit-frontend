@@ -21,7 +21,7 @@ export const GlobalModal = () => {
   const userLoginInfo = useLoginInfo();
   //회원가입유도: (Home)
   const modalText1 = useMemo(
-    () => ['메이트의 추가 사진과 정보를 보려면', '회원가입이 필요해요.', '히빗의 회원이 되어 매칭 서비스를 이용해보세요!', '회원가입 하러가기'],
+    () => ['히빗의 매칭 서비스를 이용하려면', '회원가입이 필요해요.', '히빗의 회원이 되어 추가 서비스를 이용해보세요!', '회원가입 하러가기'],
     []
   );
   //프로필등록유도1 (게시글작성버튼 클릭)
@@ -45,36 +45,40 @@ export const GlobalModal = () => {
     ],
     []
   );
-
+  const pathName = useLocation().pathname;
   //유저로그인 상태값으로부터 회원/프로필 유무 boolean값으로 받아서 setState
   const [modalText, setModalText] = useRecoilState<string[]>(GlobalModalTextState);
   // 모달텍스트 셋팅 & 언마운트시 모달클리어
+  console.log(userLoginInfo)
   useEffect(() => {
     //홈화면
     if (pathName === '/') {
-      if (modalText[0] !== modalText1[0]) setModalText(modalText1);
-      //이미 로그인한 경우 모달 Close
-      if (userLoginInfo && userLoginInfo.isLoggedIn === true) {
-        setModalIsOpen(false);
-      } else if (userLoginInfo.isLoggedIn) {
+      //로그인하지않은경우(:userIdx가 받아와지지 않은 경우)
+      if (userLoginInfo.isLoggedIn === false){
+        if(modalText[0] !== modalText1[0]) setModalText(modalText1);
         setModalIsOpen(true);
-      }
+      } 
+      //이미 로그인한 경우 ->프로필등록 유도
+      if (userLoginInfo && userLoginInfo.isProfileRegistered === 0) {
+        if(modalText[0] !== modalText[2]) setModalText(modalText2);
+        setModalIsOpen(true);
+      } 
     } else if (pathName === '/matching') {
-      if (modalText[0] !== modalText2[0]) setModalText(modalText2);
-    }
-    //타인프로필페이지
-    else {
-      if (modalText[0] !== modalText3[0]) setModalText(modalText3);
-      if (userLoginInfo && userLoginInfo.isProfileRegistered === 1) {
-        setModalIsOpen(false);
-      } else if (userLoginInfo.isLoggedIn === false || userLoginInfo.isProfileRegistered === 0) {
-        // 로그인하지 않거나  프로필 미등록시에
-        setModalIsOpen(true);
+      if (!userLoginInfo.isLoggedIn) {
+        if(modalText[0] !== modalText1[0]) setModalText(modalText1)
+      }
+      //로그인 한 경우
+      else {
+        if(modalText[0] !== modalText2[0]) setModalText(modalText2)
+      }
+      //비회원,프로필미등록 유저는 계속 modal유도 등장
+      if (userLoginInfo.isLoggedIn || userLoginInfo.isProfileRegistered === 1) {
+        setModalIsOpen(true)
       }
     }
-  }, [modalText]);
-
-  const pathName = useLocation().pathname;
+    // 회원가입 && 프로필 등록유저에게는 모달 항상 꺼주기
+    if(userLoginInfo && userLoginInfo.isProfileRegistered === 1) setModalIsOpen(false)
+  }, [modalText,userLoginInfo.isLoggedIn,pathName]);
 
   const modalCss: ReactModal.Styles = {
     overlay: {

@@ -45,16 +45,16 @@ const MatchingFilterButton = () => {
           </div>
           <div
             onClick={() => {
-              if (isLoggedIn === false) {
+              if (!isLoggedIn) {
                 alert('비회원은 게시글을 작성할 수 없습니다.');
                 return;
               }
               // 프로필 등록유저일 경우
-              if (isProfileRegistered === 1) {
+              else if (isProfileRegistered === 1) {
                 navigate('/post-posting');
               }
               // 프로필 미등록시 유도모달 오픈
-              else {
+              else if (isProfileRegistered === 0) {
                 setModalIsOpen(true);
               }
             }}
