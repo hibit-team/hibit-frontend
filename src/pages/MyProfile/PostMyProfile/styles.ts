@@ -26,6 +26,15 @@ export const Title = styled.div`
   color: #797979;
 `;
 
+export const ExplainText = styled.div`
+  display: flex;
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 20px;
+  margin-top: 5px;
+  color: #797979;
+`;
+
 export const EditBtn = styled.div<IEditMode>`
   display: ${(props) => props.isEditMode ? "none" : "none"};
   width: 140px;

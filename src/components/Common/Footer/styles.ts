@@ -77,10 +77,29 @@ export const RightIconContainer = styled.div`
 `;
 
 export const IconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background-color: #797979;
+  cursor: pointer;
+`;
+
+export const InstagramIcon = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+
+export const GithubIcon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
+
+export const ArrowIcon = styled.img`
+  width: 14px;
+  height: 14px;
 `;
 
 export const MobileWrapper = styled.div`
