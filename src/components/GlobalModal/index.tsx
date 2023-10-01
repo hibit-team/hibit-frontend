@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import * as s from './styles';
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import Modal from 'react-modal';
 import { css } from '@emotion/react';
 import COLORS from '../../assets/color';
@@ -58,8 +58,8 @@ export const GlobalModal = () => {
         if(modalText[0] !== modalText1[0]) setModalText(modalText1);
         setModalIsOpen(true);
       } 
-      //이미 로그인한 경우 ->프로필등록 유도
-      if (userLoginInfo && userLoginInfo.isProfileRegistered === 0) {
+      //이미 로그인(회원가입)은O 프로필X ->프로필등록 유도
+      else if (userLoginInfo && userLoginInfo.isLoggedIn && userLoginInfo.isProfileRegistered === false) {
         if(modalText[0] !== modalText[2]) setModalText(modalText2);
         setModalIsOpen(true);
       } 
@@ -67,18 +67,18 @@ export const GlobalModal = () => {
       if (!userLoginInfo.isLoggedIn) {
         if(modalText[0] !== modalText1[0]) setModalText(modalText1)
       }
-      //로그인 한 경우
+      //로그인 한 경우 프로필등록 유도 텍스트로 변경
       else {
         if(modalText[0] !== modalText2[0]) setModalText(modalText2)
       }
       //비회원,프로필미등록 유저는 계속 modal유도 등장
-      if (userLoginInfo.isLoggedIn || userLoginInfo.isProfileRegistered === 1) {
+      if (!userLoginInfo.isLoggedIn || userLoginInfo.isProfileRegistered === false) {
         setModalIsOpen(true)
       }
     }
     // 회원가입 && 프로필 등록유저에게는 모달 항상 꺼주기
-    if(userLoginInfo && userLoginInfo.isProfileRegistered === 1) setModalIsOpen(false)
-  }, [modalText,userLoginInfo.isLoggedIn,pathName]);
+    if(userLoginInfo && userLoginInfo.isProfileRegistered === true) setModalIsOpen(false)
+  }, [modalText,userLoginInfo,userLoginInfo.isLoggedIn,userLoginInfo.isProfileRegistered,pathName]);
 
   const modalCss: ReactModal.Styles = {
     overlay: {

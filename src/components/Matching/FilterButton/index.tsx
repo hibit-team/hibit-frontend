@@ -50,11 +50,11 @@ const MatchingFilterButton = () => {
                 return;
               }
               // 프로필 등록유저일 경우
-              else if (isProfileRegistered === 1) {
+              else if (isProfileRegistered === true) {
                 navigate('/post-posting');
               }
               // 프로필 미등록시 유도모달 오픈
-              else if (isProfileRegistered === 0) {
+              else if (isProfileRegistered === false) {
                 setModalIsOpen(true);
               }
             }}
@@ -65,7 +65,7 @@ const MatchingFilterButton = () => {
           </div>
         </s.FilterButtonWrapper>
       </s.FilterWrapper>
-      {isProfileRegistered === 1 ? undefined : <GlobalModal />}
+      {isProfileRegistered === true ? undefined : <GlobalModal />}
     </>
   );
 };
