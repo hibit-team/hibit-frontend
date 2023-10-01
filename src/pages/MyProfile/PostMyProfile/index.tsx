@@ -33,7 +33,7 @@ const PostMyProfile = () => {
       alert("로그인을 먼저 진행해 주세요.");
       navigate("/");
     } 
-    if (isProfileRegistered === 1) {
+    if (isProfileRegistered) {
       console.log("프로필정보가 등록되어 있어 put-profile로 이동")
       navigate("/put-profile");
     }

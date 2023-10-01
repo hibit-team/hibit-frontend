@@ -330,7 +330,7 @@ const PutMyProfile = () => {
       navigate("/");
     }
 
-    if (isProfileRegistered === 0) {
+    if (!isProfileRegistered) {
       console.log("프로필정보가 등록되어 있지 않아 post-profile로 이동")
       navigate("/post-profile");
     }

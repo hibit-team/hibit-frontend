@@ -24,20 +24,6 @@ const useLoginInfo = (): ILoginInfo => {
 
   const setUserIdx = useSetRecoilState(userIdxState);
   const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
-  
-  // if (localStorage.getItem('userIdx') === null) {
-  //   userIdx = null;
-  // } else {
-  //   userIdx = +localStorage.getItem('userIdx')!;
-  // }
-
-  // if (accessToken && userIdx) {
-  //   if (localStorage.getItem('isProfileRegistered') === null) {
-  //     isProfileRegistered = 0;
-  //   } else {
-  //     isProfileRegistered = 1;
-  //   }
-  // }
 
   useEffect(() => {
     
@@ -64,8 +50,8 @@ const useLoginInfo = (): ILoginInfo => {
         })
         .catch((e) => {
           const loginInfoRet: ILoginInfo = {
-            userIdx: null,
-            isProfileRegistered: null,
+            userIdx: userIdx,
+            isProfileRegistered: isProfileRegistered,
             isLoggedIn: true
           }
           setLoginInfo(loginInfoRet);
@@ -75,8 +61,8 @@ const useLoginInfo = (): ILoginInfo => {
     }
     else {
       const loginInfoRet: ILoginInfo = {
-        userIdx: null,
-        isProfileRegistered: null,
+        userIdx: userIdx,
+        isProfileRegistered: isProfileRegistered,
         isLoggedIn: false
       };
       // console.log({loginInfoRet});
