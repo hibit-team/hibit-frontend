@@ -20,10 +20,12 @@ const useLoginInfo = (): ILoginInfo => {
   const accessToken: string | null = localStorage.getItem('accessToken');
 
   let userIdx: number | null = useRecoilValue(userIdxState);
+
   let isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
 
   const setUserIdx = useSetRecoilState(userIdxState);
   const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
+
 
   useEffect(() => {
     
@@ -45,6 +47,7 @@ const useLoginInfo = (): ILoginInfo => {
           setUserIdx(res.idx);
           setIsProfileRegistered(isProf);
           console.log({loginInfoRet});
+
           setLoginInfo(loginInfoRet);
           return;
         })
@@ -52,6 +55,7 @@ const useLoginInfo = (): ILoginInfo => {
           const loginInfoRet: ILoginInfo = {
             userIdx: userIdx,
             isProfileRegistered: isProfileRegistered,
+
             isLoggedIn: true
           }
           setLoginInfo(loginInfoRet);
