@@ -28,20 +28,25 @@ const GoogleRedirectHandler = () => {
       }
     })
       .then((res) => {
-        const accessToken = res.data.accessToken;
-        const userIdx = res.data.id;
-        const profileRegistered = res.data.isProfileRegistered;
-
-        console.log({res})
+        const accessToken: string | null = res.data.accessToken;
+        const userIdx: number | null = res.data.id;
+        let profileRegistered: boolean | null;
+        if(res.data.isProfileRegistered === 0) {
+          profileRegistered = false;
+          setAccessToken(accessToken);
+          setUserIdx(userIdx);
+          setIsProfileRegistered(profileRegistered);
+        }
+        else if (res.data.isProfileRegistered === 1) {
+          profileRegistered = true;
+          setAccessToken(accessToken);
+          setUserIdx(userIdx);
+          setIsProfileRegistered(profileRegistered);
+        }
+        console.log({res});
         axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
-        
         localStorage.setItem('accessToken', `${accessToken}`);
-        // localStorage.setItem('userIdx', userIdx);
-        // localStorage.setItem('isProfileRegistered', profileRegistered);
-        setAccessToken(accessToken);
-        setUserIdx(userIdx);
-        setIsProfileRegistered(profileRegistered);
-        
+
         navigate('/');
       })
       .catch((err) => {

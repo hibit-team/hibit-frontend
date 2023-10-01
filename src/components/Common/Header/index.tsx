@@ -33,10 +33,6 @@ const Header = () => {
   console.log({isLogin})
   let isProfileRegistered: boolean | null = useLoginInfo().isProfileRegistered;
 
-  // if (localStorage.getItem('isProfileRegistered')) {
-  //   isProfileRegistered = +localStorage.getItem('isProfileRegistered')!;
-  // }
-
   useEffect(() => {
     setIsLogin(loginInfo.isLoggedIn);
   }, [loginInfo.isLoggedIn]);
@@ -48,10 +44,9 @@ const Header = () => {
         resetUserIdx();
         resetIsProfileRegistered();
         clearTokenAndHeader();
-
+        
         localStorage.removeItem('accessToken');
-        // localStorage.removeItem('userIdx');
-        // localStorage.removeItem('isProfileRegistered');
+
         setIsLogin(false);
         alert("로그아웃 했어요!");
         return null;
@@ -65,8 +60,7 @@ const Header = () => {
         clearTokenAndHeader();
 
         localStorage.removeItem('accessToken');
-        // localStorage.removeItem('userIdx');
-        // localStorage.removeItem('isProfileRegistered');
+
         setIsLogin(false);
         navigate("/");
         return null;

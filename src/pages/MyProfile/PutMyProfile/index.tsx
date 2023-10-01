@@ -23,10 +23,6 @@ const PutMyProfile = () => {
 
   let myProfileData: Promise<IProfile>;
   let userIdx: number | null = null;
-  localStorage.getItem("userIdx");
-  if (localStorage.getItem("userIdx")) {
-    userIdx = +localStorage.getItem("userIdx")!;
-  }
 
 
 

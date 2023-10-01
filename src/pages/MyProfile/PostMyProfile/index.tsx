@@ -23,9 +23,6 @@ const PostMyProfile = () => {
 
   let userIdx: number | null = null;
   const accessToken = localStorage.getItem("accessToken");
-  // if (localStorage.getItem("userIdx")) {
-  //   userIdx = +localStorage.getItem("userIdx")!;
-  // }
 
   const isProfileRegistered = useLoginInfo().isProfileRegistered;
   useEffect(() => {
