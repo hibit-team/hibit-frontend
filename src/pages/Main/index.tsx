@@ -15,7 +15,7 @@ const MainPage = () => {
   const onToggle: Function = () => {
     setToggleState(!toggleState);
   }
-  const isLoggedIn = useLoginInfo()?.isLoggedIn;
+  const isLoggedIn = useLoginInfo();
 
   if (useIsMobile()) {
     if (toggleState) {

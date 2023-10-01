@@ -10,6 +10,8 @@ import { GlobalModal } from "../../components/GlobalModal";
 import useLoginInfo from "../../hooks/useLoginInfo";
 import { Global } from "@emotion/react";
 import OtherprofileAPI from "../../api/OtherprofileAPI";
+import { useRecoilValue } from "recoil";
+import { profileRegisteredState } from "../../recoil/atom/LoginInfoState";
 
 const OtherProfile = () => {
   const idParams = useParams();
@@ -22,11 +24,7 @@ const OtherProfile = () => {
 
   const loginInfo = useLoginInfo();
   // 프로필 등록 or 미등록 유저에 따른 조건부 렌더링
-  const [isProfileRegistered, setIsProfileRegistered] = useState(false);
-  useEffect(() => {
-    if(loginInfo.isProfileRegistered) setIsProfileRegistered(true);
-    else setIsProfileRegistered(false);
-  }, [loginInfo]);
+  const isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
   
   // 이미지 미리보기 toggle
   const [imgToggler, setImgToggler] = useState(false);
@@ -164,7 +162,7 @@ const OtherProfile = () => {
 
               </s.NotRegisterContainer>
 
-              <s.ProfileContainer isRegistered={loginInfo?.isProfileRegistered ? true : false }>
+              <s.ProfileContainer isRegistered={isProfileRegistered ? true : false }>
                 <s.TopInfoContainer>
                   <s.CarouselWrapper>
                     <ImageCarousel />
@@ -256,7 +254,7 @@ const OtherProfile = () => {
         }
       </s.Wrapper>
       {/* 비로그인시 -> 로그인시 프로필 없는경우 -> 로그인시 프로필있는경우  */}
-      { loginInfo?.isLoggedIn === false ? <GlobalModal/> : loginInfo?.isProfileRegistered ? undefined : <GlobalModal/> }
+      { !loginInfo ? <GlobalModal/> : isProfileRegistered ? undefined : <GlobalModal/> }
     </LayoutTemplate>
   )
 };

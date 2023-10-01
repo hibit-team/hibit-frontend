@@ -7,10 +7,11 @@ import ArrownDown from '../../../images/components/MatchPost/ArrowDown.svg';
 import ArrowUp from '../../../images/components/MatchPost/ArrowUp.svg';
 import { IMatchingPostPage } from '../../../pages/MatchPost';
 import PostStateModal from '../PostStateModal';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { PostStateModalSwitch } from '../../../recoil/atom/PostStateModalSwitch';
 import { useUpdateMatchingStatusCancel } from '../../../hooks/MatchingPost/useUpdateMatchingStatusCancle';
 import useLoginInfo from '../../../hooks/useLoginInfo';
+import { userIdxState } from '../../../recoil/atom/LoginInfoState';
 
 export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPostPage; postIDX: string | undefined }) {
   const label = data?.number_and_What;
@@ -20,6 +21,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
   //게시글 모집취소 mutation hook
   const { mutate: cancelMutate } = useUpdateMatchingStatusCancel(postIDX);
   const loginInfo = useLoginInfo();
+  let userIdx: number | null = useRecoilValue(userIdxState);
 
   return (
     <div>
@@ -37,7 +39,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
           <s.MatchPostStatusContainer isStatusModalOpen={isStatusModalOpen}>
             <div
               onClick={() => {
-                if(data?.writerIdx === loginInfo?.userIdx) { setIsStatusModalOpen(!isStatusModalOpen);}
+                if(data?.writerIdx === userIdx) { setIsStatusModalOpen(!isStatusModalOpen);}
                 else { alert('게시글의 상태는 작성자만 변경할 수 있습니다.')}
               }}
               css={{ userSelect: 'none', display: 'flex', padding: '6px 0px 6px 12px'}}

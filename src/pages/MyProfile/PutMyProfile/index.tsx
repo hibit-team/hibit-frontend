@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
 import useLoginInfo from "../../../hooks/useLoginInfo";
+import { useRecoilValue } from "recoil";
+import { profileRegisteredState, userIdxState } from "../../../recoil/atom/LoginInfoState";
 
 const PutMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -22,7 +24,7 @@ const PutMyProfile = () => {
   const navigate = useNavigate();
 
   let myProfileData: Promise<IProfile>;
-  let userIdx: number | null = null;
+  let userIdx: number | null = useRecoilValue(userIdxState);
 
 
 
@@ -292,7 +294,7 @@ const PutMyProfile = () => {
     return true;
   };
 
-  const isProfileRegistered = useLoginInfo().isProfileRegistered;
+  const isProfileRegistered = useRecoilValue(profileRegisteredState);
   useEffect(() => {
     if (userIdx) {
       MyprofileAPI.getMyProfile(userIdx)

@@ -6,19 +6,21 @@ import { css } from '@emotion/react';
 import COLORS from '../../assets/color';
 import useIsMobile from '../../hooks/useIsMobile';
 import { GlobalModalTextState } from '../../recoil/atom/GlobalModalTextState';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useLocation } from 'react-router-dom';
 import { LoginModalState } from '../../recoil/atom/LoginModalState';
 import helloSmile from '../../images/components/Main/helloSmile.png';
 import { useNavigate } from 'react-router-dom';
 import { GlobalModalOpenSwitch } from '../../recoil/atom/GlobalModalOpenSwitch';
 import useLoginInfo from '../../hooks/useLoginInfo';
+import { profileRegisteredState } from '../../recoil/atom/LoginInfoState';
 //글로벌모달(회원가입/프로필등록유도)
 export const GlobalModal = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [loginModalOpen, setLoginModalOpen] = useRecoilState(LoginModalState);
   const userLoginInfo = useLoginInfo();
+  let isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
   //회원가입유도: (Home)
   const modalText1 = useMemo(
     () => ['히빗의 매칭 서비스를 이용하려면', '회원가입이 필요해요.', '히빗의 회원이 되어 추가 서비스를 이용해보세요!', '회원가입 하러가기'],
@@ -53,17 +55,17 @@ export const GlobalModal = () => {
     //홈화면
     if (pathName === '/') {
       //로그인하지않은경우(:userIdx가 받아와지지 않은 경우)
-      if (userLoginInfo.isLoggedIn === false){
+      if (!userLoginInfo){
         if(modalText[0] !== modalText1[0]) setModalText(modalText1);
         setModalIsOpen(true);
       } 
       //이미 로그인(회원가입)은O 프로필X ->프로필등록 유도
-      else if (userLoginInfo && userLoginInfo.isLoggedIn && userLoginInfo.isProfileRegistered === false) {
+      else if (userLoginInfo && !isProfileRegistered) {
         if(modalText[0] !== modalText[2]) setModalText(modalText2);
         setModalIsOpen(true);
       } 
     } else if (pathName === '/matching') {
-      if (!userLoginInfo.isLoggedIn) {
+      if (!userLoginInfo) {
         if(modalText[0] !== modalText1[0]) setModalText(modalText1)
       }
       //로그인 한 경우 프로필등록 유도 텍스트로 변경
@@ -71,13 +73,13 @@ export const GlobalModal = () => {
         if(modalText[0] !== modalText2[0]) setModalText(modalText2)
       }
       //비회원,프로필미등록 유저는 계속 modal유도 등장
-      if (!userLoginInfo.isLoggedIn || userLoginInfo.isProfileRegistered === false) {
+      if (!userLoginInfo || !isProfileRegistered) {
         setModalIsOpen(true)
       }
     }
     // 회원가입 && 프로필 등록유저에게는 모달 항상 꺼주기
-    if(userLoginInfo && userLoginInfo.isProfileRegistered === true) setModalIsOpen(false)
-  }, [modalText,userLoginInfo,userLoginInfo.isLoggedIn,userLoginInfo.isProfileRegistered,pathName]);
+    if(userLoginInfo && isProfileRegistered) setModalIsOpen(false)
+  }, [modalText,userLoginInfo, isProfileRegistered, pathName]);
 
   const modalCss: ReactModal.Styles = {
     overlay: {
@@ -165,7 +167,7 @@ export const GlobalModal = () => {
               }
               if (modalText[3] === '내 프로필 등록하기') {
                 setModalIsOpen(false);
-                if (userLoginInfo.isLoggedIn === true) {
+                if (userLoginInfo) {
                   navigate('/post-posting');
                 }
                 else {

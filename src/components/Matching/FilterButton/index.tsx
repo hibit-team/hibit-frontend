@@ -2,18 +2,19 @@
 import * as s from './styles';
 import { useMemo } from 'react';
 import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import useLoginInfo from '../../../hooks/useLoginInfo';
 import { GlobalModal } from '../../GlobalModal';
 import { useNavigate } from 'react-router-dom';
 import { GlobalModalOpenSwitch } from '../../../recoil/atom/GlobalModalOpenSwitch';
+import { profileRegisteredState } from '../../../recoil/atom/LoginInfoState';
 
 const MatchingFilterButton = () => {
   //전체게시글 'allposts' , 이번주 'thisweek' , 좋아요 'like'
   //필터 전역으로 상태관리
   const [sortOption, handleSortOption] = useRecoilState(MatchingControllerState);
-  const isLoggedIn = useLoginInfo()?.isLoggedIn;
-  const isProfileRegistered= useLoginInfo()?.isProfileRegistered;
+  const isLoggedIn = useLoginInfo();
+  const isProfileRegistered= useRecoilValue(profileRegisteredState);
   const navigate = useNavigate();
   const setModalIsOpen = useSetRecoilState(GlobalModalOpenSwitch);
   return (

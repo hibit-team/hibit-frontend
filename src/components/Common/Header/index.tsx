@@ -33,13 +33,8 @@ const Header = () => {
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
   
-  const loginInfo = useLoginInfo();
-  const [isLogin, setIsLogin] = useState<boolean>(loginInfo.isLoggedIn);
-  let isProfileRegistered: boolean | null = useLoginInfo().isProfileRegistered;
-
-  useEffect(() => {
-    setIsLogin(loginInfo.isLoggedIn);
-  }, [loginInfo.isLoggedIn]);
+  const [isLogin, setIsLogin] = useState<boolean>(useLoginInfo());
+  let isProfileRegistered: boolean = useRecoilValue(profileRegisteredState);
 
   const onClickLogout = async () => {
     await axiosInstance.get(`/api/auth/logout`)
@@ -119,7 +114,6 @@ const Header = () => {
          onClick={() => {
           if (isLogin) {
             if (isProfileRegistered) {
-
               navigate("/put-profile");
             } else {
               navigate("/post-profile");

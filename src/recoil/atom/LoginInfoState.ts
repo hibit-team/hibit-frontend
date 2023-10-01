@@ -12,8 +12,8 @@ export const userIdxState = atom<number | null>({
   default: null,
 });
 
-export const profileRegisteredState = atom<boolean | null>({
+export const profileRegisteredState = atom<boolean>({
   key: 'profileRegisteredState',
-  default: null,
+  default: false,
 });
 

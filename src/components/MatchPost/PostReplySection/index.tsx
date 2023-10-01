@@ -21,6 +21,8 @@ import useLoginInfo from '../../../hooks/useLoginInfo';
 import { ILoginInfo } from '../../../hooks/useLoginInfo';
 import userDefaultImage from '../../../images/components/MatchPost/profileDefault.svg';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
 //좋아요한 유저들
 export interface ILikeUsers {
   idx: number;
@@ -67,7 +69,14 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
   if (isError) {
     console.error(`댓글리스트를 불러오지 못했습니다 :  ${error as AxiosError}`);
   }
-  const userLoginInfo = useLoginInfo();
+  const isLogin = useLoginInfo();
+  const isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
+  const userIdx: number | null = useRecoilValue(userIdxState);
+  const userLoginInfo: ILoginInfo = {
+    isLoggedIn: isLogin,
+    isProfileRegistered: isProfileRegistered,
+    userIdx: userIdx
+  }
   return (
     <div css={{ position: 'relative', paddingBottom: 100 }}>
       {/* 유저 댓글입력창 */}
@@ -199,8 +208,15 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
     }
   };
   //로그인 정보 불러오기
-  const userIdxInfo = useLoginInfo()?.userIdx;
-  const userLoginInfo = useLoginInfo();
+  const userIdxInfo = useRecoilValue(userIdxState);
+
+  const isLogin = useLoginInfo();
+  const isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
+  const userLoginInfo: ILoginInfo = {
+    isLoggedIn: isLogin,
+    isProfileRegistered: isProfileRegistered,
+    userIdx: userIdxInfo
+  }
 
   useEffect(() => {
     if (OriginalReplyTextRef.current) {
@@ -220,7 +236,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   const { mutate } = usePostReplyLikeMutation(reply.idx);
   const isInclude = reply?.likeUsers?.find(user => {
     // 로그인한 아이디 idx가 좋아요유저에 있다면
-    if (user.idx === userLoginInfo?.userIdx) {
+    if (user.idx === userIdxInfo) {
       return true;
     }
     return false;
@@ -283,7 +299,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             <div
               onClick={e => {
                 //댓글 좋아요
-                if (userLoginInfo?.isLoggedIn) {
+                if (userLoginInfo) {
                   //로그인한 경우만 좋아요가능
                   mutate(reply.idx);
                 } else {
@@ -296,7 +312,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             {/* REPLY BUTTON */}
             <div
               onClick={() => {
-                if (userLoginInfo?.isLoggedIn === true) {
+                if (userLoginInfo) {
                   setIsDaetgulOpen(!isDaetgulOpen);
                 } else {
                   alert('로그인이 필요합니다.');
@@ -320,7 +336,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
               <div css={{ userSelect: 'none', marginLeft: 4 }}>답글</div>
             </div>
             {/* KEBAP BUTTON */}
-            {userLoginInfo?.isLoggedIn === true ? (
+            {userLoginInfo ? (
               <img
                 onClick={e => {
                   e.stopPropagation();

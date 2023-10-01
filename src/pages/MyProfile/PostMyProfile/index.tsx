@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
 import useLoginInfo from "../../../hooks/useLoginInfo";
+import { useRecoilValue } from "recoil";
+import { profileRegisteredState } from "../../../recoil/atom/LoginInfoState";
 
 const PostMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(true);
@@ -24,7 +26,7 @@ const PostMyProfile = () => {
   let userIdx: number | null = null;
   const accessToken = localStorage.getItem("accessToken");
 
-  const isProfileRegistered = useLoginInfo().isProfileRegistered;
+  const isProfileRegistered = useRecoilValue(profileRegisteredState);
   useEffect(() => {
     if (!accessToken) {
       alert("로그인을 먼저 진행해 주세요.");
