@@ -6,7 +6,7 @@ import { axiosInstance } from '../services/HttpClient';
 
 export interface ILoginInfo {
   userIdx: number | null,
-  isProfileRegistered: number | null,
+  isProfileRegistered: boolean | null,
   isLoggedIn: boolean
 }
 
