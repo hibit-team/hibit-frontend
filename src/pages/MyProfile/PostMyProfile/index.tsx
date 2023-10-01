@@ -247,8 +247,8 @@ const PostMyProfile = () => {
       return false;
     }
 
-    if (age === undefined || age === 0) {
-      alert("나이 정보를 입력해 주세요.");
+    if (age === undefined || age === 0 || +age! < 0) {
+      alert("나이를 올바르게 입력해 주세요.");
       return false;
     }
 
