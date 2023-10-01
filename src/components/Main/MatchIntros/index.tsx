@@ -1,6 +1,7 @@
 import * as s from './styles';
 import PhoneImg from "../../../images/components/PhoneImg.png";
 import ReviewSlider from '../ReviewSlider';
+import { useNavigate } from 'react-router-dom';
 
 const MatchIntros = () => {
   const text1 = "예술적 관심사를 공유하고 싶은";
@@ -13,6 +14,12 @@ const MatchIntros = () => {
 
   const text4 = "유저가 말해주는 믿을 수 있는";
   const text5 = "매칭 이용 후기";
+
+  const navigate = useNavigate();
+  const onClickMatching = () => {
+    navigate('/matching');
+    window.scrollTo(0, 0);
+  }
 
   return (
     <s.Warpper>
@@ -44,7 +51,7 @@ const MatchIntros = () => {
         <s.IntroText1>{text4}</s.IntroText1>
         <s.IntroText2>{text5}</s.IntroText2>
         <ReviewSlider />
-        <s.MatchingBtn>매칭 바로가기</s.MatchingBtn>
+        <s.MatchingBtn onClick={() => onClickMatching()}>매칭 바로가기</s.MatchingBtn>
       </s.BottomContainer>
     </s.Warpper>
   );
