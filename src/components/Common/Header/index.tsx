@@ -19,6 +19,11 @@ import { LoginModalState } from '../../../recoil/atom/LoginModalState';
 const Header = () => {
   const navigate = useNavigate();
 
+  const onClickIntro = () => {
+    window.location.href = "https://mellow-bard-bc8.notion.site/28a5202c60344d978caa0d2745921049?pvs=4";
+  };
+
+
   const resetAccessToken = useResetRecoilState(accessTokenState);
   const resetUserIdx = useResetRecoilState(userIdxState);
   const resetIsProfileRegistered = useResetRecoilState(profileRegisteredState);
@@ -30,7 +35,6 @@ const Header = () => {
   
   const loginInfo = useLoginInfo();
   const [isLogin, setIsLogin] = useState<boolean>(loginInfo.isLoggedIn);
-  console.log({isLogin})
   let isProfileRegistered: boolean | null = useLoginInfo().isProfileRegistered;
 
   useEffect(() => {
@@ -44,7 +48,7 @@ const Header = () => {
         resetUserIdx();
         resetIsProfileRegistered();
         clearTokenAndHeader();
-        
+
         localStorage.removeItem('accessToken');
 
         setIsLogin(false);
@@ -109,7 +113,7 @@ const Header = () => {
         <s.LogoContainer onClick={() => navigate("/")}>
           {path === '/matching' ? <img src={HibitLogoWhite} alt='logo-white'/> : <img src={HibitLogo} alt='hibit-logo'/> }
         </s.LogoContainer>
-        <s.Category onClick={() => navigate("/intro")}>서비스 소개</s.Category>
+        <s.Category onClick={() => onClickIntro()}>서비스 소개</s.Category>
         <s.Category onClick={() => navigate("/matching")}>매칭</s.Category>
         <s.Category
          onClick={() => {
