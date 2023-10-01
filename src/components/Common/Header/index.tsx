@@ -29,11 +29,12 @@ const Header = () => {
   const onClickLogin = () => setModalOpen(true);
   
   const loginInfo = useLoginInfo();
-  const [isLogin, setIsLogin] = useState<boolean>(useLoginInfo().isLoggedIn);
-  let isProfileRegistered: number | null = null
-  if (localStorage.getItem('isProfileRegistered')) {
-    isProfileRegistered = +localStorage.getItem('isProfileRegistered')!;
-  }
+  const [isLogin, setIsLogin] = useState<boolean>(loginInfo.isLoggedIn);
+  console.log({isLogin})
+  let isProfileRegistered: number | null = useLoginInfo().isProfileRegistered;
+  // if (localStorage.getItem('isProfileRegistered')) {
+  //   isProfileRegistered = +localStorage.getItem('isProfileRegistered')!;
+  // }
 
   useEffect(() => {
     setIsLogin(loginInfo.isLoggedIn);
@@ -48,8 +49,8 @@ const Header = () => {
         clearTokenAndHeader();
 
         localStorage.removeItem('accessToken');
-        localStorage.removeItem('userIdx');
-        localStorage.removeItem('isProfileRegistered');
+        // localStorage.removeItem('userIdx');
+        // localStorage.removeItem('isProfileRegistered');
         setIsLogin(false);
         alert("로그아웃 했어요!");
         return null;
@@ -63,8 +64,8 @@ const Header = () => {
         clearTokenAndHeader();
 
         localStorage.removeItem('accessToken');
-        localStorage.removeItem('userIdx');
-        localStorage.removeItem('isProfileRegistered');
+        // localStorage.removeItem('userIdx');
+        // localStorage.removeItem('isProfileRegistered');
         setIsLogin(false);
         navigate("/");
         return null;
@@ -118,7 +119,7 @@ const Header = () => {
         <s.Category
          onClick={() => {
           if (isLogin) {
-            if (isProfileRegistered !== null && isProfileRegistered === 1) {
+            if (isProfileRegistered === 1) {
               navigate("/put-profile");
             } else {
               navigate("/post-profile");
@@ -149,7 +150,7 @@ const Header = () => {
           <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
         </s.RightContainer> :
         <s.RightContainer >
-          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}}>회원가입</s.TextWrapper>
+          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogin()}>회원가입</s.TextWrapper>
           <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogin()}>로그인</s.TextWrapper>
           <LoginModal open={modalOpen} close={closeModal} />
         </s.RightContainer>

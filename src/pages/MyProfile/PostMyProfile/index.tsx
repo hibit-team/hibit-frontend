@@ -17,19 +17,19 @@ import { IImage } from "../../../interfaces/IImage";
 import useLoginInfo from "../../../hooks/useLoginInfo";
 
 const PostMyProfile = () => {
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [isEditMode, setIsEditMode] = useState<boolean>(true);
 
   const navigate = useNavigate();
 
   let userIdx: number | null = null;
-  localStorage.getItem("userIdx");
-  if (localStorage.getItem("userIdx")) {
-    userIdx = +localStorage.getItem("userIdx")!;
-  }
+  const accessToken = localStorage.getItem("accessToken");
+  // if (localStorage.getItem("userIdx")) {
+  //   userIdx = +localStorage.getItem("userIdx")!;
+  // }
 
   const isProfileRegistered = useLoginInfo().isProfileRegistered;
   useEffect(() => {
-    if (!userIdx) {
+    if (!accessToken) {
       alert("로그인을 먼저 진행해 주세요.");
       navigate("/");
     } 

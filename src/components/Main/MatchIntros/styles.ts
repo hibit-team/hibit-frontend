@@ -86,6 +86,8 @@ export const MatchingBtn = styled.button`
   border-radius: 100px;
   border: 1px solid #804DD3;
   background-color: white;
+  font-family: 'SUIT';
+  cursor: pointer;
 
   &:hover {
     background-color: #5E1EC7;
