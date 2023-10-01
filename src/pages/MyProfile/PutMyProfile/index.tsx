@@ -427,6 +427,7 @@ const PutMyProfile = () => {
         
         <s.BottomTitleContainer>
           <s.Title>선택 노출 정보</s.Title>
+          <s.ExplainText>좌측 원을 클릭하면 해당 정보를 숨길 수 있어요.</s.ExplainText>
         </s.BottomTitleContainer>
 
         <s.OptionalInfoContainer>

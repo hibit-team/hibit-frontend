@@ -17,19 +17,19 @@ import { IImage } from "../../../interfaces/IImage";
 import useLoginInfo from "../../../hooks/useLoginInfo";
 
 const PostMyProfile = () => {
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [isEditMode, setIsEditMode] = useState<boolean>(true);
 
   const navigate = useNavigate();
 
   let userIdx: number | null = null;
-  localStorage.getItem("userIdx");
-  if (localStorage.getItem("userIdx")) {
-    userIdx = +localStorage.getItem("userIdx")!;
-  }
+  const accessToken = localStorage.getItem("accessToken");
+  // if (localStorage.getItem("userIdx")) {
+  //   userIdx = +localStorage.getItem("userIdx")!;
+  // }
 
   const isProfileRegistered = useLoginInfo().isProfileRegistered;
   useEffect(() => {
-    if (!userIdx) {
+    if (!accessToken) {
       alert("로그인을 먼저 진행해 주세요.");
       navigate("/");
     } 
@@ -380,6 +380,7 @@ const PostMyProfile = () => {
         
         <s.BottomTitleContainer>
           <s.Title>선택 노출 정보</s.Title>
+          <s.ExplainText>좌측 원을 클릭하면 해당 정보를 숨길 수 있어요.</s.ExplainText>
         </s.BottomTitleContainer>
 
         <s.OptionalInfoContainer>
