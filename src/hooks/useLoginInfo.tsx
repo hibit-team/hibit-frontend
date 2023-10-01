@@ -52,13 +52,6 @@ const useLoginInfo = (): ILoginInfo => {
           return;
         })
         .catch((e) => {
-          const loginInfoRet: ILoginInfo = {
-            userIdx: userIdx,
-            isProfileRegistered: isProfileRegistered,
-
-            isLoggedIn: true
-          }
-          setLoginInfo(loginInfoRet);
           console.error({e});
         });
 
