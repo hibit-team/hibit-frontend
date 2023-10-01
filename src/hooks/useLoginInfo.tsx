@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { accessTokenState, profileRegisteredState, userIdxState } from '../recoil/atom/LoginInfoState';
 import LoginAPI from '../api/LoginAPI';
 import { axiosInstance } from '../services/HttpClient';
 
 export interface ILoginInfo {
   userIdx: number | null,
-  isProfileRegistered: number | null,
+  isProfileRegistered: boolean | null,
   isLoggedIn: boolean
 }
 
@@ -20,7 +20,10 @@ const useLoginInfo = (): ILoginInfo => {
   const accessToken: string | null = localStorage.getItem('accessToken');
 
   let userIdx: number | null = useRecoilValue(userIdxState);
-  let isProfileRegistered: number | null = useRecoilValue(profileRegisteredState);
+  let isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
+
+  const setUserIdx = useSetRecoilState(userIdxState);
+  const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
   
   // if (localStorage.getItem('userIdx') === null) {
   //   userIdx = null;
@@ -44,12 +47,18 @@ const useLoginInfo = (): ILoginInfo => {
       LoginAPI.getUserInfo()
         .then((res) => {
           console.log({res});
+          let isProf: boolean = false;
+          if(res.isprofile) {
+            isProf = res.isprofile;
+          }
           const loginInfoRet: ILoginInfo = {
-            userIdx: res.userIdx,
-            isProfileRegistered: res.isProfileRegistered,
+            userIdx: res.idx,
+            isProfileRegistered: isProf,
             isLoggedIn: true
           }
-          // console.log({loginInfoRet});
+          setUserIdx(res.idx);
+          setIsProfileRegistered(isProf);
+          console.log({loginInfoRet});
           setLoginInfo(loginInfoRet);
           return;
         })

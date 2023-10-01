@@ -139,11 +139,11 @@ const PostMyProfile = () => {
   
   const [imgURLs, setImgURLs]= useState<string[]>([]);
   const [imgs, setImgs]= useState<File[]>([]);
+  const imgInputRef = useRef<HTMLInputElement | null>(null);
   const [isImgChecked, setIsImgChecked] = useState<boolean>(false);
   const onClickImgCheck = () => {
     setIsImgChecked(!isImgChecked);
   };
-  const imgInputRef = useRef<HTMLInputElement | null>(null);
   const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       console.log("이미지 파일 없음");
