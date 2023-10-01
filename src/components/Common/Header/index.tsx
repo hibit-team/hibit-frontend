@@ -31,7 +31,8 @@ const Header = () => {
   const loginInfo = useLoginInfo();
   const [isLogin, setIsLogin] = useState<boolean>(loginInfo.isLoggedIn);
   console.log({isLogin})
-  let isProfileRegistered: number | null = useLoginInfo().isProfileRegistered;
+  let isProfileRegistered: boolean | null = useLoginInfo().isProfileRegistered;
+
   // if (localStorage.getItem('isProfileRegistered')) {
   //   isProfileRegistered = +localStorage.getItem('isProfileRegistered')!;
   // }
@@ -119,7 +120,8 @@ const Header = () => {
         <s.Category
          onClick={() => {
           if (isLogin) {
-            if (isProfileRegistered === 1) {
+            if (isProfileRegistered) {
+
               navigate("/put-profile");
             } else {
               navigate("/post-profile");

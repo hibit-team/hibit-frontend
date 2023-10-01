@@ -24,7 +24,7 @@ const OtherProfile = () => {
   // 프로필 등록 or 미등록 유저에 따른 조건부 렌더링
   const [isProfileRegistered, setIsProfileRegistered] = useState(false);
   useEffect(() => {
-    if(loginInfo.isProfileRegistered === 1) setIsProfileRegistered(true);
+    if(loginInfo.isProfileRegistered) setIsProfileRegistered(true);
     else setIsProfileRegistered(false);
   }, [loginInfo]);
   
@@ -164,7 +164,7 @@ const OtherProfile = () => {
 
               </s.NotRegisterContainer>
 
-              <s.ProfileContainer isRegistered={loginInfo?.isProfileRegistered === 1 ? true : false }>
+              <s.ProfileContainer isRegistered={loginInfo?.isProfileRegistered ? true : false }>
                 <s.TopInfoContainer>
                   <s.CarouselWrapper>
                     <ImageCarousel />
@@ -256,7 +256,7 @@ const OtherProfile = () => {
         }
       </s.Wrapper>
       {/* 비로그인시 -> 로그인시 프로필 없는경우 -> 로그인시 프로필있는경우  */}
-      { loginInfo?.isLoggedIn === false ? <GlobalModal/> : loginInfo?.isProfileRegistered === 1 ? undefined : <GlobalModal/> }
+      { loginInfo?.isLoggedIn === false ? <GlobalModal/> : loginInfo?.isProfileRegistered ? undefined : <GlobalModal/> }
     </LayoutTemplate>
   )
 };

@@ -33,7 +33,7 @@ const PostMyProfile = () => {
       alert("로그인을 먼저 진행해 주세요.");
       navigate("/");
     } 
-    if (isProfileRegistered === 1) {
+    if (isProfileRegistered) {
       console.log("프로필정보가 등록되어 있어 put-profile로 이동")
       navigate("/put-profile");
     }
@@ -139,11 +139,11 @@ const PostMyProfile = () => {
   
   const [imgURLs, setImgURLs]= useState<string[]>([]);
   const [imgs, setImgs]= useState<File[]>([]);
+  const imgInputRef = useRef<HTMLInputElement | null>(null);
   const [isImgChecked, setIsImgChecked] = useState<boolean>(false);
   const onClickImgCheck = () => {
     setIsImgChecked(!isImgChecked);
   };
-  const imgInputRef = useRef<HTMLInputElement | null>(null);
   const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       console.log("이미지 파일 없음");

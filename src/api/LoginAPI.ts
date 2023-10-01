@@ -4,7 +4,7 @@ const LoginAPI = {
   getUserInfo: async () => {
     try {
       // const path = "/login/status-management";
-      const path = "/api/profiles/me";
+      const path = "/api/members/find";
       const response = HttpClient.get(path);
       return response;
     } catch (e) {
