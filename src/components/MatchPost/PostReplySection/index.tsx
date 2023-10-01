@@ -162,10 +162,10 @@ export const InputReplyWrapper = ({ postIDX, userLoginInfo }: { postIDX?: string
             if (userLoginInfo?.isLoggedIn === false ){
               alert('로그인이 필요합니다.');
             }
-            else if (userLoginInfo?.isLoggedIn && userLoginInfo?.isProfileRegistered === 0){
+            else if (userLoginInfo?.isLoggedIn && userLoginInfo?.isProfileRegistered === false){
               alert('댓글 작성시 프로필을 등록이 필요합니다.')
             }
-            else if (userLoginInfo?.isLoggedIn && userLoginInfo?.isProfileRegistered === 1) {
+            else if (userLoginInfo?.isLoggedIn && userLoginInfo?.isProfileRegistered === true) {
               if (textState === '') {
                 alert('댓글 내용을 입력해 주세요.');
               } else {

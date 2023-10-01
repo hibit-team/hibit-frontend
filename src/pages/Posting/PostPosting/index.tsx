@@ -218,7 +218,7 @@ const PostPosting = () => {
   }, []);
 
   const checkAllInfo = (): boolean => {
-    if (title === null) {
+    if (title === null || title.length === 0) {
       alert("제목을 입력해 주세요.");
       return false;
     }
