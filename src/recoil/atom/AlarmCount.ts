@@ -6,7 +6,7 @@ export const alarmCountState = selector({
   key: 'alarmCountState',
   get: async ({get}) => {
     let userIdx: number | null = get(userIdxState);
-    let isProfileRegistered: number | null = get(profileRegisteredState);
+    let isProfileRegistered: boolean | null = get(profileRegisteredState);
     if(userIdx && isProfileRegistered) {
       const alarmList = await AlarmAPI.getAlarmList();
       if(alarmList) {
