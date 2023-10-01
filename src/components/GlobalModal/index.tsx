@@ -49,7 +49,6 @@ export const GlobalModal = () => {
   //유저로그인 상태값으로부터 회원/프로필 유무 boolean값으로 받아서 setState
   const [modalText, setModalText] = useRecoilState<string[]>(GlobalModalTextState);
   // 모달텍스트 셋팅 & 언마운트시 모달클리어
-  console.log(userLoginInfo)
   useEffect(() => {
     //홈화면
     if (pathName === '/') {

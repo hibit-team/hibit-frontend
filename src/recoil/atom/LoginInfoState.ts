@@ -1,8 +1,10 @@
 import { atom } from 'recoil';
 
+const initialAccessToken = localStorage.getItem('accessToken');
+
 export const accessTokenState = atom<string | null>({
   key: 'accessTokenState',
-  default: null
+  default: initialAccessToken || null
 });
 
 export const userIdxState = atom<number | null>({

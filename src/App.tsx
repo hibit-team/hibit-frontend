@@ -26,32 +26,7 @@ import MobileLanding from "./pages/MobileLanding";
 
 function App() {
   const queryClient = new QueryClient();
-
-  const loginInfo = useLoginInfo();
-  const isLogin = loginInfo.isLoggedIn;
-
-  /* 새로 고침 발생 시 accessToken 재발급 과정 */
-  useEffect(() => {
-    if (!isLogin) return;
-
-    const accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
-      alert("다시 로그인 해 주세요.");
-      window.location.href = "/";
-      return;
-    }
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-
-    axiosInstance.post(`/api/auth/token/access`, {})
-      .then((res) => { 
-        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
-      })
-      .catch((e) => { 
-        console.error("유효하지 않은 refreshToken.", {e});
-      });
-    return;
-  }, [loginInfo, isLogin]);
-
+  useLoginInfo();
   const isMobile = useIsMobile();
   if(isMobile) return <MobileLanding/>;
 

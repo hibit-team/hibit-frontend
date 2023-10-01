@@ -17,35 +17,25 @@ const useLoginInfo = (): ILoginInfo => {
     isLoggedIn: false
   });
 
-  const accessToken: string | null = localStorage.getItem('accessToken');
-
+  const accessToken: string | null = useRecoilValue(accessTokenState);
   let userIdx: number | null = useRecoilValue(userIdxState);
-
   let isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
-
   const setUserIdx = useSetRecoilState(userIdxState);
   const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
 
 
   useEffect(() => {
-    
-    if (accessToken !== null) {
-      // 요청 보냄.
-      console.log(axiosInstance.defaults.headers.common['Authorization']);
+    if (axiosInstance.defaults.headers.common['Authorization']) {
       LoginAPI.getUserInfo()
         .then((res) => {
-          console.log({res});
-          let isProf: boolean = false;
-          if(res.isprofile) {
-            isProf = res.isprofile;
-          }
+
           const loginInfoRet: ILoginInfo = {
             userIdx: res.idx,
-            isProfileRegistered: isProf,
+            isProfileRegistered: res.isprofile,
             isLoggedIn: true
           }
           setUserIdx(res.idx);
-          setIsProfileRegistered(isProf);
+          setIsProfileRegistered(res.isprofile);
           console.log({loginInfoRet});
 
           setLoginInfo(loginInfoRet);
@@ -62,10 +52,9 @@ const useLoginInfo = (): ILoginInfo => {
         isProfileRegistered: isProfileRegistered,
         isLoggedIn: false
       };
-      // console.log({loginInfoRet});
       setLoginInfo(loginInfoRet);
     };
-  }, [accessToken]);
+  }, [accessToken, userIdx, isProfileRegistered]);
 
   return loginInfo;
 };
