@@ -276,8 +276,8 @@ const PutMyProfile = () => {
       return false;
     }
 
-    if (imgURLs.length < 3) {
-      alert("이미지는 3장을 필수로 등록해야 합니다.");
+    if (imgURLs.length < 2) {
+      alert("이미지는 2장 이상을 등록해야 합니다.");
       return false;
     }
 

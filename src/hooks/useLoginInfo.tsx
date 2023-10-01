@@ -25,7 +25,7 @@ const useLoginInfo = (): ILoginInfo => {
 
 
   useEffect(() => {
-    if (axiosInstance.defaults.headers.common['Authorization']) {
+    if (accessToken) {
       LoginAPI.getUserInfo()
         .then((res) => {
 
