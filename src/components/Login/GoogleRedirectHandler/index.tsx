@@ -32,14 +32,15 @@ const GoogleRedirectHandler = () => {
         const userIdx = res.data.id;
         const profileRegistered = res.data.isProfileRegistered;
 
+        console.log({res})
         axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
+        
+        localStorage.setItem('accessToken', `${accessToken}`);
+        // localStorage.setItem('userIdx', userIdx);
+        // localStorage.setItem('isProfileRegistered', profileRegistered);
         setAccessToken(accessToken);
         setUserIdx(userIdx);
         setIsProfileRegistered(profileRegistered);
-
-        localStorage.setItem('accessToken', `${accessToken}`);
-        localStorage.setItem('userIdx', userIdx);
-        localStorage.setItem('isProfileRegistered', profileRegistered);
         
         navigate('/');
       })
