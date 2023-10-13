@@ -228,6 +228,8 @@ const PostMyProfile = () => {
             .catch((e) => {
               console.error({e});
             });
+          
+          navigate("/matching");
 
         })
         .catch((e) => {
