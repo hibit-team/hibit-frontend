@@ -60,8 +60,8 @@ const Invitation = (props: IAlarm) => {
         <s.BottomContainer>
           <s.Time>{alarms.time}</s.Time>
           {
-            alarms.history ? 
-              alarms.history === "N" ?
+            alarms.history !== "YET" ? 
+              alarms.history === "NO" ?
               <s.RefuseBtn>거절</s.RefuseBtn> :
               <s.AcceptBtn>수락</s.AcceptBtn>
               :
