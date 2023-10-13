@@ -6,40 +6,28 @@ import { axiosInstance } from '../services/HttpClient';
 
 export interface ILoginInfo {
   userIdx: number | null,
-  isProfileRegistered: boolean | null,
+  isProfileRegistered: boolean,
   isLoggedIn: boolean
 }
 
-const useLoginInfo = (): ILoginInfo => {
-  const [loginInfo, setLoginInfo] = useState<ILoginInfo>({
-    userIdx: null,
-    isProfileRegistered: null,
-    isLoggedIn: false
-  });
+const useLoginInfo = (): boolean => {
 
-  const accessToken: string | null = useRecoilValue(accessTokenState);
+  const accessToken: string | null = localStorage.getItem("accessToken");
   let userIdx: number | null = useRecoilValue(userIdxState);
   let isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
   const setUserIdx = useSetRecoilState(userIdxState);
   const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
 
   useEffect(() => {
-    if (axiosInstance.defaults.headers.common['Authorization']) {
+    if (accessToken) {
+      setIsLoggedIn(true);
       LoginAPI.getUserInfo()
         .then((res) => {
-
-          const loginInfoRet: ILoginInfo = {
-            userIdx: res.idx,
-            isProfileRegistered: res.isprofile,
-            isLoggedIn: true
-          }
           setUserIdx(res.idx);
           setIsProfileRegistered(res.isprofile);
-          console.log({loginInfoRet});
-
-          setLoginInfo(loginInfoRet);
-          return;
         })
         .catch((e) => {
           console.error({e});
@@ -47,16 +35,11 @@ const useLoginInfo = (): ILoginInfo => {
 
     }
     else {
-      const loginInfoRet: ILoginInfo = {
-        userIdx: userIdx,
-        isProfileRegistered: isProfileRegistered,
-        isLoggedIn: false
-      };
-      setLoginInfo(loginInfoRet);
+      setIsLoggedIn(false);
     };
   }, [accessToken, userIdx, isProfileRegistered]);
 
-  return loginInfo;
+  return isLoggedIn;
 };
 
 export default useLoginInfo;

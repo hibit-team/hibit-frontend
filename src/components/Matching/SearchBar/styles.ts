@@ -12,6 +12,7 @@ border-radius:60px;
 border: 2px solid ${COLORS.main100};
 box-sizing: border-box;
 margin-bottom:24px;
+font-family: 'SUIT';
 &:placeholder {
   opacity: 0;
 }

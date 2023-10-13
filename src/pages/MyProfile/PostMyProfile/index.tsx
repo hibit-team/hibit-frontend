@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
 import useLoginInfo from "../../../hooks/useLoginInfo";
+import { useRecoilValue } from "recoil";
+import { profileRegisteredState } from "../../../recoil/atom/LoginInfoState";
 
 const PostMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(true);
@@ -24,7 +26,7 @@ const PostMyProfile = () => {
   let userIdx: number | null = null;
   const accessToken = localStorage.getItem("accessToken");
 
-  const isProfileRegistered = useLoginInfo().isProfileRegistered;
+  const isProfileRegistered = useRecoilValue(profileRegisteredState);
   useEffect(() => {
     if (!accessToken) {
       alert("로그인을 먼저 진행해 주세요.");
@@ -192,6 +194,8 @@ const PostMyProfile = () => {
             subImages: []
           }
 
+          console.log({imageResponse});
+
           imageResponse.mainImage = res?.data[0];
           if (res?.data[1].length > 0) {
             res?.data[1].forEach((url: string) => {
@@ -247,8 +251,8 @@ const PostMyProfile = () => {
       return false;
     }
 
-    if (age === undefined || age === 0) {
-      alert("나이 정보를 입력해 주세요.");
+    if (age === undefined || age === 0 || +age! < 0) {
+      alert("나이를 올바르게 입력해 주세요.");
       return false;
     }
 
@@ -282,8 +286,8 @@ const PostMyProfile = () => {
       return false;
     }
 
-    if (imgURLs.length < 3) {
-      alert("이미지는 3장을 필수로 등록해야 합니다.");
+    if (imgURLs.length < 2) {
+      alert("이미지는 2장 이상을 등록해야 합니다.");
       return false;
     }
 

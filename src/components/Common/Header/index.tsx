@@ -14,10 +14,16 @@ import useLoginInfo from '../../../hooks/useLoginInfo';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
 import { axiosInstance } from '../../../services/HttpClient';
 import { LoginModalState } from '../../../recoil/atom/LoginModalState';
+import LoginAPI from '../../../api/LoginAPI';
 
 
 const Header = () => {
   const navigate = useNavigate();
+
+  const onClickIntro = () => {
+    window.location.href = "https://mellow-bard-bc8.notion.site/28a5202c60344d978caa0d2745921049?pvs=4";
+  };
+
 
   const resetAccessToken = useResetRecoilState(accessTokenState);
   const resetUserIdx = useResetRecoilState(userIdxState);
@@ -28,14 +34,14 @@ const Header = () => {
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
   
-  const loginInfo = useLoginInfo();
-  const [isLogin, setIsLogin] = useState<boolean>(loginInfo.isLoggedIn);
-  console.log({isLogin})
-  let isProfileRegistered: boolean | null = useLoginInfo().isProfileRegistered;
-
+  const [isLogin, setIsLogin] = useState<boolean>(useLoginInfo());
+  let isProfileRegistered: boolean = useRecoilValue(profileRegisteredState);
+  const accessToken: string | null = localStorage.getItem("accessToken");
   useEffect(() => {
-    setIsLogin(loginInfo.isLoggedIn);
-  }, [loginInfo.isLoggedIn]);
+    if(accessToken) {
+      setIsLogin(true);
+    }
+  }, []);
 
   const onClickLogout = async () => {
     await axiosInstance.get(`/api/auth/logout`)
@@ -44,7 +50,7 @@ const Header = () => {
         resetUserIdx();
         resetIsProfileRegistered();
         clearTokenAndHeader();
-        
+
         localStorage.removeItem('accessToken');
 
         setIsLogin(false);
@@ -109,13 +115,12 @@ const Header = () => {
         <s.LogoContainer onClick={() => navigate("/")}>
           {path === '/matching' ? <img src={HibitLogoWhite} alt='logo-white'/> : <img src={HibitLogo} alt='hibit-logo'/> }
         </s.LogoContainer>
-        <s.Category onClick={() => navigate("/intro")}>서비스 소개</s.Category>
+        <s.Category onClick={() => onClickIntro()}>서비스 소개</s.Category>
         <s.Category onClick={() => navigate("/matching")}>매칭</s.Category>
         <s.Category
          onClick={() => {
           if (isLogin) {
             if (isProfileRegistered) {
-
               navigate("/put-profile");
             } else {
               navigate("/post-profile");

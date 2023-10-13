@@ -21,6 +21,7 @@ const CustomSearchBar = () => {
       }}
       css={css`
         color: ${COLORS.Gray3};
+        font-family: 'SUIT';
         font-size: 22px;
         font-weight: 500px;
         position: relative;
@@ -75,7 +76,7 @@ const CustomSearchBar = () => {
           position: relative;
           left: 394px;
           bottom: 5.6rem;
-          &: hover {
+          &:hover {
             scale: 1.05;
             cursor: pointer;
           }

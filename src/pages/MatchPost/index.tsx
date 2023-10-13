@@ -9,8 +9,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import InviteModal from '../../components/MatchPost/InviteModal';
 import { PostIDXAtom } from '../../recoil/atom/PostIDXAtom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import useLoginInfo from '../../hooks/useLoginInfo';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import useLoginInfo, { ILoginInfo } from '../../hooks/useLoginInfo';
+import { profileRegisteredState, userIdxState } from '../../recoil/atom/LoginInfoState';
 export interface ILikeUsers {
   idx: number;
   id: string;
@@ -38,11 +39,21 @@ export interface IMatchingPostPage {
 }
 
 export default function MatchingPostPage() {
-  const userLoginInfo = useLoginInfo();
   const navigate = useNavigate();
   //게시글정보
   const { idx } = useParams();
   const setIdxAtom = useSetRecoilState(PostIDXAtom);
+
+
+  const isLogin = useLoginInfo();
+  const isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
+  const userIdxInfo: number | null = useRecoilValue(userIdxState);
+  const userLoginInfo: ILoginInfo = {
+    isLoggedIn: isLogin,
+    isProfileRegistered: isProfileRegistered,
+    userIdx: userIdxInfo
+  }
+
   useEffect(() => {
     if (idx) setIdxAtom(idx);
   }, [idx, setIdxAtom]);

@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
 import useLoginInfo from "../../../hooks/useLoginInfo";
+import { useRecoilValue } from "recoil";
+import { profileRegisteredState, userIdxState } from "../../../recoil/atom/LoginInfoState";
 
 const PutMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -22,7 +24,7 @@ const PutMyProfile = () => {
   const navigate = useNavigate();
 
   let myProfileData: Promise<IProfile>;
-  let userIdx: number | null = null;
+  let userIdx: number | null = useRecoilValue(userIdxState);
 
 
 
@@ -240,8 +242,8 @@ const PutMyProfile = () => {
 
 
     loop1:
-    if (age === undefined || age === 0) {
-      alert("나이 정보를 입력해 주세요.");
+    if (age === undefined || age === 0 || +age! < 0) {
+      alert("나이를 올바르게 입력해 주세요.");
       return false;
     }
 
@@ -276,8 +278,8 @@ const PutMyProfile = () => {
       return false;
     }
 
-    if (imgURLs.length < 3) {
-      alert("이미지는 3장을 필수로 등록해야 합니다.");
+    if (imgURLs.length < 2) {
+      alert("이미지는 2장 이상을 등록해야 합니다.");
       return false;
     }
 
@@ -292,7 +294,7 @@ const PutMyProfile = () => {
     return true;
   };
 
-  const isProfileRegistered = useLoginInfo().isProfileRegistered;
+  const isProfileRegistered = useRecoilValue(profileRegisteredState);
   useEffect(() => {
     if (userIdx) {
       MyprofileAPI.getMyProfile(userIdx)

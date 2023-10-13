@@ -27,7 +27,7 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
 
   const [alarmState, setAlarmState] = useState<IAlarm[]>([]);
   useEffect(() => {
-    if(!loginInfo.isLoggedIn) return;
+    if(!loginInfo) return;
     const fetchAlarmList = async () => {
       try {
         const alarmList = await AlarmAPI.getAlarmList();
@@ -37,7 +37,7 @@ const CustomModalAlarm: React.FC<ReactModal.Props> = ({ isOpen, onRequestClose }
       }
     }
     fetchAlarmList();
-  }, [loginInfo.isLoggedIn]);
+  }, [loginInfo]);
 
   const [isTabLeft, setIsTabLeft] = useState(true);
   const onClickLeftTab = () => setIsTabLeft(true);
