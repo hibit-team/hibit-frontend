@@ -23,11 +23,11 @@ const useLoginInfo = (): boolean => {
 
   useEffect(() => {
     if (accessToken) {
+      setIsLoggedIn(true);
       LoginAPI.getUserInfo()
         .then((res) => {
           setUserIdx(res.idx);
           setIsProfileRegistered(res.isprofile);
-          setIsLoggedIn(true);
         })
         .catch((e) => {
           console.error({e});

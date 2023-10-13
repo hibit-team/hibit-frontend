@@ -14,6 +14,7 @@ import useLoginInfo from '../../../hooks/useLoginInfo';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
 import { axiosInstance } from '../../../services/HttpClient';
 import { LoginModalState } from '../../../recoil/atom/LoginModalState';
+import LoginAPI from '../../../api/LoginAPI';
 
 
 const Header = () => {
@@ -35,6 +36,12 @@ const Header = () => {
   
   const [isLogin, setIsLogin] = useState<boolean>(useLoginInfo());
   let isProfileRegistered: boolean = useRecoilValue(profileRegisteredState);
+  const accessToken: string | null = localStorage.getItem("accessToken");
+  useEffect(() => {
+    if(accessToken) {
+      setIsLogin(true);
+    }
+  }, []);
 
   const onClickLogout = async () => {
     await axiosInstance.get(`/api/auth/logout`)

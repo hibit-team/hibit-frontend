@@ -168,7 +168,7 @@ export const GlobalModal = () => {
               if (modalText[3] === '내 프로필 등록하기') {
                 setModalIsOpen(false);
                 if (userLoginInfo) {
-                  navigate('/post-posting');
+                  navigate('/post-profile');
                 }
                 else {
                   alert('로그인이 필요합니다.');

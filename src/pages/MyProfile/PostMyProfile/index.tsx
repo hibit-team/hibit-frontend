@@ -194,6 +194,8 @@ const PostMyProfile = () => {
             subImages: []
           }
 
+          console.log({imageResponse});
+
           imageResponse.mainImage = res?.data[0];
           if (res?.data[1].length > 0) {
             res?.data[1].forEach((url: string) => {
