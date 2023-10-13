@@ -5,7 +5,7 @@ const FileAPI = {
     try {
       const path = `/upload/${mainimgIdx}`;
       const axiosInstance = axios.create({
-        baseURL: process.env.REACT_APP_SERVER_BASE_URL,
+        baseURL: process.env.REACT_APP_SERVER_BASE_HTTPS_URL,
         withCredentials: true,
       });
       const response = await axiosInstance.post(path, formData, {
