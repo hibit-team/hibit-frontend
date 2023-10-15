@@ -4,6 +4,7 @@ import 'react-day-picker/dist/style.css';
 import { format } from "date-fns";
 import AddCalendarIconGray from "../../images/components/Posting/AddCalendarIconGray.svg";
 
+
 type CalendarComponentProps = {
   selectedDate: Date | undefined;
   isCalendarOpen: boolean;
@@ -68,6 +69,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
             {Text}
             {" | "}{isMorning ? "오전" : "오후"}
           </s.DateInfoText>
+          
         </s.CalendarInfoWrapper>
         {
           isCalendarOpen ?
@@ -81,6 +83,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
                 isMorning,
               })}              
               onDayClick={onClickDate}
+              style={{zIndex: 100}}
             />
             <s.MorningAfternoonWrapper>
               <s.Morning onClick={onClickMorning}>오전</s.Morning>
