@@ -44,8 +44,8 @@ const GoogleRedirectHandler = () => {
           setIsProfileRegistered(profileRegistered);
         }
         console.log({res});
-        axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
-        localStorage.setItem('accessToken', `${accessToken}`);
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        localStorage.setItem('accessToken', `Bearer ${accessToken}`);
 
         navigate('/');
       })
