@@ -17,6 +17,7 @@ import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
 import { IGetPosting, IPosting } from "../../../interfaces/Posting/IPosting";
 import PostingAPI from "../../../api/PostingAPI";
+import calendarCloseBtn from "../../../images/components/Posting/calendarCloseBtn.svg";
 
 const activityData_Imoji = [
   "맛집 가기😋", "카페 가기☕", "전시만 보기👓", "만나서 정해요!"
@@ -138,14 +139,21 @@ const PutPosting = () => {
   // CalendarComponent 렌더링 함수
   const renderCalendarComponents = () => {
     return calendarStates.map((calendarState, index) => (
-      <CalendarComponent
-        key={index}
-        selectedDate={calendarState.selectedDate}
-        isCalendarOpen={calendarState.isCalendarOpen}
-        isMorning={calendarState.isMorning}
-        onUpdateState={(newState) => updateCalendarState(index, newState)}
-      />
+      <s.DateContainerWrapper>
+        <CalendarComponent
+          key={index}
+          selectedDate={calendarState.selectedDate}
+          isCalendarOpen={calendarState.isCalendarOpen}
+          isMorning={calendarState.isMorning}
+          onUpdateState={(newState) => updateCalendarState(index, newState)}
+        />
+        <s.CloseIcon src={calendarCloseBtn} alt="close" onClick={() => removeCalendarComponent(index)} />
+      </ s.DateContainerWrapper>
     ));
+  };
+  const removeCalendarComponent = (indexToRemove: number) => {
+    const updatedStates = calendarStates.filter((_, index) => index !== indexToRemove);
+    setCalendarStates(updatedStates);
   };
   const [filteredDateList, setFilteredDateList] = useState<IDateFormat[]>([]);
   const getFilteredDateList = () => {

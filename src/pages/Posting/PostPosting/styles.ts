@@ -182,7 +182,22 @@ export const DateSelectorGrid = styled.div`
   grid-template-rows: repeat(auto-fill);
   margin-left: 50px;
   row-gap: 20px;
-  column-gap: 20px;
+`;
+
+export const DateContainerWrapper = styled.div`
+  display: flex;
+  position: relative;
+`;
+
+export const CloseIcon = styled.img`
+  display: flex;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  top: -10px;
+  left: -10px;
+  cursor: pointer;
+  z-index: 1000;
 `;
 
 export const OpenChatContainer = styled.div`
