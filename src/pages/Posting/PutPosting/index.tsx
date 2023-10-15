@@ -161,7 +161,6 @@ const PutPosting = () => {
       .filter((calendarState) => calendarState.selectedDate !== undefined)
       .map((calendarState) => {
         const isoDate: string = calendarState.selectedDate!.toISOString().split('T')[0];
-
         return {
           date: isoDate,
           timeSlot: calendarState.isMorning ? "AM" : "PM",
@@ -171,6 +170,9 @@ const PutPosting = () => {
 
     setFilteredDateList(newDates);
   };
+  useEffect(() => {
+    getFilteredDateList();
+  }, [calendarStates.length]);
 
   const [openchat, setOpenchat] = useState<string | null>(null);
   const onChangeOpenchat = (e: ChangeEvent<HTMLInputElement>) => {
@@ -354,7 +356,7 @@ const PutPosting = () => {
   
             console.log("이미지 업로드 완료", imageResponse);
 
-            
+            getFilteredDateList();
             const body: IPosting = {
               title: title,
               content: detail!,

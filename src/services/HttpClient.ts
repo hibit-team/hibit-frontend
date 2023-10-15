@@ -1,6 +1,4 @@
-import axios, { AxiosError } from "axios";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { accessTokenState, profileRegisteredState, userIdxState } from "../recoil/atom/LoginInfoState";
+import axios from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_BASE_HTTPS_URL,

@@ -152,20 +152,21 @@ const PostPosting = () => {
   };
   const [filteredDateList, setFilteredDateList] = useState<IDateFormat[]>([]);
   const getFilteredDateList = () => {
-    const filteredDates = calendarStates
+    const filteredDates: IDateFormat[] = calendarStates
       .filter((calendarState) => calendarState.selectedDate !== undefined)
       .map((calendarState) => {
         const isoDate: string = calendarState.selectedDate!.toISOString().split('T')[0];
-
         return {
           date: isoDate,
           timeSlot: calendarState.isMorning ? "AM" : "PM",
         };
       });
-    const newDates = [...(filteredDates || [])];
-
+    const newDates: IDateFormat[] = [...(filteredDates || [])];
     setFilteredDateList(newDates);
   };
+  useEffect(() => {
+    getFilteredDateList();
+  }, [calendarStates.length]);
 
   const [openchat, setOpenchat] = useState<string | null>(null);
   const onChangeOpenchat = (e: ChangeEvent<HTMLInputElement>) => {
@@ -295,7 +296,7 @@ const PostPosting = () => {
   
             console.log("이미지 업로드 완료", imageResponse);
 
-            
+            getFilteredDateList();
             const body: IPosting = {
               title: title,
               content: detail!,
@@ -303,10 +304,12 @@ const PostPosting = () => {
               number: person,
               openchat: openchat!,
               what_do: activityData_enum[selectedActivity!],
-              dateTimeSlots: filteredDateList ,
+              dateTimeSlots: filteredDateList,
               mainimg: imageResponse.mainImage,
               subimg: imageResponse.subImages!
             }
+
+            console.log({body});
 
             PostingAPI.postPosting(body)
               .then((res) => {
