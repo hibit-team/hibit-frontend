@@ -100,3 +100,36 @@ export const RefuseBtn = styled.div`
   padding-bottom: 4px;
   box-sizing: border-box;
 `;
+
+export const AcceptFinBtn = styled.div`
+  display: flex;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 10px;
+  border-radius: 10px;
+  color: white;
+  background-color: #EEEEEE;
+
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  box-sizing: border-box;
+`;
+
+export const RefuseFinBtn = styled.div`
+  display: flex;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 10px;
+  border: 1px solid #EEEEEE;
+  border-radius: 10px;
+  color: #797979;
+  background-color: white;
+  
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  box-sizing: border-box;
+`;

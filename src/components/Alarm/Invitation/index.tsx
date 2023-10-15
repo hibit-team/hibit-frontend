@@ -62,9 +62,8 @@ const Invitation = (props: IAlarm) => {
           {
             alarms.history !== "YET" ? 
               alarms.history === "NO" ?
-              <s.RefuseBtn>거절한 초대입니다.</s.RefuseBtn> :
-              <s.AcceptBtn>수락한 초대입니다.</s.AcceptBtn>
-
+              <s.RefuseFinBtn>거절한 초대입니다.</s.RefuseFinBtn> :
+              <s.AcceptFinBtn>수락한 초대입니다.</s.AcceptFinBtn>
               :
               <>              
                 <s.AcceptBtn onClick={() => onClickAccept()}>수락</s.AcceptBtn>
