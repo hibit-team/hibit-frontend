@@ -6,7 +6,21 @@ import React, { useState, useRef ,useEffect } from 'react';
 import SearchIcon from '../../../images/components/Matching/searchIcon.svg';
 import { useSetRecoilState } from 'recoil';
 import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
+import HttpClient from '../../../services/HttpClient';
+
 const CustomSearchBar = () => {
+  let [userId,setUserId] = useState<string>('');
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const fetchedUserId = await HttpClient.get('/api/profiles/me');
+        setUserId(fetchedUserId.id);
+      } catch (e) {
+        console.error(e,'userId를 받아오지 못했습니다.');
+      }
+    };
+    fetchUserId()
+  },[userId])
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = useState('');
   const [placeHolderState, setPlaceHolderState] = useState(true);
@@ -25,9 +39,10 @@ const CustomSearchBar = () => {
         font-size: 22px;
         font-weight: 500px;
         position: relative;
-        right: 6rem;
+        right: 2rem;
         bottom: 5.45rem;
         height: 0;
+        left: auto;
       `}
     >
       <span
@@ -41,7 +56,7 @@ const CustomSearchBar = () => {
             font-weight: 700;
           `}
         >
-          히순이
+          {userId ? userId : '익명'}
         </span>
         님 👋
       </span>
