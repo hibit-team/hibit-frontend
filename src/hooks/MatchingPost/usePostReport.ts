@@ -1,11 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import HttpClient from '../../services/HttpClient';
-import { AxiosError } from 'axios';
+import { AxiosError} from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export interface IReportBody {
   userId: string;
-  reportId: string;
   postIdx: number | null;
   commentIdx: number | null;
   declarationType: string | null;

@@ -11,8 +11,10 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { ReportSelectOptionAtom } from '../../../recoil/atom/ReportSelectOptionAtom';
 import { motion } from 'framer-motion';
 import { usePostReport } from '../../../hooks/MatchingPost/usePostReport';
+import HttpClient from '../../../services/HttpClient';
 
 export default function ReportModal() {
+  const [userId,setUserId] = useState<string>('');
   const params = useParams();
   //게시글넘버
   const postIdx = params.idx;
@@ -46,14 +48,25 @@ export default function ReportModal() {
     '기타',
   ];
 
-  const { mutate } = usePostReport({
-    userId: 'a', //str
-    reportId: 'b', //str
+    const { mutate } = usePostReport({
+    userId: userId ? userId : 'error', //userId
     postIdx: !postIdx ? null : Number.parseInt(postIdx),
     commentIdx: !commentIdx ? null : Number.parseInt(commentIdx),
     declarationType: selectedOpt !== null ? declarationTypeArray[selectedOpt] : null,
     content: reportText,
   });
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const fetchedUserId = await HttpClient.get('/api/profiles/me');
+        setUserId(fetchedUserId);
+      } catch (e) {
+        console.error(e,'userId를 받아오지 못했습니다.');
+      }
+    };
+    fetchUserId()
+  },[])
+  console.log(userId)
   return (
     <div
       css={{
