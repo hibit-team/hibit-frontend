@@ -42,21 +42,19 @@ const OPENCHAT_GUIDELINK = "https://cs.kakao.com/helps_html/1073184404?locale=ko
 const PutPosting = () => { 
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const { idx } = useParams();
+  const [idx,setIdx] = useState(()=>useParams().idx)
   useEffect(()=>{
     const isWriterCorrect = async ()=>{
       try{
-        const { postIdx } = useParams();
-        const {writerIdx} = await HttpClient.get(`/post/${postIdx}`) //
-        const {id : userIdx} = await  HttpClient.get('/api/members/me')
-        console.log('test',userIdx,writerIdx)
+        const [res1,res2]= await Promise.all([HttpClient.get(`/post/${idx}`),HttpClient.get('/api/members/me')])
+        const writerIdx = res1.writerIdx; // idx번게시글의 작성자IDX
+        const userIdx = res2.id // 사용자 고유ID
         if( userIdx !== writerIdx ){
           //만약 해당 게시글의 작성자idx와 본인의Idx가 일치하지않는다면
           navigate('/matching')
         }
       } catch(e){
         // 에러발생시
-        console.log('과연 두번 이펙트가 발생?')
         navigate('/matching')
         console.error(`${(e as AxiosError)}: userIdx를 불러올 수 없습니다`)
       }
@@ -404,7 +402,6 @@ const PutPosting = () => {
       }
       // 이미지 등록
 
-       
       alert("게시글이 등록되었습니다.");
       // navigate(-1);
     }
