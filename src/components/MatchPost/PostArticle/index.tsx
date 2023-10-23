@@ -462,7 +462,7 @@ export const PostOptionComponent = ({
               switch (opt[1]) {
                 case 0: {
                   //수정 라우트로 이동
-                  navigate('/matching');
+                  navigate(`/put-posting/${postIDX}`);
                   break;
                 }
                 //삭제

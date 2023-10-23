@@ -69,7 +69,7 @@ export default function MatchingPostPage() {
   };
   const { data, isError, error, isLoading, isFetching, status } = useQuery<IMatchingPostPage, AxiosError>(['post-info'], getPostInfoFn, {
     staleTime: 1000,
-    retry: 3,
+    retry: 1,
     retryDelay: 2000,
   },);
 

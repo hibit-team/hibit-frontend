@@ -11,26 +11,24 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { ReportSelectOptionAtom } from '../../../recoil/atom/ReportSelectOptionAtom';
 import { motion } from 'framer-motion';
 import { usePostReport } from '../../../hooks/MatchingPost/usePostReport';
+import HttpClient from '../../../services/HttpClient';
 
 export default function ReportModal() {
+  const [userId,setUserId] = useState<string>('');
   const params = useParams();
-  //게시글넘버
-  const postIdx = params.idx;
+  const postIdx = params.idx?.slice(1,);   //게시글넘버
   const [searchParams] = useSearchParams();
-  //댓글넘버 from qs
-  const commentIdx = searchParams.get('reply');
-  //선택옵션 전역상태관리
-  const [selectedOpt, setSelectedOpt] = useRecoilState(ReportSelectOptionAtom);
-  //신고텍스트
-  const [reportText, setReportText] = useState('');
+  const commentIdx = searchParams?.get('reply');   //댓글넘버 from 쿼리스트링
+  const [selectedOpt, setSelectedOpt] = useRecoilState(ReportSelectOptionAtom); 
+  const [reportText, setReportText] = useState('');  //신고텍스트
   const navigate = useNavigate();
 
-  useEffect(() => {
+  useEffect(() => { //언마운트시 선택옵션 초기화
     window.scrollTo(0, 0);
     return () => {
       setSelectedOpt(null);
     };
-  }, [setSelectedOpt]);
+  }, []);
 
   const declarationTypeArray = ['PRIVATE', 'PURPOSE', 'THREATS', 'SEXUALLY', 'RELIGION', 'SUSPECTED', 'COMMERCIAL', 'POLITICAL', 'ETC'];
 
@@ -45,15 +43,25 @@ export default function ReportModal() {
     '과도한 정치적 견해 표출',
     '기타',
   ];
-
-  const { mutate } = usePostReport({
-    userId: 'a', //str
-    reportId: 'b', //str
+    useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const fetchedUserId = await HttpClient.get('/api/profiles/me');
+        setUserId(fetchedUserId.nickname);
+      } catch (e) {
+        console.error(e,'userId를 받아오지 못했습니다.');
+      }
+    };
+    fetchUserId()
+  },[])
+    const { mutate:postReportMutate } = usePostReport({
+    userId: userId ? userId : 'error', //userId
     postIdx: !postIdx ? null : Number.parseInt(postIdx),
     commentIdx: !commentIdx ? null : Number.parseInt(commentIdx),
     declarationType: selectedOpt !== null ? declarationTypeArray[selectedOpt] : null,
     content: reportText,
   });
+
   return (
     <div
       css={{
@@ -160,7 +168,7 @@ export default function ReportModal() {
                 }
                 // 옵션있고 텍스트 20자 이상인 경우
                 if (selectedOpt && reportText.length >= 20) {
-                  mutate();
+                  postReportMutate();
                 }
               }}
             >
