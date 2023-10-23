@@ -18,6 +18,8 @@ import { IImage } from "../../../interfaces/IImage";
 import { IGetPosting, IPosting } from "../../../interfaces/Posting/IPosting";
 import PostingAPI from "../../../api/PostingAPI";
 import calendarCloseBtn from "../../../images/components/Posting/calendarCloseBtn.svg";
+import HttpClient from "../../../services/HttpClient";
+import { AxiosError,AxiosResponse} from "axios";
 
 const activityData_Imoji = [
   "맛집 가기😋", "카페 가기☕", "전시만 보기👓", "만나서 정해요!"
@@ -37,11 +39,28 @@ interface IExhibition {
 };
 const OPENCHAT_GUIDELINK = "https://cs.kakao.com/helps_html/1073184404?locale=ko";
 
-const PutPosting = () => {
+const PutPosting = () => { 
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const { idx } = useParams();
-
+  const [idx,setIdx] = useState(()=>useParams().idx)
+  useEffect(()=>{
+    const isWriterCorrect = async ()=>{
+      try{
+        const [res1,res2]= await Promise.all([HttpClient.get(`/post/${idx}`),HttpClient.get('/api/members/me')])
+        const writerIdx = res1.writerIdx; // idx번게시글의 작성자IDX
+        const userIdx = res2.id // 사용자 고유ID
+        if( userIdx !== writerIdx ){
+          //만약 해당 게시글의 작성자idx와 본인의Idx가 일치하지않는다면
+          navigate('/matching')
+        }
+      } catch(e){
+        // 에러발생시
+        navigate('/matching')
+        console.error(`${(e as AxiosError)}: userIdx를 불러올 수 없습니다`)
+      }
+    }
+    isWriterCorrect()
+  },[idx])
   const [title, setTitle] = useState<string>("");
   const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     if(e.target.value.length >= 31) {
@@ -325,7 +344,6 @@ const PutPosting = () => {
   }, []);
 
 
-
   const onClickSubmitBtn = () => {
     if (window.confirm("매칭 게시글을 등록하시겠습니까?")) {
       if (!checkAllInfo()) {
@@ -384,7 +402,6 @@ const PutPosting = () => {
       }
       // 이미지 등록
 
-       
       alert("게시글이 등록되었습니다.");
       // navigate(-1);
     }
