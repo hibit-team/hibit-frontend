@@ -14,7 +14,7 @@ const CustomSearchBar = () => {
     const fetchUserId = async () => {
       try {
         const fetchedUserId = await HttpClient.get('/api/profiles/me');
-        setUserId(fetchedUserId.id);
+        setUserId(fetchedUserId.nickname);
       } catch (e) {
         console.error(e,'userId를 받아오지 못했습니다.');
       }
