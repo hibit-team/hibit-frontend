@@ -552,8 +552,12 @@ export const SecondaryReplyInputComponent = ({
         onClick={e => {
           e.stopPropagation();
           if (userLoginInfo?.isLoggedIn === true) {
-            setIsDaetgulOpen(false);
-            mutate({ replyIDX, userIDX, body: { content: secondaryReplyText } });
+            if(secondaryReplyText.trim().length !== 0){
+              setIsDaetgulOpen(false);
+              mutate({ replyIDX, userIDX, body: { content: secondaryReplyText } });
+            } else{ 
+              alert('댓글 내용을 입력해 주세요.')
+            } 
           } else {
             alert('로그인이 필요합니다');
           }
