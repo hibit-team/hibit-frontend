@@ -271,7 +271,8 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
         navigate(`/others/:${reply?.writerIdx}`)
         window.scrollTo(0, 0)
         }}>
-          <ImageBox width={32} height={32} source={(reply.writerImg = userDefaultImage)} />
+          <ImageBox width={32} height={32} source={reply.writerImg}
+          />
         </div>
           <div css={{ display: 'flex', flex: '0 1 auto' }}>
             <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
@@ -745,7 +746,7 @@ export const SecondaryReplyComponent = ({
             navigate(`/others/:${reReply?.writerIdx}`)
             window.scrollTo(0, 0)
             }}>
-            <ImageBox width={32} height={32} source={(reReply.writerImg = userDefaultImage)} />
+            <ImageBox width={32} height={32} source={reReply.writerImg} />
           </div>
           <div css={{ display: 'flex', flex: '0 1 auto' }}>
             <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
