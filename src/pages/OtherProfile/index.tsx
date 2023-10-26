@@ -15,7 +15,9 @@ import { profileRegisteredState } from "../../recoil/atom/LoginInfoState";
 
 const OtherProfile = () => {
   const idParams = useParams();
-  const userID = idParams.userID;
+  const userID = Number(idParams.userID?.replace(":", ""));
+
+  const navigate = useNavigate();
   
   const [isTabLeft, setIsTabLeft] = useState<boolean>(true);
   const onClickTab = () => {
@@ -29,13 +31,14 @@ const OtherProfile = () => {
   // 이미지 미리보기 toggle
   const [imgToggler, setImgToggler] = useState(false);
   
-  const [nickname, setNickname] = useState("");
-  const [age, setAge] = useState();
-  const [gender, setGender] = useState("");
-  const [address, setAddress] = useState("");
-  const [job, setJob] = useState("");
+  const [nickname, setNickname] = useState<string>("");
+  const [age, setAge] = useState<number | null>(null);
+  const [gender, setGender] = useState<string | undefined>();
   const [personalities, setPersonalities] = useState<string[]>([]);
-  const [introduce, setIntroduce] = useState("");
+  const [introduce, setIntroduce] = useState<string | undefined>();
+
+  const [address, setAddress] = useState<string | undefined>(undefined);
+  const [job, setJob] = useState<string | undefined>();
   const [imgs, setImgs] = useState<string[]>([]);
   
   // 타인 선택정보 공개 여부에 따른 조건부 렌더링
@@ -45,10 +48,11 @@ const OtherProfile = () => {
 
   useEffect(() => {
     if(!userID) {
-      console.log("userID 없음.");
+      alert("존재하지 않는 유저입니다.");
+      navigate(-1);
     }
     else {
-      OtherprofileAPI.getOtherProfile(+userID)
+      OtherprofileAPI.getOtherProfile(Number(userID))
         .then((res) => {
           console.log({res});
           setNickname(res.nickname);
@@ -68,11 +72,11 @@ const OtherProfile = () => {
 
           setIntroduce(res.introduce);
 
-          const mainImg: string = res.mainImg;
-          const subImgs: string[] = res.subImg;
-          const newImgs: string[] = [];
-          newImgs.push(mainImg, ...subImgs);
-          setImgs(newImgs);
+          if(res.jobVisibility === 0) {
+            setIsJobPrivate(true);
+          } else {
+            setIsJobPrivate(false);
+          }
 
           if(res.addressVisibility === 0) {
             setIsAddressPrivate(true);
@@ -86,12 +90,14 @@ const OtherProfile = () => {
             setIsImgPrivate(false);
           }
 
-          if(res.jobVisibility === 0) {
-            setIsJobPrivate(true);
-          } else {
-            setIsJobPrivate(false);
-          }
-
+          const mainImg: string = res.mainImg;
+          const subImgs: string[] | null = res.subImg;
+          const newImgs: string[] = [];
+          newImgs.push(mainImg);
+          if(subImgs) {
+            newImgs.push(...subImgs);
+          } 
+          setImgs(newImgs);
           
         })
         .catch((e) => {
@@ -115,7 +121,6 @@ const OtherProfile = () => {
     alert("추후 공개될 기능입니다.");
     setIsTabLeft(true);
   };
-  const navigate = useNavigate();
   const onClickRegisterBtn = () => {
     navigate("/post-profile");
   };
@@ -165,7 +170,7 @@ const OtherProfile = () => {
               <s.ProfileContainer isRegistered={isProfileRegistered ? true : false }>
                 <s.TopInfoContainer>
                   <s.CarouselWrapper>
-                    <ImageCarousel />
+                    <ImageCarousel imgs={imgs} />
                     <s.CarouselZoomInBtn onClick={() => setImgToggler(!imgToggler)}>
                       <img src={ZoomInIcon} alt="zoom-in" />
                     </s.CarouselZoomInBtn>
@@ -179,11 +184,7 @@ const OtherProfile = () => {
                       :
                       <FsLightbox 
                       toggler={imgToggler}
-                      sources={[
-                        "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/blur1.jpg",
-                        "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/blur2.jpg",
-                        "https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/blur3.jpg"
-                      ]}  
+                      sources={imgs}  
                       />
                   }
 

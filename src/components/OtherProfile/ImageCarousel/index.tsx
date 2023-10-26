@@ -2,6 +2,10 @@ import * as s from "./styles";
 import { css } from '@emotion/react';
 import '../../../assets/slick.css';
 
+interface ImageCarouselProps {
+  imgs: string[];
+}
+
 const settings = {
   arrows: false,
   dots: true,
@@ -27,21 +31,14 @@ const settings = {
   dotsClass: 'dots_custom'
   };
 
-const ImageCarousel = () => {
+const ImageCarousel: React.FC<ImageCarouselProps> = ({imgs}) => {
   return (
     <s.ImageSliderContainer {...settings}>
-      <img 
-        src="https://i.imgur.com/fsyrScY.jpg" 
-        alt="tmp1" 
-      />
-      <img 
-        src="https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-1.png" 
-        alt="tmp2"
-      />
-      <img  
-        src="https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/Group-1.png" 
-        alt="tmp3"
-      />
+      {
+        imgs.map((img) => {
+          return <img src={img} alt="im" />
+        })
+      }
     </s.ImageSliderContainer>
   )
 };
