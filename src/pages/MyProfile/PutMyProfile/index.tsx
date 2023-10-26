@@ -15,8 +15,10 @@ import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
 import useLoginInfo from "../../../hooks/useLoginInfo";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { profileRegisteredState, userIdxState } from "../../../recoil/atom/LoginInfoState";
+import axios from "axios";
+import { axiosInstance } from "../../../services/HttpClient";
 
 const PutMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -25,6 +27,41 @@ const PutMyProfile = () => {
 
   let myProfileData: Promise<IProfile>;
   let userIdx: number | null = useRecoilValue(userIdxState);
+
+  const accessToken: string | null = localStorage.getItem("accessToken");
+  const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
+  const setUserIdx = useSetRecoilState(userIdxState);
+
+  console.log({accessToken});
+  if(accessToken !== null) {
+    axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
+    localStorage.setItem('accessToken', `${accessToken}`);
+    
+    if(accessToken) {
+      axiosInstance.get('/api/members/find')
+        .then((res) => {
+          console.log({res});
+          const userIdx: number | null = res.data.idx;
+          const profileRegistered: boolean = res.data.isprofile;
+          setUserIdx(userIdx);
+          setIsProfileRegistered(profileRegistered);
+  
+          console.log(res.data.isprofile)
+          if(!res.data.isprofile) {
+            console.log("프로필정보가 등록되어 있지 않아 post-profile로 이동");
+            navigate("/post-profile");
+          }
+        })
+        .catch((err) => {
+          console.error({err});
+        });
+    }
+
+  } else {
+    alert("로그인을 먼저 진행해 주세요.");
+    navigate("/");
+  }
+
 
 
 

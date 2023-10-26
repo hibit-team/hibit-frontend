@@ -34,7 +34,6 @@ function App() {
   const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
   const setUserIdx = useSetRecoilState(userIdxState);
   
-  console.log({accessToken});
   if(accessToken !== null) {
     axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
     localStorage.setItem('accessToken', `${accessToken}`);
@@ -51,8 +50,6 @@ function App() {
         .catch((err) => {
           console.error({err});
         })
-    } else {
-      console.log("act가 없음!");
     }
   }
 
