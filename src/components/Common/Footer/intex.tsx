@@ -18,6 +18,7 @@ const Footer = () => {
   const ManualURL = "https://mellow-bard-bc8.notion.site/28a5202c60344d978caa0d2745921049?pvs=4";
   const instagramURL = "https://www.instagram.com/hibit.co.kr/";
   const githubURL = "https://github.com/hibit-team";
+  const hibitURL = "https://hibit-frontend.vercel.app";
   
   const onClickTermsOfService = () => window.location.href = TermsOfServiceURL;
   const onClickPrivacyPolicy = () => window.location.href = PrivacyPolicyURL;
@@ -28,6 +29,16 @@ const Footer = () => {
   const onClickScrollTop = () => {
     window.scrollTo(0, 0);
   };
+
+  const onClickShareIcon = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      alert("클립보드에 URL이 복사되었습니다!");
+    } catch (e) {
+      console.error({e});
+      alert("클립보드 복사 실패. 다시 시도해 주세요.");
+    }
+  }
 
   if (isMobile) {
     return (
@@ -63,7 +74,7 @@ const Footer = () => {
             <s.IconWrapper onClick={() => onClickGithubIcon()}>
               <s.GithubIcon src={GithubIcon} alt="Github" />
             </s.IconWrapper>
-            <s.IconWrapper>
+            <s.IconWrapper onClick={() => onClickShareIcon(hibitURL)}>
               <s.ArrowIcon src={ArrowIcon} alt="Arrow" />
             </s.IconWrapper>
           </s.RightIconContainer>

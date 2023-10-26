@@ -36,14 +36,12 @@ const MainPage = () => {
       </>
     )
   }
+  
   return (
     <LayoutTemplate>
       <GlobalModal/>
       <MainTab></MainTab>
-      <s.Wrapper>
-        {/* <GoogleLoginButton /> */}
-        {/* <KaKaoLogin /> */}
-      </s.Wrapper>
+      <s.Wrapper />
     </LayoutTemplate>
   )
 }

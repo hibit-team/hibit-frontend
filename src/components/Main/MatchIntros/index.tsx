@@ -42,11 +42,6 @@ const MatchIntros = () => {
         </s.RightImgContainer>
       </s.TopContainer>
 
-      <s.MidContainer>
-
-
-      </s.MidContainer>
-
       <s.BottomContainer>
         <s.IntroText1>{text4}</s.IntroText1>
         <s.IntroText2>{text5}</s.IntroText2>
