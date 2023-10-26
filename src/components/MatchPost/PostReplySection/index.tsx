@@ -94,17 +94,14 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
 export const InputReplyWrapper = ({ postIDX, userLoginInfo }: { postIDX?: string; userLoginInfo?: ILoginInfo }) => {
   let [userImg,setUserImg] = useState<string>('')
   useEffect(()=>{
-    try{
       (async function getUserImg (){
-      const res = await HttpClient.get('api/profiles/me')
-      setUserImg(res.mainImg)
+        try{
+          const res = await HttpClient.get('api/profiles/me')
+          setUserImg(res.mainImg)}
+        catch(e){
+          console.error(`댓글입력창의 이미지를 불러올 수 없습니다.${(e as AxiosError)}`)
+        }
       })()
-    }   
-    catch(e){
-      console.error(`댓글입력창의 이미지를 불러올 수 없습니다.${(e as AxiosError)}`)
-      setUserImg(userDefaultImage)
-    }
-    
   },[])
   const [textState, setTextState] = useState('');
   const textRef = useRef<HTMLTextAreaElement>(null);

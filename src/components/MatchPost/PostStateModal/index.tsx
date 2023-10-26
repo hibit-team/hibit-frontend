@@ -8,14 +8,13 @@ import NoCheck from '../../../images/components/MatchPost/InviteModal/NoCheck.sv
 import OnCheck from '../../../images/components/MatchPost/InviteModal/OnCheck.svg';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { hoverAnimation } from '../PostArticle/styles';
-// import { useUpdateMatchingStatus } from '../../../hooks/MatchingPost/useUpdateStateAndPostUserList';
 import { IInvitationProps } from '../../../hooks/MatchingPost/useGetInviteModalList';
 import { PostStateModalSwitch } from '../../../recoil/atom/PostStateModalSwitch';
 import { PostCompleteUserList } from '../../../recoil/atom/PostCompleteUserList';
 import HttpClient from '../../../services/HttpClient';
 import { AxiosError } from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import { useUpdateStateAndPostUserList } from '../../../hooks/MatchingPost/useUpdateStateAndPostUserList';
+import { useUpdateCombo } from '../../../hooks/MatchingPost/useUpdateCombo';
 //게시글 모집완료(complete)시 등장모달
 const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
   const [modalIsOpen, setModalIsOpen] = useRecoilState(PostStateModalSwitch);
@@ -57,14 +56,6 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
     },
   };
 
-  // //컴포넌트 언마운트시 모달 클리어
-  // useEffect(() => {
-  //   return () => {
-  //     setModalIsOpen(false);
-  //   };
-  // }, [setModalIsOpen]);
-
-  //초대수락 인원(함께한 인원) 리스트 Query
   const companyListQueryFn = async () => {
     try {
       const res = await HttpClient.get(`/matching/${postIDX}/oklist`);
@@ -76,8 +67,8 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
   };
   const { data: companionList } = useQuery<IInvitationProps[]>(['company-list'], companyListQueryFn);
 
-  // 게시글 상태변경 커스텀훅 (complete)
-  const { mutate: updateMutate } = useUpdateStateAndPostUserList(postIDX, userList);
+  // 함께한 유저리스트 전송 & 게시글 상태 완료  
+  const { mutate: updateMutate } = useUpdateCombo(postIDX, userList);
   
   return (
     <div>
@@ -141,7 +132,11 @@ const PostStateModal = ({ postIDX }: { postIDX: string | undefined }) => {
               setModalIsOpen(false);
               if (confirmed === true) {
                 //게시글 상태 업데이트 put => userList 발송
-                updateMutate(postIDX);
+                if(userList.length ===0) {
+                  alert('함께 간 유저를 선택해주세요')
+                } else {
+                  updateMutate(postIDX);
+                }
               }
             }}
             css={{
