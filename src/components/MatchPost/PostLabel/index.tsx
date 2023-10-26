@@ -10,7 +10,6 @@ import PostStateModal from '../PostStateModal';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { PostStateModalSwitch } from '../../../recoil/atom/PostStateModalSwitch';
 import { useUpdateMatchingStatusCancel } from '../../../hooks/MatchingPost/useUpdateMatchingStatusCancle';
-import useLoginInfo from '../../../hooks/useLoginInfo';
 import { userIdxState } from '../../../recoil/atom/LoginInfoState';
 
 export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPostPage; postIDX: string | undefined }) {
@@ -19,8 +18,8 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
   //게시글 status drop down메뉴
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
   //게시글 모집취소 mutation hook
+
   const { mutate: cancelMutate } = useUpdateMatchingStatusCancel(postIDX);
-  const loginInfo = useLoginInfo();
   let userIdx: number | null = useRecoilValue(userIdxState);
 
   return (
@@ -99,6 +98,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                       if (!isPostStateModalOpen) {
                         setIsPostStateModalOpen(true);
                       }
+
                       setIsStatusModalOpen(false);
                       break;
                     case 'C':
@@ -134,7 +134,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                       const confirm = window.confirm(`게시글 모집을 취소하시겠습니까? 모집 취소시 게시글 리스트에서 해당 게시글이 사라집니다.`);
                       if (confirm) {
                         setIsStatusModalOpen(false);
-                        //게시글모집취소 mutate
+                        // 게시글모집취소 mutate
                         cancelMutate(postIDX);
                       }
                       setIsStatusModalOpen(false);
