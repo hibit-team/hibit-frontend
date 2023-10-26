@@ -233,7 +233,7 @@ export const PersonalityItem = styled.div`
   background-color: #804DD3;
   color: white;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 500;
 `;
 
 export const BottomInfoContainer = styled.div`

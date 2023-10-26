@@ -93,6 +93,7 @@ export const VerticalLine = styled.div`
 export const Bottom = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   margin-top: 40px;
   align-items: center;
   justify-content: center;
@@ -111,11 +112,10 @@ export const IntroStrongText = styled.span`
 
 export const LoginBtnWrapper = styled.div`
   display: flex;
-  position:relative;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 16px;
+  margin-top: 20px;
   right:2rem;
-  width: 540px;
+  width: 100%;
 `;

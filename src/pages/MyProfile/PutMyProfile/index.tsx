@@ -15,8 +15,10 @@ import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
 import useLoginInfo from "../../../hooks/useLoginInfo";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { profileRegisteredState, userIdxState } from "../../../recoil/atom/LoginInfoState";
+import axios from "axios";
+import { axiosInstance } from "../../../services/HttpClient";
 
 const PutMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -25,6 +27,37 @@ const PutMyProfile = () => {
 
   let myProfileData: Promise<IProfile>;
   let userIdx: number | null = useRecoilValue(userIdxState);
+
+  const accessToken: string | null = localStorage.getItem("accessToken");
+  const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
+  const setUserIdx = useSetRecoilState(userIdxState);
+
+  if(accessToken !== null) {
+    axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
+    localStorage.setItem('accessToken', `${accessToken}`);
+    
+    if(accessToken) {
+      axiosInstance.get('/api/members/find')
+        .then((res) => {
+          const userIdx: number | null = res.data.idx;
+          const profileRegistered: boolean = res.data.isprofile;
+          setUserIdx(userIdx);
+          setIsProfileRegistered(profileRegistered);
+          if(!res.data.isprofile) {
+            console.log("프로필정보가 등록되어 있지 않아 post-profile로 이동");
+            navigate("/post-profile");
+          }
+        })
+        .catch((err) => {
+          console.error({err});
+        });
+    }
+
+  } else {
+    alert("로그인을 먼저 진행해 주세요.");
+    navigate("/");
+  }
+
 
 
 
@@ -131,12 +164,12 @@ const PutMyProfile = () => {
   
   const [imgURLs, setImgURLs]= useState<string[]>([]);
   const [imgs, setImgs]= useState<File[]>([]);
+  const imgInputRef = useRef<HTMLInputElement | null>(null);
   const [isImgChecked, setIsImgChecked] = useState<boolean | undefined>(false);
   const onClickImgCheck = () => {
     if (!isEditMode) return;
     setIsImgChecked(!isImgChecked);
   };
-  const imgInputRef = useRef<HTMLInputElement | null>(null);
   const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       console.log("이미지 파일 없음");
@@ -170,9 +203,8 @@ const PutMyProfile = () => {
       alert("모든 정보를 기입해야 합니다.");
       return;
     }
-    console.log("???")
     
-    if (imgURLs && imgURLs.length > 0) {
+    if (imgs && imgs.length > 0) {
       const formData = new FormData();
       imgs.forEach((imageData) => {
         formData.append(`file`, imageData);
@@ -190,9 +222,9 @@ const PutMyProfile = () => {
 
           imageResponse.mainImage = res?.data[0];
           if (res?.data[1].length > 0) {
-            res?.data[1].forEach((url: string) => {
-              imageResponse.subImages!.push(url);
-            });
+            for(let i=1; i<res?.data[1].length; i++) {
+              imageResponse.subImages!.push(res?.data[1][i]);
+            }
           }
 
           console.log("이미지 업로드 완료", imageResponse);
@@ -213,15 +245,16 @@ const PutMyProfile = () => {
             subImgVisibility: isImgChecked ? 1 : 0,
           }
 
-          const userIdx = +localStorage.getItem('userIdx')!;
-          MyprofileAPI.putMyProfile(userIdx, body)
-            .then((res) => {
-              console.log("put my profile res: ", {res});
-            })
-            .catch((e) => {
-              console.error({e});
-            });
-
+          console.log({body});
+          if(userIdx) {
+            MyprofileAPI.putMyProfile(userIdx, body)
+              .then((res) => {
+                console.log("put my profile res: ", {res});
+              })
+              .catch((e) => {
+                console.error({e});
+              });
+          }
         })
         .catch((e) => {
           console.error({e});
@@ -239,9 +272,6 @@ const PutMyProfile = () => {
       return false;
     }
     
-
-
-    loop1:
     if (age === undefined || age === 0 || +age! < 0) {
       alert("나이를 올바르게 입력해 주세요.");
       return false;
@@ -294,7 +324,6 @@ const PutMyProfile = () => {
     return true;
   };
 
-  const isProfileRegistered = useRecoilValue(profileRegisteredState);
   useEffect(() => {
     if (userIdx) {
       MyprofileAPI.getMyProfile(userIdx)
@@ -310,6 +339,8 @@ const PutMyProfile = () => {
           setAddress_sido(res.addressCity);
           setAddress_sigungu(res.addressDistrict);
           setIsAddressChecked(res.addressVisibility);
+
+          console.log({res});
           
           const ret_ImgURLs = [];
           ret_ImgURLs.push(res.mainImg);
@@ -321,17 +352,9 @@ const PutMyProfile = () => {
           ret_ImgURLs.push(subImgArray[1]);
           setImgURLs(ret_ImgURLs);
           setIsImgChecked(res.subImgVisibility);
-        })
-      
-    } else {
-      alert("로그인을 먼저 진행해 주세요.");
-      navigate("/");
+        });
     }
 
-    if (!isProfileRegistered) {
-      console.log("프로필정보가 등록되어 있지 않아 post-profile로 이동")
-      navigate("/post-profile");
-    }
   }, [userIdx]);
 
   

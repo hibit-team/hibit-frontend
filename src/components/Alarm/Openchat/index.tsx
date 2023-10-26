@@ -41,7 +41,7 @@ const Openchat = (props: IAlarm) => {
         <s.BottomContainer>
           <s.Time>{alarms.time}</s.Time>
           <s.Link
-            onClick={() => navigate(alarms.url)}
+            onClick={() => window.location.href = props.url}
           >이동하기</s.Link>
         </s.BottomContainer>
         

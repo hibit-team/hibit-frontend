@@ -15,8 +15,9 @@ import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
 import useLoginInfo from "../../../hooks/useLoginInfo";
-import { useRecoilValue } from "recoil";
-import { profileRegisteredState } from "../../../recoil/atom/LoginInfoState";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { profileRegisteredState, userIdxState } from "../../../recoil/atom/LoginInfoState";
+import axios from "axios";
 
 const PostMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(true);
@@ -27,15 +28,35 @@ const PostMyProfile = () => {
   const accessToken = localStorage.getItem("accessToken");
 
   const isProfileRegistered = useRecoilValue(profileRegisteredState);
+  const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
+  const setUserIdx = useSetRecoilState(userIdxState);
+
   useEffect(() => {
-    if (!accessToken) {
+    if(accessToken) {
+      axios.get('/api/members/find')
+        .then((res) => {
+          console.log({res});
+          const userIdx: number | null = res.data.idx;
+          const profileRegistered: boolean = res.data.isprofile;
+          setUserIdx(userIdx);
+          setIsProfileRegistered(profileRegistered);
+
+          console.log(res.data.isprofile)
+          if(res.data.isprofile) {
+            console.log("프로필정보가 등록되어 있어 put-profile로 이동");
+            navigate("/put-profile");
+          }
+        })
+        .catch((err) => {
+          console.error({err});
+        });
+
+    } else {
       alert("로그인을 먼저 진행해 주세요.");
       navigate("/");
-    } 
-    if (isProfileRegistered) {
-      console.log("프로필정보가 등록되어 있어 put-profile로 이동")
-      navigate("/put-profile");
     }
+
+
   }, [userIdx]);
 
   /* 필수 정보 */

@@ -23,10 +23,36 @@ import useLoginInfo from "./hooks/useLoginInfo";
 import LottiePageRouting from "./components/LottieFiles/LottiePageRouting";
 import useIsMobile from "./hooks/useIsMobile";
 import MobileLanding from "./pages/MobileLanding";
+import { useSetRecoilState } from "recoil";
+import { profileRegisteredState, userIdxState } from "./recoil/atom/LoginInfoState";
+import axios from "axios";
 
 function App() {
   const queryClient = new QueryClient();
-  useLoginInfo();
+
+  const accessToken: string | null = localStorage.getItem("accessToken");
+  const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
+  const setUserIdx = useSetRecoilState(userIdxState);
+  
+  if(accessToken !== null) {
+    axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
+    localStorage.setItem('accessToken', `${accessToken}`);
+    
+    if(accessToken) {
+      axios.get('/api/members/find')
+        .then((res) => {
+          console.log({res});
+          const userIdx: number | null = res.data.idx;
+          const profileRegistered: boolean = res.data.isprofile;
+          setUserIdx(userIdx);
+          setIsProfileRegistered(profileRegistered);
+        })
+        .catch((err) => {
+          console.error({err});
+        })
+    } 
+  }
+
   const isMobile = useIsMobile();
   if(isMobile) return <MobileLanding/>;
 
@@ -36,24 +62,24 @@ function App() {
           <ReactQueryDevtools initialIsOpen/>
           <Global styles={globalStyles}/>
           <Suspense fallback={<div><LottiePageRouting/></div>}>
-          <Container>
-            <Router>
-              <Routes>
-                <Route path="/" element={<MainPage />} />
-                <Route path='/matching' element={<MatchingPage></MatchingPage>}/>
-                <Route path="/user/kakao-oauth" element={<KaKao />} />
-                <Route path="/post-profile" element={<PostMyProfile />} />
-                <Route path="/put-profile" element={<PutMyProfile />} />
-                <Route path="/matchPost/:idx" element={<MatchingPostPage />} />
-                <Route path="/others/:userID" element={<OtherProfile />} />
-                <Route path="/post-posting" element={<PostPosting />} />
-                <Route path="/put-posting/:idx" element={<PutPosting />} />
-                <Route path="/google-callback" element={<GoogleRedirectHandler />} />
-                <Route path="/report/:idx" element={<ReportModal />} />
-                <Route path="/*" element={<NotFound />} />
-              </Routes>
-            </Router>
-          </Container>
+            <Container>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<MainPage />} />
+                  <Route path='/matching' element={<MatchingPage></MatchingPage>}/>
+                  <Route path="/user/kakao-oauth" element={<KaKao />} />
+                  <Route path="/post-profile" element={<PostMyProfile />} />
+                  <Route path="/put-profile" element={<PutMyProfile />} />
+                  <Route path="/matchPost/:idx" element={<MatchingPostPage />} />
+                  <Route path="/others/:userID" element={<OtherProfile />} />
+                  <Route path="/post-posting" element={<PostPosting />} />
+                  <Route path="/put-posting/:idx" element={<PutPosting />} />
+                  <Route path="/google-callback" element={<GoogleRedirectHandler />} />
+                  <Route path="/report/:idx" element={<ReportModal />} />
+                  <Route path="/*" element={<NotFound />} />
+                </Routes>
+              </Router>
+            </Container>
           </Suspense>
         </QueryClientProvider>
     </>
@@ -62,4 +88,4 @@ function App() {
 
 export default App;
 
-const Container = styled.div``
+const Container = styled.div``;
