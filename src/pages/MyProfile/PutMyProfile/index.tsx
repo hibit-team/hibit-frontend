@@ -248,7 +248,7 @@ const PutMyProfile = () => {
 
           console.log({body});
           if(userIdx) {
-            MyprofileAPI.putMyProfile(0, body)
+            MyprofileAPI.putMyProfile(userIdx, body)
               .then((res) => {
                 console.log("put my profile res: ", {res});
               })
