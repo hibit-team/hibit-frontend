@@ -92,6 +92,17 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
 }
 //댓글입력창
 export const InputReplyWrapper = ({ postIDX, userLoginInfo }: { postIDX?: string; userLoginInfo?: ILoginInfo }) => {
+  let [userImg,setUserImg] = useState<string>('')
+  useEffect(()=>{
+      (async function getUserImg (){
+        try{
+          const res = await HttpClient.get('api/profiles/me')
+          setUserImg(res.mainImg)}
+        catch(e){
+          console.error(`댓글입력창의 이미지를 불러올 수 없습니다.${(e as AxiosError)}`)
+        }
+      })()
+  },[])
   const [textState, setTextState] = useState('');
   const textRef = useRef<HTMLTextAreaElement>(null);
   //댓글입력api
@@ -131,7 +142,7 @@ export const InputReplyWrapper = ({ postIDX, userLoginInfo }: { postIDX?: string
         navigate(`/others/:${userLoginInfo?.userIdx}`)
         window.scrollTo(0,0)
       }}>
-        <ImageBox width={32} height={32} source={userDefaultImage} />
+        <ImageBox width={32} height={32} source={userImg ? userImg : userDefaultImage} />
       </div>
       <textarea
         onChange={e => {
@@ -271,7 +282,8 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
         navigate(`/others/:${reply?.writerIdx}`)
         window.scrollTo(0, 0)
         }}>
-          <ImageBox width={32} height={32} source={(reply.writerImg = userDefaultImage)} />
+          <ImageBox width={32} height={32} source={reply.writerImg}
+          />
         </div>
           <div css={{ display: 'flex', flex: '0 1 auto' }}>
             <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
@@ -552,8 +564,12 @@ export const SecondaryReplyInputComponent = ({
         onClick={e => {
           e.stopPropagation();
           if (userLoginInfo?.isLoggedIn === true) {
-            setIsDaetgulOpen(false);
-            mutate({ replyIDX, userIDX, body: { content: secondaryReplyText } });
+            if(secondaryReplyText.trim().length !== 0){
+              setIsDaetgulOpen(false);
+              mutate({ replyIDX, userIDX, body: { content: secondaryReplyText } });
+            } else{ 
+              alert('댓글 내용을 입력해 주세요.')
+            } 
           } else {
             alert('로그인이 필요합니다');
           }
@@ -741,7 +757,7 @@ export const SecondaryReplyComponent = ({
             navigate(`/others/:${reReply?.writerIdx}`)
             window.scrollTo(0, 0)
             }}>
-            <ImageBox width={32} height={32} source={(reReply.writerImg = userDefaultImage)} />
+            <ImageBox width={32} height={32} source={reReply.writerImg} />
           </div>
           <div css={{ display: 'flex', flex: '0 1 auto' }}>
             <div css={{ borderRight: `1px solid ${COLORS.Gray2}`, padding: '0 12px', fontSize: 20, color: COLORS.Gray3, fontWeight: 800 }}>
