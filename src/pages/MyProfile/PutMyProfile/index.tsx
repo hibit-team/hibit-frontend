@@ -345,11 +345,11 @@ const PutMyProfile = () => {
           const ret_ImgURLs = [];
           ret_ImgURLs.push(res.mainImg);
 
-          const subImgArrayString: string = res.subImg;
-          const arrayWithoutBrackets = subImgArrayString.slice(1, -1);
-          const subImgArray = arrayWithoutBrackets.split(',').map(item => item.trim());
-          ret_ImgURLs.push(subImgArray[0]);
-          ret_ImgURLs.push(subImgArray[1]);
+          for(let i=1; i<res.subImg?.length; i++) {
+            ret_ImgURLs.push(res.subImg[i]);
+          }
+          console.log({ret_ImgURLs});
+
           setImgURLs(ret_ImgURLs);
           setIsImgChecked(res.subImgVisibility);
         });
