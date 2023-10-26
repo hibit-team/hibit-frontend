@@ -50,7 +50,7 @@ function App() {
         .catch((err) => {
           console.error({err});
         })
-    }
+    } 
   }
 
   const isMobile = useIsMobile();
