@@ -43,7 +43,6 @@ const PutMyProfile = () => {
           const profileRegistered: boolean = res.data.isprofile;
           setUserIdx(userIdx);
           setIsProfileRegistered(profileRegistered);
-  
           if(!res.data.isprofile) {
             console.log("프로필정보가 등록되어 있지 않아 post-profile로 이동");
             navigate("/post-profile");
