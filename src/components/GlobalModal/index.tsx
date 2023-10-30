@@ -14,13 +14,18 @@ import { useNavigate } from 'react-router-dom';
 import { GlobalModalOpenSwitch } from '../../recoil/atom/GlobalModalOpenSwitch';
 import useLoginInfo from '../../hooks/useLoginInfo';
 import { profileRegisteredState } from '../../recoil/atom/LoginInfoState';
+import { expireDateSet } from './expireTest';
 //글로벌모달(회원가입/프로필등록유도)
 export const GlobalModal = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [loginModalOpen, setLoginModalOpen] = useRecoilState(LoginModalState);
   const userLoginInfo = useLoginInfo();
+  // 3일간 보지 않기 로직
+  
+
   let isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
+
   //회원가입유도: (Home)
   const modalText1 = useMemo(
     () => ['히빗의 매칭 서비스를 이용하려면', '회원가입이 필요해요.', '히빗의 회원이 되어 추가 서비스를 이용해보세요!', '회원가입 하러가기'],
@@ -78,7 +83,6 @@ export const GlobalModal = () => {
       }
     }
     // 회원가입 && 프로필 등록유저에게는 모달 항상 꺼주기
-    if(userLoginInfo && isProfileRegistered) setModalIsOpen(false)
   }, [modalText,userLoginInfo, isProfileRegistered, pathName]);
 
   const modalCss: ReactModal.Styles = {
@@ -110,6 +114,12 @@ export const GlobalModal = () => {
   const closeModal = () => {
     setModalIsOpen(false);
   };
+
+  // if(typeof(isExpired())==='boolean'){
+  //   //만료가 아니면
+  //   if(isExpired()){ return null}
+  // }
+  if(userLoginInfo&&isProfileRegistered) return null
   return (
     <Modal style={modalCss} isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Global-Modal">
       <s.ModalContentsWrapper>
@@ -194,8 +204,18 @@ export const GlobalModal = () => {
           >
             {modalText[3]}
           </div>
+          
+          <div css={{
+          userSelect:'none',
+          fontSize:'16px',fontWeight:800, color:COLORS.Gray3,
+          position:'absolute',bottom:'5%',left:'5%'}}>
+          <label css={{cursor:'pointer',}} htmlFor='nextTime'>3일간 열지 않기</label>
+          <input onClick={expireDateSet}
+          id="nextTime" css={{cursor:'pointer',position:'relative',top:1,left:3}} 
+          type='checkbox'></input>
+          </div>
         </s.ModalTextWrapper>
       </s.ModalContentsWrapper>
     </Modal>
-  );
+  )
 };

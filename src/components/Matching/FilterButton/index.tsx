@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import * as s from './styles';
-import { useMemo } from 'react';
 import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import useLoginInfo from '../../../hooks/useLoginInfo';
@@ -8,7 +7,7 @@ import { GlobalModal } from '../../GlobalModal';
 import { useNavigate } from 'react-router-dom';
 import { GlobalModalOpenSwitch } from '../../../recoil/atom/GlobalModalOpenSwitch';
 import { profileRegisteredState } from '../../../recoil/atom/LoginInfoState';
-
+import { isExpired } from '../../GlobalModal/expireTest';
 const MatchingFilterButton = () => {
   //전체게시글 'allposts' , 이번주 'thisweek' , 좋아요 'like'
   //필터 전역으로 상태관리
@@ -17,6 +16,7 @@ const MatchingFilterButton = () => {
   const isProfileRegistered= useRecoilValue(profileRegisteredState);
   const navigate = useNavigate();
   const setModalIsOpen = useSetRecoilState(GlobalModalOpenSwitch);
+  const isExpire = isExpired()
   return (
     <>
       <s.FilterWrapper>
@@ -66,7 +66,10 @@ const MatchingFilterButton = () => {
           </div>
         </s.FilterButtonWrapper>
       </s.FilterWrapper>
-      {isProfileRegistered === true ? undefined : <GlobalModal />}
+      { isExpire ?
+      ( isProfileRegistered ? null : <GlobalModal/>)
+      :null
+      }
     </>
   );
 };

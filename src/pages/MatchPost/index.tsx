@@ -10,7 +10,7 @@ import { AxiosError } from 'axios';
 import InviteModal from '../../components/MatchPost/InviteModal';
 import { PostIDXAtom } from '../../recoil/atom/PostIDXAtom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import useLoginInfo, { ILoginInfo } from '../../hooks/useLoginInfo';
+import useLoginInfo from '../../hooks/useLoginInfo';
 import { profileRegisteredState, userIdxState } from '../../recoil/atom/LoginInfoState';
 export interface ILikeUsers {
   idx: number;
@@ -48,11 +48,12 @@ export default function MatchingPostPage() {
   const isLogin = useLoginInfo();
   const isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
   const userIdxInfo: number | null = useRecoilValue(userIdxState);
-  const userLoginInfo: ILoginInfo = {
-    isLoggedIn: isLogin,
-    isProfileRegistered: isProfileRegistered,
-    userIdx: userIdxInfo
-  }
+  // const userLoginInfo: ILoginInfo = {
+  //   isLoggedIn: isLogin,
+  //   isProfileRegistered: isProfileRegistered,
+  //   userIdx: userIdxInfo
+  // }
+  const userLoginInfo:boolean = useLoginInfo()
 
   useEffect(() => {
     if (idx) setIdxAtom(idx);

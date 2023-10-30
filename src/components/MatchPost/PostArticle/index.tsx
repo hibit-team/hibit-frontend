@@ -23,10 +23,11 @@ import { usePostMatchingArticleLikeMutation } from '../../../hooks/MatchingPost/
 import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
 import { useNavigate } from 'react-router-dom';
 import { PostIDXAtom } from '../../../recoil/atom/PostIDXAtom';
-import useLoginInfo from '../../../hooks/useLoginInfo';
-import { ILoginInfo } from '../../../hooks/useLoginInfo';
-export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { userLoginInfo?: ILoginInfo; data?: IMatchingPostPage; postIDX?: string | undefined }) {
-  const userIdxInfo = userLoginInfo?.userIdx;
+import { ILoginInfo } from '../../../hooks/useLoginInfo'
+import { userIdxState, profileRegisteredState} from '../../../recoil/atom/LoginInfoState';
+export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { userLoginInfo?: boolean; data?: IMatchingPostPage; postIDX?: string | undefined }) {
+  const userIdxInfo = useRecoilValue(userIdxState)//user idx
+  const isProfile = useRecoilValue(profileRegisteredState) // profile 
   const [isPurpleKebapOptionOpen, setIsPurpleKebapOptionOpen] = useState(false);
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
   const [isInviteModalOpen, setIsInviteModalOpen] = useRecoilState(InviteModalSwitchState);
@@ -149,7 +150,7 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
           >
             {data?.time}
           </div>
-          { userLoginInfo?.isLoggedIn ? <img
+          { userLoginInfo ? <img
             onClick={e => {
               e.stopPropagation();
               if (isPurpleKebapOptionOpen) setIsPurpleKebapOptionOpen(false);
@@ -299,9 +300,12 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
             onClick={e => {
               e.stopPropagation();
               //게시글좋아요버튼
-              if (userLoginInfo?.isLoggedIn) {
-                alert(isLikeStateOn ? '해당 게시글의 `좋아요`를 취소했습니다.' : '해당 게시글에 `좋아요`를 눌렀습니다.');
-                articleLikeMutate(postIDX);
+              if (userLoginInfo) {
+                if(isProfile){ //프로필 등록시 좋아요 가능
+                  alert(isLikeStateOn ? '해당 게시글의 `좋아요`를 취소했습니다.' : '해당 게시글에 `좋아요`를 눌렀습니다.');
+                  articleLikeMutate(postIDX);
+                }
+                else{alert('프로필 등록이 필요합니다.') }
               }
               else { 
                 alert('로그인이 필요합니다.')

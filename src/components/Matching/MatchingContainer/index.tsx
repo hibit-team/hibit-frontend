@@ -46,7 +46,21 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
       css={{ "&:hover p": {
         opacity: '1',
       }}}
-    >
+    > 
+      <p
+          css={{
+            fontWeight: 700,
+            fontSize: 18,
+            position: 'relative',
+            top: '54%',
+            left: '5%',
+            color: 'white',
+            opacity:0,
+            zIndex:10
+          }}
+        >
+          {eachData?.dateTime}
+        </p>
       <div
         onClick={() => {
           navigate(`/matchPost/${eachData.idx}`);
@@ -126,19 +140,6 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
             {eachData?.title}
           </div>
         </div>
-        <p
-          css={{
-            fontWeight: 700,
-            fontSize: 17,
-            position: 'relative',
-            top: -120,
-            left: 18,
-            color: 'white',
-            opacity:0,
-          }}
-        >
-          {eachData?.dateTime}
-        </p>
       </div>
     </motion.div>
   );
