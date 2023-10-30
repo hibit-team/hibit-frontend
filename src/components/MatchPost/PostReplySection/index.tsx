@@ -220,7 +220,7 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
   };
   //로그인 정보 불러오기
   const userIdxInfo = useRecoilValue(userIdxState);
-
+  const isProfile = useRecoilValue(profileRegisteredState)
   const isLogin = useLoginInfo();
   const isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
   const userLoginInfo: ILoginInfo = {
@@ -310,10 +310,12 @@ export const OriginalReplyComponent = ({ reply }: { reply: IComments }) => {
             </div>
             <div
               onClick={e => {
-                //댓글 좋아요
+                //로그인,프로필 작성 경우만 댓글 좋아요 가능
                 if (userLoginInfo) {
-                  //로그인한 경우만 좋아요가능
+                  if(isProfile){
                   mutate(reply.idx);
+                  }
+                  else{ alert('프로필 등록이 필요합니다.')}
                 } else {
                   alert('로그인이 필요합니다');
                 }
