@@ -7,7 +7,6 @@ import { profileRegisteredState } from '../../recoil/atom/LoginInfoState';
 export const usePostReplyLikeMutation = (replyIDX: number | undefined) => {
   const queryClient = useQueryClient();
   const isProfile = useRecoilValue<boolean>(profileRegisteredState)
-  isProfile ? console.log(isProfile) : console.log('false')
   const replyLikeMutationFn = async (replyIDX: number | undefined) => {
       if(!isProfile) throw Error
       const path = `/comment/like/${replyIDX}`;

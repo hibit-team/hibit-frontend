@@ -14,12 +14,32 @@ import { useNavigate } from 'react-router-dom';
 import { GlobalModalOpenSwitch } from '../../recoil/atom/GlobalModalOpenSwitch';
 import useLoginInfo from '../../hooks/useLoginInfo';
 import { profileRegisteredState } from '../../recoil/atom/LoginInfoState';
+import  dayjs from 'dayjs';
 //글로벌모달(회원가입/프로필등록유도)
 export const GlobalModal = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [loginModalOpen, setLoginModalOpen] = useRecoilState(LoginModalState);
   const userLoginInfo = useLoginInfo();
+  // 3일간 보지 않기 로직
+  const currentDate = dayjs()
+  const goalDate = currentDate.add(3,'day').format('YYYY-MM-DD')
+  const expireDateSet = ()=>{
+    if(!localStorage.getItem('modalExpireDate'))
+    localStorage.setItem('modalExpireDate',goalDate)
+  }
+  const isExpired = () => { 
+      const fotmattedGoalDate = localStorage.getItem('modalExpireDate')
+      if(fotmattedGoalDate) { //null이 아니면
+        // 현재 날짜와 expireDate를 비교
+        let expireDate = dayjs(fotmattedGoalDate)
+        return currentDate.isAfter(expireDate) ?
+        true
+        :false
+      }
+      return 'no-value'
+    }
+      
   let isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
   //회원가입유도: (Home)
   const modalText1 = useMemo(
@@ -78,7 +98,6 @@ export const GlobalModal = () => {
       }
     }
     // 회원가입 && 프로필 등록유저에게는 모달 항상 꺼주기
-    if(userLoginInfo && isProfileRegistered) setModalIsOpen(false)
   }, [modalText,userLoginInfo, isProfileRegistered, pathName]);
 
   const modalCss: ReactModal.Styles = {
@@ -110,6 +129,12 @@ export const GlobalModal = () => {
   const closeModal = () => {
     setModalIsOpen(false);
   };
+
+  if(typeof(isExpired())==='boolean'){
+    //만료가 아니면
+    if(!isExpired()){ return null}
+  }
+
   return (
     <Modal style={modalCss} isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Global-Modal">
       <s.ModalContentsWrapper>
@@ -162,11 +187,11 @@ export const GlobalModal = () => {
               e.stopPropagation();
               //홈화면에서 초기 비회원 유저의 초기 회원 유도모달이면
               if (modalText[3] === '회원가입 하러가기') {
-                setModalIsOpen(false);
+                // setModalIsOpen(false);
                 setLoginModalOpen(true);
               }
               if (modalText[3] === '내 프로필 등록하기') {
-                setModalIsOpen(false);
+                // setModalIsOpen(false);
                 if (userLoginInfo) {
                   navigate('/post-profile');
                 }
@@ -194,8 +219,18 @@ export const GlobalModal = () => {
           >
             {modalText[3]}
           </div>
+          
+          <div css={{
+          userSelect:'none',
+          fontSize:'16px',fontWeight:800, color:COLORS.Gray3,
+          position:'absolute',bottom:'5%',left:'5%'}}>
+          <label css={{cursor:'pointer',}} htmlFor='nextTime'>3일간 보지 않기</label>
+          <input onClick={expireDateSet}
+          id="nextTime" css={{cursor:'pointer',position:'relative',top:1,left:3}} 
+          type='checkbox'></input>
+          </div>
         </s.ModalTextWrapper>
       </s.ModalContentsWrapper>
     </Modal>
-  );
+  )
 };
