@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { GlobalModalOpenSwitch } from '../../recoil/atom/GlobalModalOpenSwitch';
 import useLoginInfo from '../../hooks/useLoginInfo';
 import { profileRegisteredState } from '../../recoil/atom/LoginInfoState';
-import  dayjs from 'dayjs';
+import { expireDateSet } from './expireTest';
 //글로벌모달(회원가입/프로필등록유도)
 export const GlobalModal = () => {
   const isMobile = useIsMobile();
@@ -22,25 +22,10 @@ export const GlobalModal = () => {
   const [loginModalOpen, setLoginModalOpen] = useRecoilState(LoginModalState);
   const userLoginInfo = useLoginInfo();
   // 3일간 보지 않기 로직
-  const currentDate = dayjs()
-  const goalDate = currentDate.add(3,'day').format('YYYY-MM-DD')
-  const expireDateSet = ()=>{
-    if(!localStorage.getItem('modalExpireDate'))
-    localStorage.setItem('modalExpireDate',goalDate)
-  }
-  const isExpired = () => { 
-      const fotmattedGoalDate = localStorage.getItem('modalExpireDate')
-      if(fotmattedGoalDate) { //null이 아니면
-        // 현재 날짜와 expireDate를 비교
-        let expireDate = dayjs(fotmattedGoalDate)
-        return currentDate.isAfter(expireDate) ?
-        true
-        :false
-      }
-      return 'no-value'
-    }
-      
+  
+
   let isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
+
   //회원가입유도: (Home)
   const modalText1 = useMemo(
     () => ['히빗의 매칭 서비스를 이용하려면', '회원가입이 필요해요.', '히빗의 회원이 되어 추가 서비스를 이용해보세요!', '회원가입 하러가기'],
@@ -130,11 +115,11 @@ export const GlobalModal = () => {
     setModalIsOpen(false);
   };
 
-  if(typeof(isExpired())==='boolean'){
-    //만료가 아니면
-    if(!isExpired()){ return null}
-  }
-
+  // if(typeof(isExpired())==='boolean'){
+  //   //만료가 아니면
+  //   if(isExpired()){ return null}
+  // }
+  if(userLoginInfo&&isProfileRegistered) return null
   return (
     <Modal style={modalCss} isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Global-Modal">
       <s.ModalContentsWrapper>
@@ -187,11 +172,11 @@ export const GlobalModal = () => {
               e.stopPropagation();
               //홈화면에서 초기 비회원 유저의 초기 회원 유도모달이면
               if (modalText[3] === '회원가입 하러가기') {
-                // setModalIsOpen(false);
+                setModalIsOpen(false);
                 setLoginModalOpen(true);
               }
               if (modalText[3] === '내 프로필 등록하기') {
-                // setModalIsOpen(false);
+                setModalIsOpen(false);
                 if (userLoginInfo) {
                   navigate('/post-profile');
                 }
