@@ -209,7 +209,7 @@ export const GlobalModal = () => {
           userSelect:'none',
           fontSize:'16px',fontWeight:800, color:COLORS.Gray3,
           position:'absolute',bottom:'5%',left:'5%'}}>
-          <label css={{cursor:'pointer',}} htmlFor='nextTime'>3일간 보지 않기</label>
+          <label css={{cursor:'pointer',}} htmlFor='nextTime'>3일간 열지 않기</label>
           <input onClick={expireDateSet}
           id="nextTime" css={{cursor:'pointer',position:'relative',top:1,left:3}} 
           type='checkbox'></input>
