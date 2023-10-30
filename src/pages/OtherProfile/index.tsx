@@ -254,8 +254,6 @@ const OtherProfile = () => {
           )
         }
       </s.Wrapper>
-      {/* 비로그인시 -> 로그인시 프로필 없는경우 -> 로그인시 프로필있는경우  */}
-      { !loginInfo ? <GlobalModal/> : isProfileRegistered ? undefined : <GlobalModal/> }
     </LayoutTemplate>
   )
 };

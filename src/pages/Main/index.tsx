@@ -10,7 +10,12 @@ import MobileTab from "../../components/Main/Mobile/MobileTab";
 import MobileSlider from "../../components/Main/Mobile/MobileSlider";
 import { GlobalModal } from "../../components/GlobalModal";
 import useLoginInfo from "../../hooks/useLoginInfo";
+import { isExpired } from "../../components/GlobalModal/expireTest";
+import { useRecoilValue } from "recoil";
+import { userIdxState } from "../../recoil/atom/LoginInfoState";
 const MainPage = () => {
+  const isExpire = isExpired()
+  const userIdx = useRecoilValue(userIdxState)
   const [toggleState, setToggleState] = useRecoilState<boolean>(toggleNavState);
   const onToggle: Function = () => {
     setToggleState(!toggleState);
@@ -39,7 +44,10 @@ const MainPage = () => {
   
   return (
     <LayoutTemplate>
-      <GlobalModal/>
+      {isExpire ?
+      (userIdx ? null : <GlobalModal/>)
+      : null
+      }
       <MainTab></MainTab>
       <s.Wrapper />
     </LayoutTemplate>
