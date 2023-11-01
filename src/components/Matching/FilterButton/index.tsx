@@ -3,11 +3,11 @@ import * as s from './styles';
 import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import useLoginInfo from '../../../hooks/useLoginInfo';
-import { GlobalModal } from '../../GlobalModal';
 import { useNavigate } from 'react-router-dom';
 import { GlobalModalOpenSwitch } from '../../../recoil/atom/GlobalModalOpenSwitch';
 import { profileRegisteredState } from '../../../recoil/atom/LoginInfoState';
-import { isExpired } from '../../GlobalModal/expireTest';
+import { LoginModalState } from '../../../recoil/atom/LoginModalState';
+import LoginModal from '../../Login/LoginModal';
 const MatchingFilterButton = () => {
   //전체게시글 'allposts' , 이번주 'thisweek' , 좋아요 'like'
   //필터 전역으로 상태관리
@@ -16,7 +16,10 @@ const MatchingFilterButton = () => {
   const isProfileRegistered= useRecoilValue(profileRegisteredState);
   const navigate = useNavigate();
   const setModalIsOpen = useSetRecoilState(GlobalModalOpenSwitch);
-  const isExpire = isExpired()
+  //로그인모달
+  const [modalOpen, setModalOpen] = useRecoilState(LoginModalState);
+  const closeModal = () => setModalOpen(false);
+  const onClickLogin = () => setModalOpen(true);
   return (
     <>
       <s.FilterWrapper>
@@ -47,7 +50,7 @@ const MatchingFilterButton = () => {
           <div
             onClick={() => {
               if (!isLoggedIn) {
-                alert('비회원은 게시글을 작성할 수 없습니다.');
+                setModalOpen(true);
                 return;
               }
               // 프로필 등록유저일 경우
@@ -64,12 +67,9 @@ const MatchingFilterButton = () => {
           >
             게시글 작성 ✍
           </div>
+            <LoginModal open={modalOpen} close={closeModal} />
         </s.FilterButtonWrapper>
       </s.FilterWrapper>
-      { isExpire ?
-      ( isProfileRegistered ? null : <GlobalModal/>)
-      :null
-      }
     </>
   );
 };

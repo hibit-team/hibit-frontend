@@ -224,6 +224,7 @@ const PutPosting = () => {
   const [imgURLs, setImgURLs]= useState<string[]>([]);
   const [imgs, setImgs]= useState<File[]>([]);
   const imgInputRef = useRef<HTMLInputElement | null>(null);
+  const newImgs = [...(imgs) || []];
   const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       console.log("이미지 파일 없음");
@@ -233,9 +234,8 @@ const PutPosting = () => {
       alert("이미지는 최대 3장까지 추가할 수 있습니다.");
       return;
     }
-
-    const newImgs = [...(imgs) || []];
     newImgs.push(e.target.files[0]);
+    if( newImgs.length > 3) newImgs.pop()
     setImgs(newImgs);
 
     const reader = new FileReader();

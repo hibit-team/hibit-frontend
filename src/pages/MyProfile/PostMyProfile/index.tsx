@@ -264,7 +264,7 @@ const PostMyProfile = () => {
 
 
   const checkAllInfo = () => {
-    if (nickname === undefined || nickname === "") {
+    if (!nickname) {
       alert("닉네임 정보를 입력해 주세요.");
       return false;
     }
@@ -310,7 +310,11 @@ const PostMyProfile = () => {
     }
 
     if (imgURLs.length < 2) {
-      alert("이미지는 2장 이상을 등록해야 합니다.");
+      alert("이미지는 2장 이상 등록해야 합니다.");
+      return false;
+    }
+    else if ( imgURLs.length > 3){
+      alert("이미지는 3장을 초과할 수 없습니다.");
       return false;
     }
 

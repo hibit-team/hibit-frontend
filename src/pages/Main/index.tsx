@@ -1,4 +1,5 @@
 import * as s from "./styles";
+import { useState,lazy } from "react";
 import LayoutTemplate from '../../components/Common/LayoutTemplate';
 import MainTab from '../../components/Main/MainTab';
 import useIsMobile from "../../hooks/useIsMobile";
@@ -8,13 +9,13 @@ import MoHeaderComponent from "../../components/Main/Mobile/MobileHeader";
 import MobileNavbar from "../../components/Main/Mobile/MobileNavbar";
 import MobileTab from "../../components/Main/Mobile/MobileTab";
 import MobileSlider from "../../components/Main/Mobile/MobileSlider";
-import { GlobalModal } from "../../components/GlobalModal";
+import GlobalModal  from "../../components/GlobalModal";
 import useLoginInfo from "../../hooks/useLoginInfo";
 import { isExpired } from "../../components/GlobalModal/expireTest";
 import { useRecoilValue } from "recoil";
 import { userIdxState } from "../../recoil/atom/LoginInfoState";
 const MainPage = () => {
-  const isExpire = isExpired()
+  const [isExpire] = useState(()=>isExpired())
   const userIdx = useRecoilValue(userIdxState)
   const [toggleState, setToggleState] = useRecoilState<boolean>(toggleNavState);
   const onToggle: Function = () => {
@@ -35,7 +36,6 @@ const MainPage = () => {
     return (
       <>    
         <MoHeaderComponent onToggle={onToggle}></MoHeaderComponent>
-        { isLoggedIn === true ? undefined : <GlobalModal/> }
         <MobileTab></MobileTab>
         <MobileSlider></MobileSlider>
       </>
