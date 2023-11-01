@@ -6,7 +6,7 @@ import FsLightbox from "fslightbox-react";
 import ImageCarousel from "../../components/OtherProfile/ImageCarousel";
 import ZoomInIcon from "../../images/components/OtherProfile/ZoomInIcon.svg";
 import LockIcon from "../../images/components/OtherProfile/LockIcon.png";
-import { GlobalModal } from "../../components/GlobalModal";
+import GlobalModal  from "../../components/GlobalModal";
 import useLoginInfo from "../../hooks/useLoginInfo";
 import { Global } from "@emotion/react";
 import OtherprofileAPI from "../../api/OtherprofileAPI";
@@ -97,6 +97,7 @@ const OtherProfile = () => {
           if(subImgs) {
             newImgs.push(...subImgs);
           } 
+          console.log(newImgs,'이미지체크')
           setImgs(newImgs);
           
         })
@@ -179,12 +180,18 @@ const OtherProfile = () => {
                     isProfileRegistered ?
                       <FsLightbox 
                       toggler={imgToggler}
-                      sources={imgs}  
+                      sources={
+                        [
+                        <img src={imgs[0]} alt='newd'/>,
+                        <img src={imgs[1]} alt='newd'/>,
+                        <img src={imgs[2]} alt='newd'/>
+                      ]
+                    }
                       />
                       :
                       <FsLightbox 
                       toggler={imgToggler}
-                      sources={imgs}  
+                      // sources={imgs}  
                       />
                   }
 
