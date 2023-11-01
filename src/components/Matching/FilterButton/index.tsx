@@ -3,7 +3,8 @@ import * as s from './styles';
 import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import useLoginInfo from '../../../hooks/useLoginInfo';
-import { GlobalModal } from '../../GlobalModal';
+import  GlobalModal from '../../GlobalModal';
+import { lazy,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobalModalOpenSwitch } from '../../../recoil/atom/GlobalModalOpenSwitch';
 import { profileRegisteredState } from '../../../recoil/atom/LoginInfoState';
@@ -16,7 +17,8 @@ const MatchingFilterButton = () => {
   const isProfileRegistered= useRecoilValue(profileRegisteredState);
   const navigate = useNavigate();
   const setModalIsOpen = useSetRecoilState(GlobalModalOpenSwitch);
-  const isExpire = isExpired()
+  const [isExpire,setIsExpire] = useState(false)
+  if(!isExpire) setIsExpire(true)
   return (
     <>
       <s.FilterWrapper>
@@ -66,10 +68,10 @@ const MatchingFilterButton = () => {
           </div>
         </s.FilterButtonWrapper>
       </s.FilterWrapper>
-      { isExpire ?
+      {/* { !isExpire ? 
+      null:
       ( isProfileRegistered ? null : <GlobalModal/>)
-      :null
-      }
+      } */}
     </>
   );
 };

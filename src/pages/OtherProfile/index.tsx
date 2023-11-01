@@ -6,7 +6,7 @@ import FsLightbox from "fslightbox-react";
 import ImageCarousel from "../../components/OtherProfile/ImageCarousel";
 import ZoomInIcon from "../../images/components/OtherProfile/ZoomInIcon.svg";
 import LockIcon from "../../images/components/OtherProfile/LockIcon.png";
-import { GlobalModal } from "../../components/GlobalModal";
+import GlobalModal  from "../../components/GlobalModal";
 import useLoginInfo from "../../hooks/useLoginInfo";
 import { Global } from "@emotion/react";
 import OtherprofileAPI from "../../api/OtherprofileAPI";

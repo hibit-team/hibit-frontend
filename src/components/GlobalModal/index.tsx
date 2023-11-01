@@ -16,7 +16,7 @@ import useLoginInfo from '../../hooks/useLoginInfo';
 import { profileRegisteredState } from '../../recoil/atom/LoginInfoState';
 import { expireDateSet } from './expireTest';
 //글로벌모달(회원가입/프로필등록유도)
-export const GlobalModal = () => {
+const GlobalModal = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [loginModalOpen, setLoginModalOpen] = useRecoilState(LoginModalState);
@@ -69,19 +69,20 @@ export const GlobalModal = () => {
         if(modalText[0] !== modalText[2]) setModalText(modalText2);
         setModalIsOpen(true);
       } 
-    } else if (pathName === '/matching') {
-      if (!userLoginInfo) {
-        if(modalText[0] !== modalText1[0]) setModalText(modalText1)
-      }
-      //로그인 한 경우 프로필등록 유도 텍스트로 변경
-      else {
-        if(modalText[0] !== modalText2[0]) setModalText(modalText2)
-      }
-      //비회원,프로필미등록 유저는 계속 modal유도 등장
-      if (!userLoginInfo || !isProfileRegistered) {
-        setModalIsOpen(true)
-      }
     }
+    // } else if (pathName === '/matching') {
+    //   if (!userLoginInfo) {
+    //     if(modalText[0] !== modalText1[0]) setModalText(modalText1)
+    //   }
+    //   //로그인 한 경우 프로필등록 유도 텍스트로 변경
+    //   else {
+    //     if(modalText[0] !== modalText2[0]) setModalText(modalText2)
+    //   }
+    //   //비회원,프로필미등록 유저는 계속 modal유도 등장
+    //   if (!userLoginInfo || !isProfileRegistered) {
+    //     setModalIsOpen(true)
+    //   }
+    // }
     // 회원가입 && 프로필 등록유저에게는 모달 항상 꺼주기
   }, [modalText,userLoginInfo, isProfileRegistered, pathName]);
 
@@ -115,11 +116,7 @@ export const GlobalModal = () => {
     setModalIsOpen(false);
   };
 
-  // if(typeof(isExpired())==='boolean'){
-  //   //만료가 아니면
-  //   if(isExpired()){ return null}
-  // }
-  if(userLoginInfo&&isProfileRegistered) return null
+  // if(userLoginInfo && isProfileRegistered) return null
   return (
     <Modal style={modalCss} isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Global-Modal">
       <s.ModalContentsWrapper>
@@ -219,3 +216,6 @@ export const GlobalModal = () => {
     </Modal>
   )
 };
+
+
+export default GlobalModal
