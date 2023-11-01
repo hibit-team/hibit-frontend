@@ -1,18 +1,26 @@
 import styled from "@emotion/styled";
 import Slider from "react-slick";
-
+import COLORS from "../../../assets/color";
 export const ImageSliderContainer = styled(Slider)`
-  display: flex;
-  width: 264px;
-  height: 346px;
-  .slick-slide slick-active slick-current{
-    width: 264px;
-    height: 346px;
-  }
-  border-radius: 10px;
+box-sizing: border-box;
+left:20px;  
+// border: 1px solid ${COLORS.Gray2};
+width: 100%;
+overflow: hidden;
+// margin: auto;
+// height: 346px;
+border-radius: 10px;
 `;
 
 export const ImageItem = styled.img`
   border-radius: 10px;
-  height: 100%;
+  // height: 100%;
 `;
+// display: flex;
+  // width: 264px;
+  // height: 346px;
+  // .slick-slide slick-active slick-current{
+  //   width: 264px;
+  //   height: 346px;
+  // }
+  // border-radius: 10px;

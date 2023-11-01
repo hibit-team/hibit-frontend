@@ -1,11 +1,13 @@
+/** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 import { css } from '@emotion/react';
+import '../../../assets/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import '../../../assets/slick.css';
 
 interface ImageCarouselProps {
   imgs: string[];
 }
-
 const settings = {
   arrows: false,
   dots: true,
@@ -19,7 +21,7 @@ const settings = {
       style={{
         width: '100%',
         position: 'absolute',
-        top: '300px',
+        top: '320px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
@@ -32,13 +34,12 @@ const settings = {
   };
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({imgs}) => {
+  console.log(imgs)
   return (
     <s.ImageSliderContainer {...settings}>
-      {
-        imgs.map((img) => {
-          return <img src={img} alt="im" />
-        })
-      }
+      <img css={{width:'100%', height: 320}} src={imgs[0]} alt='dada'></img>
+      <img css={{width:'100%', height:320}} src={imgs[1]} alt='dada'></img>
+      <img css={{width:'100%', height:320}} src={imgs[2]} alt='dada'></img>
     </s.ImageSliderContainer>
   )
 };

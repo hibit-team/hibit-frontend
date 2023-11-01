@@ -97,6 +97,7 @@ const OtherProfile = () => {
           if(subImgs) {
             newImgs.push(...subImgs);
           } 
+          console.log(newImgs,'이미지체크')
           setImgs(newImgs);
           
         })
@@ -179,12 +180,18 @@ const OtherProfile = () => {
                     isProfileRegistered ?
                       <FsLightbox 
                       toggler={imgToggler}
-                      sources={imgs}  
+                      sources={
+                        [
+                        <img src={imgs[0]} alt='newd'/>,
+                        <img src={imgs[1]} alt='newd'/>,
+                        <img src={imgs[2]} alt='newd'/>
+                      ]
+                    }
                       />
                       :
                       <FsLightbox 
                       toggler={imgToggler}
-                      sources={imgs}  
+                      // sources={imgs}  
                       />
                   }
 
