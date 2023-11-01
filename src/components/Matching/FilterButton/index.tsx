@@ -20,7 +20,6 @@ const MatchingFilterButton = () => {
   const [modalOpen, setModalOpen] = useRecoilState(LoginModalState);
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
-  
   return (
     <>
       <s.FilterWrapper>

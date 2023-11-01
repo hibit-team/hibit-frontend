@@ -14,7 +14,6 @@ import useLoginInfo from "../../hooks/useLoginInfo";
 import { isExpired } from "../../components/GlobalModal/expireTest";
 import { useRecoilValue } from "recoil";
 import { userIdxState } from "../../recoil/atom/LoginInfoState";
-
 const MainPage = () => {
   const [isExpire] = useState(()=>isExpired())
   const userIdx = useRecoilValue(userIdxState)
