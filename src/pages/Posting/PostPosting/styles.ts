@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
 export const Wrapper = styled.div`
@@ -197,7 +196,6 @@ export const CloseIcon = styled.img`
   top: -10px;
   left: -10px;
   cursor: pointer;
-  z-index: 1000;
 `;
 
 export const OpenChatContainer = styled.div`

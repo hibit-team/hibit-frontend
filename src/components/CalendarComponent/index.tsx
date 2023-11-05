@@ -83,7 +83,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
                 isMorning,
               })}              
               onDayClick={onClickDate}
-              style={{zIndex: 100}}
+              style={{ zIndex: 0 }}
             />
             <s.MorningAfternoonWrapper>
               <s.Morning onClick={onClickMorning}>오전</s.Morning>
