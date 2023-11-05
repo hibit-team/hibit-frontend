@@ -54,7 +54,7 @@ const Header = () => {
         localStorage.removeItem('accessToken');
 
         setIsLogin(false);
-        alert("로그아웃 했어요!");
+        // alert("로그아웃 했어요!");
         return null;
       })
       .catch((e) => {
