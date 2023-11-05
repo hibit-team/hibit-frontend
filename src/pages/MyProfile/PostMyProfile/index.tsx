@@ -14,8 +14,7 @@ import MyprofileAPI from "../../../api/MyprofileAPI";
 import { useNavigate } from "react-router-dom";
 import FileAPI from "../../../api/FileAPI";
 import { IImage } from "../../../interfaces/IImage";
-import useLoginInfo from "../../../hooks/useLoginInfo";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { profileRegisteredState, userIdxState } from "../../../recoil/atom/LoginInfoState";
 import axios from "axios";
 
@@ -27,7 +26,6 @@ const PostMyProfile = () => {
   let userIdx: number | null = null;
   const accessToken = localStorage.getItem("accessToken");
 
-  const isProfileRegistered = useRecoilValue(profileRegisteredState);
   const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
   const setUserIdx = useSetRecoilState(userIdxState);
 
@@ -232,11 +230,11 @@ const PostMyProfile = () => {
             gender: gender!,
             personality: personality,
             introduce: introduce,
+            mainImg: imageResponse.mainImage,
+            subImg: imageResponse.subImages!,
             job: job,
             addressCity: address_sido,
             addressDistrict: address_sigungu,
-            mainImg: imageResponse.mainImage,
-            subImg: imageResponse.subImages!,
             jobVisibility: isJobChecked ? 1 : 0,
             addressVisibility: isAddressChecked ? 1: 0, 
             subImgVisibility: isImgChecked ? 1 : 0,

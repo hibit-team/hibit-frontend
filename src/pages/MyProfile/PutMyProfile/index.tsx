@@ -67,7 +67,7 @@ const PutMyProfile = () => {
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
   }; 
-  const [isNicknameDuplicated, setIsNicknameDuplicated] = useState<boolean>(true);
+  const [isNicknameDuplicated, setIsNicknameDuplicated] = useState<boolean>(false);
   const onClickDuplicateNickname = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (nickname) {
       MyprofileAPI.checkIsUniqueNickname(nickname)
@@ -163,14 +163,14 @@ const PutMyProfile = () => {
   // 주소
   
   const [imgURLs, setImgURLs]= useState<string[]>([]);
-  const [imgs, setImgs]= useState<File[]>([]);
+  const [imgs, setImgs] = useState<File[]>([]);
   const imgInputRef = useRef<HTMLInputElement | null>(null);
   const [isImgChecked, setIsImgChecked] = useState<boolean | undefined>(false);
   const onClickImgCheck = () => {
     if (!isEditMode) return;
     setIsImgChecked(!isImgChecked);
   };
-  const onUploadImg = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const onUploadImg = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
       console.log("이미지 파일 없음");
       return;
@@ -180,91 +180,91 @@ const PutMyProfile = () => {
       return;
     }
 
-    const newImgs = [...(imgs) || []];
-    newImgs.push(e.target.files[0]);
-    setImgs(newImgs);
+    if(!e.target.files[0]) {
+      console.log("이미지가 없습니다.");
+      return;
+    }
 
+    /* 이미지 프리뷰를 위한 imgURLs */
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = () => {
       const newImgURL = [...(imgURLs || [])];
       newImgURL.push(reader.result as string);
+      console.log({newImgURL});
       setImgURLs(newImgURL);
     };
+
+    const formData = new FormData();
+    formData.append(`file`, e.target.files[0]);
+
+    try {
+      const response = await FileAPI.postOneFile(formData);
+      console.log({response});
+      const newURLs = [...(imgURLs || [])];
+      newURLs.push(response!.data[0]);
+      setImgURLs(newURLs);
+    } catch(error) {
+      console.error({error});
+    }
   }, [imgs, setImgs, imgURLs, setImgURLs]);
+
   const onUploadImgBtnClick = useCallback(() => {
     if(!imgInputRef.current) return;
     imgInputRef.current.click();
-  }, [])
+  }, []);
+
 
   const onClickSendBtn = () => {
-    
     if (!checkAllInfo()) {
       alert("모든 정보를 기입해야 합니다.");
       return;
     }
-    
-    if (imgs && imgs.length > 0) {
-      const formData = new FormData();
-      imgs.forEach((imageData) => {
-        formData.append(`file`, imageData);
-      });
-      
-      console.log(formData.getAll(`file`));
+
+    if(window.confirm("정보를 수정하시겠습니까?")) {
+      const subImgs = imgURLs.slice(1);
   
-      FileAPI.postFiles(0, formData)
-        .then((res) => {
-          console.log({res});
-          const imageResponse: IImage = {
-            mainImage: "",
-            subImages: []
-          }
+      const body: IProfile = {
+        nickname: nickname,
+        age: age!,
+        gender: gender!,
+        personality: personality,
+        introduce: introduce,
+        mainImg: imgURLs[0],
+        subImg: subImgs,
+        job: job,
+        addressCity: address_sido,
+        addressDistrict: address_sigungu,
+        jobVisibility: isJobChecked ? 1 : 0,
+        addressVisibility: isAddressChecked ? 1: 0, 
+        subImgVisibility: isImgChecked ? 1 : 0,
+      }
+  
+      console.log({body});
+  
+      if(userIdx) {
+        MyprofileAPI.putMyProfile(userIdx, body)
+          .then((res) => {
+            console.log("put my profile res: ", {res});
+            navigate(-1);
+          })
+          .catch((e) => {
+            console.error({e});
+          });
+      } else {
+        alert("세션이 만료되었습니다. 다시 시도해 주세요.");
+        navigate("/");
+      }
 
-          imageResponse.mainImage = res?.data[0];
-          if (res?.data[1].length > 0) {
-            for(let i=1; i<res?.data[1].length; i++) {
-              imageResponse.subImages!.push(res?.data[1][i]);
-            }
-          }
-
-          console.log("이미지 업로드 완료", imageResponse);
-
-          const body: IProfile = {
-            nickname: nickname,
-            age: age!,
-            gender: gender!,
-            personality: personality,
-            introduce: introduce,
-            job: job,
-            addressCity: address_sido,
-            addressDistrict: address_sigungu,
-            mainImg: imageResponse.mainImage,
-            subImg: imageResponse.subImages!,
-            jobVisibility: isJobChecked ? 1 : 0,
-            addressVisibility: isAddressChecked ? 1: 0, 
-            subImgVisibility: isImgChecked ? 1 : 0,
-          }
-
-          console.log({body});
-          if(userIdx) {
-            MyprofileAPI.putMyProfile(userIdx, body)
-              .then((res) => {
-                console.log("put my profile res: ", {res});
-              })
-              .catch((e) => {
-                console.error({e});
-              });
-          }
-        })
-        .catch((e) => {
-          console.error({e});
-          
-        });
+      alert("정보가 수정되었습니다.");
+      navigate("/");
     }
-    
-    else return;
-  }
 
+  };
+
+  useEffect(() => {
+    setIsNicknameDuplicated(false);
+  }, [nickname]);
 
   const checkAllInfo = () => {
     if (nickname === undefined || nickname === "") {
@@ -303,7 +303,6 @@ const PutMyProfile = () => {
     }
 
     if (address_sigungu === undefined || address_sigungu === "") {
-      // console.log("시군구 없음");
       alert("시/군/구 정보를 입력해 주세요.");
       return false;
     }
@@ -345,16 +344,7 @@ const PutMyProfile = () => {
           setIsAddressChecked(res.addressVisibility);
 
           console.log({res});
-          
-          const ret_ImgURLs = [];
-          ret_ImgURLs.push(res.mainImg);
-
-          for(let i=1; i<res.subImg?.length; i++) {
-            ret_ImgURLs.push(res.subImg[i]);
-          }
-          console.log({ret_ImgURLs});
-
-          setImgURLs(ret_ImgURLs);
+          setImgURLs([...res.subImg]);
           setIsImgChecked(res.subImgVisibility);
         });
     }
