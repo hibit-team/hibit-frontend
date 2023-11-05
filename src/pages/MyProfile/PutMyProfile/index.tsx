@@ -266,7 +266,7 @@ const PutMyProfile = () => {
   }, [nickname]);
 
   const checkAllInfo = () => {
-    if (nickname === undefined || nickname === "") {
+    if (nickname === undefined || nickname === null || nickname === "") {
       alert("닉네임 정보를 입력해 주세요.");
       return false;
     }

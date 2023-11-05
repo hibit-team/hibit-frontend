@@ -317,7 +317,6 @@ const PutPosting = () => {
           setSelectedActivity(activityIndex);
   
           const imgURLs: string[] = [];
-          imgURLs.push(res.mainimg);      
           const subImgs: string[] = [...(res.subimg || [])];
           subImgs.map((img) => imgURLs.push(img));
           setImgURLs([...imgURLs]);
@@ -362,20 +361,6 @@ const PutPosting = () => {
     
         FileAPI.postFiles(0, formData)
           .then((res) => {
-            const imageResponse: IImage = {
-              mainImage: "",
-              subImages: []
-            }
-  
-            imageResponse.mainImage = res?.data[0];
-            if (res?.data[1].length > 0) {
-              res?.data[1].forEach((url: string) => {
-                imageResponse.subImages!.push(url);
-              });
-            }
-  
-            console.log("이미지 업로드 완료", imageResponse);
-
             getFilteredDateList();
             const body: IPosting = {
               title: title,
@@ -385,8 +370,8 @@ const PutPosting = () => {
               openchat: openchat!,
               what_do: activityData_enum[selectedActivity!],
               dateTimeSlots: filteredDateList ,
-              mainimg: imageResponse.mainImage,
-              subimg: imageResponse.subImages!
+              mainimg: res!.data[0][0],
+              subimg: res!.data[0]
             }
 
             PostingAPI.putPosting(+idx!, body)
@@ -404,8 +389,8 @@ const PutPosting = () => {
       }
       // 이미지 등록
 
-      alert("게시글이 등록되었습니다.");
-      // navigate(-1);
+      alert("게시글이 수정되었습니다.");
+      navigate("/");
     }
     else return;
   };
