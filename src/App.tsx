@@ -59,7 +59,7 @@ function App() {
   return (
     <>
         <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen/>
+          {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen />}
           <Global styles={globalStyles}/>
           <Suspense fallback={<div><LottiePageRouting/></div>}>
             <Container>
