@@ -222,7 +222,6 @@ const PutMyProfile = () => {
     }
 
     if(window.confirm("정보를 수정하시겠습니까?")) {
-      const subImgs = imgURLs.slice(1);
   
       const body: IProfile = {
         nickname: nickname,
@@ -231,7 +230,7 @@ const PutMyProfile = () => {
         personality: personality,
         introduce: introduce,
         mainImg: imgURLs[0],
-        subImg: subImgs,
+        subImg: imgURLs,
         job: job,
         addressCity: address_sido,
         addressDistrict: address_sigungu,
