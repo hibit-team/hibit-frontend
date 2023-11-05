@@ -31,7 +31,7 @@ export const ReviewWrapper = styled.div`
   }
 `;
 
-export const ReviewerImg = styled.div`
+export const ReviewerImg = styled.img`
   display: flex;
   position: relative;
   top: -40px;

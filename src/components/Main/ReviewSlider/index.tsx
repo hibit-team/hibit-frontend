@@ -1,5 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
+import Grinning from "../../../images/components/Main/Grinning.png";
+import Smile from "../../../images/components/Main/Smile.png";
+import SmileHeart from "../../../images/components/Main/SmileHeart.png";
+import Exciting from "../../../images/components/Main/Exciting.png";
 
 const settings = {
   arrows: false,
@@ -25,25 +29,25 @@ const ReviewSlider = () => {
   return (
     <s.SliderContainer {...settings}>
       <s.ReviewWrapper>
-        <s.ReviewerImg />
+        <s.ReviewerImg src={Grinning} alt="Grinning" />
         <s.ReviewText>{review1}</s.ReviewText>
         <s.ReviewWriter>{writer1} 님</s.ReviewWriter>
       </s.ReviewWrapper>
 
       <s.ReviewWrapper>
-        <s.ReviewerImg />
+        <s.ReviewerImg src={Smile} alt="Smile" />
         <s.ReviewText>{review2}</s.ReviewText>
         <s.ReviewWriter>{writer2} 님</s.ReviewWriter>
       </s.ReviewWrapper>
 
       <s.ReviewWrapper>
-        <s.ReviewerImg />
+        <s.ReviewerImg src={SmileHeart} alt="SmileHeart" />
         <s.ReviewText>{review3}</s.ReviewText>
         <s.ReviewWriter>{writer3} 님</s.ReviewWriter>
       </s.ReviewWrapper>
 
       <s.ReviewWrapper>
-        <s.ReviewerImg />
+        <s.ReviewerImg src={Exciting} alt="Exciting" />
         <s.ReviewText>{review4}</s.ReviewText>
         <s.ReviewWriter>{writer4} 님</s.ReviewWriter>
       </s.ReviewWrapper>
