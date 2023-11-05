@@ -74,8 +74,12 @@ const MatchingCardComponent = ({ eachData }: IEachPost) => {
               {item}
             </span>
           ))}
-          <s.CardInfoBottom>
-            <s.CardStatus>{eachData?.status === 'N' ? '모집중' : eachData?.status === 'C' ? '모집완료' : '모집취소'}</s.CardStatus>
+          <s.CardInfoBottom status={'pending'}>
+            {
+            eachData?.status === 'N' ? <s.CardStatus status={'pending'}>모집중</s.CardStatus>
+            : eachData?.status === 'C' ? <s.CardStatus status={'complete'}>모집완료</s.CardStatus>
+            : <s.CardStatus>모집취소</s.CardStatus>
+          }
             <s.CardBottomCountInfo>
               <img
                 css={css`

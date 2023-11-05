@@ -100,7 +100,7 @@ export const LabelPartyNumber = css`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 //카드info영역의 하단부부분(status+(댓글,좋아요수) 래퍼)
-export const CardInfoBottom = styled.div`
+export const CardInfoBottom = styled.div<{status:string}>`
   display: flex;
   width: 100px;
   justify-content: space-between;
@@ -110,20 +110,30 @@ export const CardInfoBottom = styled.div`
   top: 394px;
 `;
 //카드 모집status
-export const CardStatus = styled.div`
+export const CardStatus = styled.div<{status?:string,children:string}>`
 box-sizing:border-box;
-display:flex
+display:flex;
 justify-content:center;
 text-align:center;
 min-width:82px;
 min-height:28px;
-color:${COLORS.Gray3};
-font-weight:500;
+color: ${(props) => (
+  props.status==='pending'? 'gray'
+  : props.status==='complete'? 'gray'
+  : 'gray'
+  )};
+font-weight:${(props) => (
+  props.status==='pending'? '600' :'500'
+  )};
 font-size:16px;
 border-radius:1rem;
 border: 1.3px solid ${COLORS.Gray2};
 padding: 4px 12px;
-background-color:white;
+background-color :${(props) => (
+  props.status==='pending'? 'white'
+  : props.status==='complete'? COLORS.Gray1
+  : COLORS.Gray1
+  )};
 `;
 //카드 하단부 숫자카운트 정보(댓글,좋아요 수)
 export const CardBottomCountInfo = styled.div`
