@@ -232,36 +232,24 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
 
         <s.ArticleTextSection>
           <ArticleImageSlider {...settings}>
-            <div
-              css={css`
-                width: 250px;
-                height: 320px;
-                background-image: url(${data?.mainimg});
-                background-size: contain;
-                background-position: center;
-                background-repeat: no-repeat;
-              `}
-            ></div>
-            <div
-              css={css`
-                width: 250px;
-                height: 320px;
-                background-image: url(${data?.subimg[0]});
-                background-size: contain;
-                background-position: center;
-                background-repeat: no-repeat;
-              `}
-            ></div>
-              <div
-              css={css`
-                width: 250px;
-                height: 320px;
-                background-image: url(${data?.subimg[1]});
-                background-size: contain;
-                background-position: center;
-                background-repeat: no-repeat;
-              `}
-            ></div>
+            {
+              data ?
+              data.subimg.map((img) => {
+                return (
+                  <div 
+                    css={css`
+                      width: 250px;
+                      height: 320px;
+                      background-image: url(${img});
+                      background-size: contain;
+                      background-position: center;
+                      background-repeat: no-repeat;
+                      `
+                    }
+                  />
+                )
+              }) : null
+            }
           </ArticleImageSlider>
           <s.ArticleArrowWrapper
             onClick={() => {
@@ -590,6 +578,7 @@ export const OptionComponent = ({
 
 export const FsLightboxWrapper = ({ data }: { data?: IMatchingPostPage }) => {
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
+  const imgList: string[] | undefined = data?.subimg;
   return (
     <>
       <button
@@ -605,11 +594,11 @@ export const FsLightboxWrapper = ({ data }: { data?: IMatchingPostPage }) => {
       ></button>
       <FsLightbox
         toggler={toggler}
-        sources={[
-          <img src={data?.mainimg} alt="main-img" />,
-          <img src={data?.subimg[0]} alt="sub1-img" />,
-          <img src={data?.subimg[1]} alt="sub2-img" />,
-        ]}
+        sources={
+          imgList?.map((img, idx) => {
+            return <img src={img} alt={`img-${idx}`}/>
+          })
+        }
       />
     </>
   );
