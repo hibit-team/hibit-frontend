@@ -59,14 +59,22 @@ function App() {
   return (
     <>
         <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools initialIsOpen/>
+          {process.env.NODE_ENV === 'development' && <ReactQueryDevtools initialIsOpen />}
           <Global styles={globalStyles}/>
           <Suspense fallback={<div><LottiePageRouting/></div>}>
             <Container>
               <Router>
                 <Routes>
-                  <Route path="/" element={<MainPage />} />
-                  <Route path='/matching' element={<MatchingPage></MatchingPage>}/>
+                  <Route path="/" element={
+                    <Suspense fallback={<div><LottiePageRouting/></div>}>
+                    <MainPage />
+                    </Suspense>
+                  }/>
+                  <Route path='/matching' element={
+                    <Suspense fallback={<div><LottiePageRouting/></div>}>
+                      <MatchingPage/>
+                    </Suspense>
+                  }/>
                   <Route path="/user/kakao-oauth" element={<KaKao />} />
                   <Route path="/post-profile" element={<PostMyProfile />} />
                   <Route path="/put-profile" element={<PutMyProfile />} />
@@ -74,7 +82,11 @@ function App() {
                   <Route path="/others/:userID" element={<OtherProfile />} />
                   <Route path="/post-posting" element={<PostPosting />} />
                   <Route path="/put-posting/:idx" element={<PutPosting />} />
-                  <Route path="/google-callback" element={<GoogleRedirectHandler />} />
+                  <Route path="/google-callback" element={
+                    <Suspense fallback={<div><LottiePageRouting/></div>}>
+                      <GoogleRedirectHandler />
+                    </Suspense>
+                  } />
                   <Route path="/report/:idx" element={<ReportModal />} />
                   <Route path="/*" element={<NotFound />} />
                 </Routes>

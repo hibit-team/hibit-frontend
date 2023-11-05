@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { accessTokenState, profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
 import { axiosInstance } from '../../../services/HttpClient';
+import LottiePageRouting from '../../LottieFiles/LottiePageRouting';
 
 const GoogleRedirectHandler = () => {
   const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
@@ -57,7 +58,7 @@ const GoogleRedirectHandler = () => {
     
   return (
     <div>
-      Logging in Google...
+      <LottiePageRouting/>
     </div>
   );
 };

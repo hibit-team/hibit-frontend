@@ -2,7 +2,6 @@ import  dayjs from 'dayjs';
 export const expireDateSet = ()=>{
   const currentDate = dayjs()
   const goalDate = currentDate.add(3,'day').format('YYYY-MM-DD')
-  if(!localStorage.getItem('modalExpireDate'))
   localStorage.setItem('modalExpireDate',goalDate)
 }
 export const isExpired = () => {
