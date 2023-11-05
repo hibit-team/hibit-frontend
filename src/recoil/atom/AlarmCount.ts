@@ -1,6 +1,8 @@
 import { selector, useRecoilValue } from 'recoil';
 import AlarmAPI from '../../api/AlarmAPI';
 import { profileRegisteredState, userIdxState } from './LoginInfoState';
+import { IAlarm } from '../../interfaces/Alarm/IAlarm';
+
 
 export const alarmCountState = selector({
   key: 'alarmCountState',
@@ -10,7 +12,8 @@ export const alarmCountState = selector({
     if(userIdx && isProfileRegistered) {
       const alarmList = await AlarmAPI.getAlarmList();
       if(alarmList) {
-        return alarmList.length;
+        const unreadAlarms = alarmList.filter((alarm: IAlarm) => alarm.readed === false);
+        return unreadAlarms.length;
       } else {
         return 0;
       }
