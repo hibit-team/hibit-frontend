@@ -30,7 +30,9 @@ const Accept = (props: IAlarm) => {
       </s.ProfileImgWrapper>
 
       <s.ContentsWrapper>
-        <s.MainContents>{alarms.nickname}님이 초대를 수락했어요.</s.MainContents>
+        <s.MainContents isreaded={alarms.readed}>
+          {alarms.nickname}님이 초대를 수락했어요.
+        </s.MainContents>
         <s.Time>{alarms.time}</s.Time>
       </s.ContentsWrapper>
     </s.Wrapper>

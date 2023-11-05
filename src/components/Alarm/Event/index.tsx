@@ -2,8 +2,10 @@ import { useNavigate } from "react-router";
 import event from "../../../images/components/Alarm/Imoji/event.svg";
 import defaultProfile from "../../../images/components/defaultProfile.svg";
 import * as s from "./styles";
+import { IAlarm } from "../../../interfaces/Alarm/IAlarm";
 
-const Event = ({content, time}: any) => {
+const Event = (props: IAlarm) => {
+  const alarms = props;
   const navigate = useNavigate();
 
   return (
@@ -20,10 +22,10 @@ const Event = ({content, time}: any) => {
       </s.ProfileImgWrapper>
 
       <s.ContentsWrapper>
-        <s.MainContents>
-          {content}
+        <s.MainContents isreaded={alarms.readed}>
+          {alarms.content}
         </s.MainContents>
-        <s.Time>{time}</s.Time>
+        <s.Time>{alarms.time}</s.Time>
       </s.ContentsWrapper>
     </s.Wrapper>
   )
