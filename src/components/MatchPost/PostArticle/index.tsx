@@ -360,7 +360,7 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
         </div>
 
         <FsLightboxWrapper data={data} />
-        <ReplySectionComponent postIDX={postIDX}></ReplySectionComponent>
+        <ReplySectionComponent data={data} postIDX={postIDX}></ReplySectionComponent>
       </s.MatchArticleWrapper>
     </div>
   );
