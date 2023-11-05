@@ -15,16 +15,14 @@ import { GlobalModalOpenSwitch } from '../../recoil/atom/GlobalModalOpenSwitch';
 import useLoginInfo from '../../hooks/useLoginInfo';
 import { profileRegisteredState } from '../../recoil/atom/LoginInfoState';
 import { expireDateSet } from './expireTest';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 //글로벌모달(회원가입/프로필등록유도)
 const GlobalModal = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const [loginModalOpen, setLoginModalOpen] = useRecoilState(LoginModalState);
-  const userLoginInfo = useLoginInfo();
-  // 3일간 보지 않기 로직
+  const userLoginInfo = useLoginInfo();  // 3일간 보지 않기 로직
   
-
   let isProfileRegistered: boolean | null = useRecoilValue(profileRegisteredState);
 
   //회원가입유도: (Home)
@@ -120,6 +118,11 @@ const GlobalModal = () => {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
   };
+
+  const modalDateSetter = () => {
+    expireDateSet()
+    setModalIsOpen(false)
+  } 
   return (
     <Modal style={modalCss} isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Global-Modal">
         <motion.div
@@ -215,7 +218,7 @@ const GlobalModal = () => {
               fontSize:'16px',fontWeight:800, color:COLORS.Gray3,
               position:'absolute',bottom:'5%',left:'5%'}}>
               <label css={{cursor:'pointer',}} htmlFor='nextTime'>3일간 열지 않기</label>
-              <input onClick={expireDateSet}
+              <input onClick={modalDateSetter}
               id="nextTime" css={{cursor:'pointer',position:'relative',top:1,left:3}} 
               type='checkbox'></input>
               </div>

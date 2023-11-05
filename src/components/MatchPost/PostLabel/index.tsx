@@ -44,8 +44,15 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
               css={{ userSelect: 'none', display: 'flex', padding: '6px 0px 6px 12px'}}
             >
               <button css={{ userSelect: 'none', all: 'unset',
-            display:'flex',justifyContent:'space-evenly'}}>
-              <span css={{position:'relative',left: data?.status === 'N' ? 8 : 2}}>{data?.status === 'N' ? '모집 중' : data?.status === 'C' ? '모집 완료' : '모집 취소'}</span>
+            display:'flex',justifyContent:'space-evenly',
+            }}>
+              <span css={{position:'relative',left: data?.status === 'N' ? 8 : 2}}>
+                {data?.status === 'N' ?
+                '모집 중'
+                : data?.status === 'C' ?
+                  '모집 완료' 
+                  : '모집 취소'}
+                </span>
               </button>
               {!isStatusModalOpen ? (
                 <img css={{ position: 'relative', left: data?.status === 'N' ? 14 : 4, bottom: 1 }} src={ArrownDown} alt="modalOpen-arrow"></img>
@@ -131,7 +138,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                   e.stopPropagation();
                   switch (data?.status) {
                     case 'N':
-                      const confirm = window.confirm(`게시글 모집을 취소하시겠습니까? 모집 취소시 게시글 리스트에서 해당 게시글이 사라집니다.`);
+                      const confirm = window.confirm(`게시글 모집을 취소하시겠습니까?`);
                       if (confirm) {
                         setIsStatusModalOpen(false);
                         // 게시글모집취소 mutate

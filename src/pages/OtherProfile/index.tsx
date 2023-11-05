@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import * as s from "./styles";
 import { useEffect, useState } from "react";
 import LayoutTemplate from "../../components/Common/LayoutTemplate";
@@ -52,7 +52,6 @@ const OtherProfile = () => {
     else {
       OtherprofileAPI.getOtherProfile(Number(userID))
         .then((res) => {
-          console.log({res});
           setNickname(res.nickname);
           setAge(res.age);
           if(res.gender === 0) {
@@ -87,12 +86,10 @@ const OtherProfile = () => {
           } else {
             setIsImgPrivate(false);
           }
-
           if(res.subImg) {
             const subImgs: string[] = res.subImg;
             setImgs(subImgs);
           }
-          
         })
         .catch((e) => {
           console.error({e});
@@ -110,7 +107,6 @@ const OtherProfile = () => {
   const LockStr6 = "회원님의 프로필 정보";
   const LockStr7 = "를 등록해야 해요.";
 
-
   const onClickUserHistoryTab = () => {
     alert("추후 공개될 기능입니다.");
     setIsTabLeft(true);
@@ -119,6 +115,17 @@ const OtherProfile = () => {
     navigate("/post-profile");
   };
 
+  const location = useLocation();
+  useEffect(() => {
+    const removeFsLightboxClass = () => {
+      document.documentElement.classList.remove('fslightbox-open');
+    };
+    return ()=>{
+      removeFsLightboxClass()
+    }
+  }, [location]);
+
+  console.log(imgs,'테테테스트')
   return (
     <LayoutTemplate>
       <s.Wrapper>
@@ -170,17 +177,14 @@ const OtherProfile = () => {
                     </s.CarouselZoomInBtn>
                   </s.CarouselWrapper>
                   {
-                    isProfileRegistered && imgs ?
+                    isProfileRegistered && imgs && imgs.length > 0 ?
                       <FsLightbox 
                         toggler={imgToggler}
                         sources={imgs}
                       />
                       :
-                      <FsLightbox 
-                        toggler={imgToggler}
-                      />
+                      <div></div>
                   }
-
                   <s.UserInfoContainer>
                     <s.Row1>
                       <s.Nickname>{nickname}</s.Nickname>

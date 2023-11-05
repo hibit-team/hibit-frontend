@@ -23,6 +23,7 @@ import userDefaultImage from '../../../images/components/MatchPost/profileDefaul
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
+import { IMatchingPostPage } from '../../../pages/MatchPost';
 //좋아요한 유저들
 export interface ILikeUsers {
   idx: number;
@@ -48,7 +49,7 @@ interface IMutationParams {
   body: { content: string };
 }
 //댓글영역 컴포넌트
-export default function ReplySectionComponent({ postIDX }: { postIDX?: string }) {
+export default function ReplySectionComponent({ data ,postIDX }: { data?:IMatchingPostPage ,postIDX?: string }) {
   //OriginalReply:댓글
   //SecondaryReply:대댓글
   const queryKeys = {
@@ -80,7 +81,7 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
   return (
     <div css={{ position: 'relative', paddingBottom: 100 }}>
       {/* 유저 댓글입력창 */}
-      <InputReplyWrapper postIDX={postIDX} userLoginInfo={userLoginInfo} />
+      <InputReplyWrapper data={data} postIDX={postIDX} userLoginInfo={userLoginInfo} />
       {/* //댓글영역 */}
       <s.ReplySection>
         {replyData?.map(reply => (
@@ -91,7 +92,7 @@ export default function ReplySectionComponent({ postIDX }: { postIDX?: string })
   );
 }
 //댓글입력창
-export const InputReplyWrapper = ({ postIDX, userLoginInfo }: { postIDX?: string; userLoginInfo?: ILoginInfo }) => {
+export const InputReplyWrapper = ({ data ,postIDX, userLoginInfo }: {data?: IMatchingPostPage, postIDX?: string; userLoginInfo?: ILoginInfo }) => {
   let [userImg,setUserImg] = useState<string>('')
   useEffect(()=>{
       (async function getUserImg (){
@@ -178,6 +179,10 @@ export const InputReplyWrapper = ({ postIDX, userLoginInfo }: { postIDX?: string
         <div
           onClick={e => {
             e.stopPropagation();
+            if(data?.status !== 'N'){
+              alert('현재 모집 중이 아닌 게시글에는 댓글을 작성할 수 없습니다.')
+              return
+            }
             // 로그인 + 프로필등록 완료시에 댓글작성 OK
             if (userLoginInfo?.isLoggedIn === false ){
               alert('로그인이 필요합니다.');
