@@ -23,7 +23,7 @@ import { usePostMatchingArticleLikeMutation } from '../../../hooks/MatchingPost/
 import { InviteModalSwitchState } from '../../../recoil/atom/InviteModalSwitchState';
 import { useNavigate } from 'react-router-dom';
 import { PostIDXAtom } from '../../../recoil/atom/PostIDXAtom';
-import { ILoginInfo } from '../../../hooks/useLoginInfo'
+import { useLocation } from 'react-router-dom';
 import { userIdxState, profileRegisteredState} from '../../../recoil/atom/LoginInfoState';
 export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { userLoginInfo?: boolean; data?: IMatchingPostPage; postIDX?: string | undefined }) {
   const userIdxInfo = useRecoilValue(userIdxState)//user idx
@@ -85,6 +85,7 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
       document.removeEventListener('click', handleClickOutside);
     };
   }, [setIsPurpleKebapOptionOpen, handleClickOutside]);
+
   return (
     <div css={{ marginBottom: 100 }}>
       <s.MatchArticleWrapper>
@@ -253,7 +254,7 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
           </ArticleImageSlider>
           <s.ArticleArrowWrapper
             onClick={() => {
-              if (toggler === true) setToggler(false);
+              if (toggler) setToggler(false);
               else {
                 setToggler(true);
               }
@@ -578,7 +579,17 @@ export const OptionComponent = ({
 
 export const FsLightboxWrapper = ({ data }: { data?: IMatchingPostPage }) => {
   const [toggler, setToggler] = useRecoilState(FsImageBoxToggler);
-  const imgList: string[] | undefined = data?.subimg;
+  const imgList: string[] | undefined = data?.subimg;  
+  const location = useLocation();
+
+  useEffect(() => {
+    const removeFsLightboxClass = () => {
+      document.documentElement.classList.remove('fslightbox-open');
+    };
+    return ()=>{
+      removeFsLightboxClass()
+    }
+  }, [location]);
   return (
     <>
       <button
@@ -590,7 +601,7 @@ export const FsLightboxWrapper = ({ data }: { data?: IMatchingPostPage }) => {
           height: 0px;
           display: none;
         `}
-        onClick={() => setToggler(!toggler)}
+        onClick={() => setToggler(true)}
       ></button>
       <FsLightbox
         toggler={toggler}
