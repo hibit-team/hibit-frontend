@@ -35,7 +35,7 @@ const CommentHeart = (props: IAlarm) => {
       </s.ProfileImgWrapper>
 
       <s.ContentsWrapper>
-        <s.MainContents>
+        <s.MainContents isreaded={alarms.readed}>
           {alarms.nickname}님이 회원님의 댓글을 좋아합니다.
         </s.MainContents>
         <s.Time>{alarms.time}</s.Time>

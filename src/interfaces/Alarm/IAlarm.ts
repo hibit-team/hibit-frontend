@@ -11,3 +11,7 @@ export interface IAlarm {
   readed: boolean,
   history: string
 }
+
+export interface isReaded {
+  isreaded: boolean;
+}

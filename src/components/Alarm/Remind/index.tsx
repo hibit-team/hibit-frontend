@@ -35,7 +35,7 @@ const Remind = (props: IAlarm) => {
       </s.ProfileImgWrapper>
 
       <s.ContentsWrapper>
-        <s.MainContents>
+        <s.MainContents isreaded={alarms.readed}>
           {alarms.content}
         </s.MainContents>
         <s.Time>{alarms.time}</s.Time>

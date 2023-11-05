@@ -54,7 +54,7 @@ const Invitation = (props: IAlarm) => {
       </s.ProfileImgWrapper>
 
       <s.ContentsWrapper>
-        <s.MainContents>
+        <s.MainContents isreaded={alarms.readed}>
           {alarms.nickname}님이 회원님께 초대장을 전송했습니다.
         </s.MainContents>
         <s.BottomContainer>
