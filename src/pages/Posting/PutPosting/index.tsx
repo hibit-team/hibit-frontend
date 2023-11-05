@@ -109,7 +109,9 @@ const PutPosting = () => {
       marginLeft: "50px",
       borderRadius: "10px",
       borderColor: "#797979",
-      paddingLeft: "10px"
+      paddingLeft: "10px",
+      backgroundColor: "#ffffff",
+      zIndex: "9999",
     };
   };
   const customSelectStyles: StylesConfig<IExhibition, false, any> = {

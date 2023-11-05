@@ -85,7 +85,9 @@ const PostPosting = () => {
       marginLeft: "50px",
       borderRadius: "10px",
       borderColor: "#797979",
-      paddingLeft: "10px"
+      paddingLeft: "10px",
+      backgroundColor: "#ffffff",
+      zIndex: "9999",
     };
   };
   const customSelectStyles: StylesConfig<IExhibition, false, any> = {
@@ -142,7 +144,11 @@ const PostPosting = () => {
           isMorning={calendarState.isMorning}
           onUpdateState={(newState) => updateCalendarState(index, newState)}
         />
-        <s.CloseIcon src={calendarCloseBtn} alt="close" onClick={() => removeCalendarComponent(index)} />
+        <s.CloseIcon 
+          src={calendarCloseBtn} 
+          alt="close" 
+          onClick={() => removeCalendarComponent(index)}
+        />
       </ s.DateContainerWrapper>
     ));
   };
