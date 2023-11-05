@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { isReaded } from "../../../interfaces/Alarm/IAlarm";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -46,11 +47,12 @@ export const ContentsWrapper = styled.div`
   margin-left: 12px;
 `;
 
-export const MainContents = styled.div`
+export const MainContents = styled.div<isReaded>`
   display: flex;
   font-size: 14px;
   font-weight: 700;
   width: 194px;
+  color: ${(props) => props.isreaded === false ? '#5E1EC7' : '#242424'};
 `;
 
 export const BottomContainer = styled.div`

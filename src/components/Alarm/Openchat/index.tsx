@@ -34,7 +34,7 @@ const Openchat = (props: IAlarm) => {
       </s.ProfileImgWrapper>
 
       <s.ContentsWrapper>
-        <s.MainContents>
+        <s.MainContents isreaded={alarms.readed}>
           {alarms.nickname}님의 오픈채팅방 링크가 도착했습니다.
         </s.MainContents>
 
