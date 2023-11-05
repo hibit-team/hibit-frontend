@@ -37,9 +37,18 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({imgs}) => {
   console.log(imgs)
   return (
     <s.ImageSliderContainer {...settings}>
-      <img css={{width:'100%', height: 320}} src={imgs[0]} alt='dada'></img>
-      <img css={{width:'100%', height:320}} src={imgs[1]} alt='dada'></img>
-      <img css={{width:'100%', height:320}} src={imgs[2]} alt='dada'></img>
+      {
+        imgs ?
+        imgs.map((img, idx) => {
+          return (
+            <img 
+              css={{width:'100%', height: 320}}
+              src={img}
+              alt={`image-${idx}`}
+            />
+          )
+        }) : null
+      }
     </s.ImageSliderContainer>
   )
 };

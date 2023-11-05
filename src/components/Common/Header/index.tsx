@@ -1,5 +1,4 @@
 import { Suspense, useEffect, useState } from 'react';
-import { IHeaderCategory } from '../../../interfaces/IHeaderCategories';
 import { useNavigate, useLocation } from "react-router-dom";
 import HibitLogo from "../../../images/components/HibitLogo.svg";
 import HibitLogoWhite from "../../../images/components/HibitLogoWhite.svg";
@@ -14,8 +13,6 @@ import useLoginInfo from '../../../hooks/useLoginInfo';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
 import { axiosInstance } from '../../../services/HttpClient';
 import { LoginModalState } from '../../../recoil/atom/LoginModalState';
-import LoginAPI from '../../../api/LoginAPI';
-
 
 const Header = () => {
   const navigate = useNavigate();
@@ -23,7 +20,6 @@ const Header = () => {
   const onClickIntro = () => {
     window.location.href = "https://mellow-bard-bc8.notion.site/28a5202c60344d978caa0d2745921049?pvs=4";
   };
-
 
   const resetAccessToken = useResetRecoilState(accessTokenState);
   const resetUserIdx = useResetRecoilState(userIdxState);
