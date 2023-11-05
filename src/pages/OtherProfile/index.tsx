@@ -6,9 +6,7 @@ import FsLightbox from "fslightbox-react";
 import ImageCarousel from "../../components/OtherProfile/ImageCarousel";
 import ZoomInIcon from "../../images/components/OtherProfile/ZoomInIcon.svg";
 import LockIcon from "../../images/components/OtherProfile/LockIcon.png";
-import GlobalModal  from "../../components/GlobalModal";
 import useLoginInfo from "../../hooks/useLoginInfo";
-import { Global } from "@emotion/react";
 import OtherprofileAPI from "../../api/OtherprofileAPI";
 import { useRecoilValue } from "recoil";
 import { profileRegisteredState } from "../../recoil/atom/LoginInfoState";
@@ -90,15 +88,10 @@ const OtherProfile = () => {
             setIsImgPrivate(false);
           }
 
-          const mainImg: string = res.mainImg;
-          const subImgs: string[] | null = res.subImg;
-          const newImgs: string[] = [];
-          newImgs.push(mainImg);
-          if(subImgs) {
-            newImgs.push(...subImgs);
-          } 
-          console.log(newImgs,'이미지체크')
-          setImgs(newImgs);
+          if(res.subImg) {
+            const subImgs: string[] = res.subImg;
+            setImgs(subImgs);
+          }
           
         })
         .catch((e) => {
@@ -177,21 +170,14 @@ const OtherProfile = () => {
                     </s.CarouselZoomInBtn>
                   </s.CarouselWrapper>
                   {
-                    isProfileRegistered ?
+                    isProfileRegistered && imgs ?
                       <FsLightbox 
-                      toggler={imgToggler}
-                      sources={
-                        [
-                        <img src={imgs[0]} alt='newd'/>,
-                        <img src={imgs[1]} alt='newd'/>,
-                        <img src={imgs[2]} alt='newd'/>
-                      ]
-                    }
+                        toggler={imgToggler}
+                        sources={imgs}
                       />
                       :
                       <FsLightbox 
-                      toggler={imgToggler}
-                      // sources={imgs}  
+                        toggler={imgToggler}
                       />
                   }
 
