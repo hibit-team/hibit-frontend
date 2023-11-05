@@ -138,7 +138,7 @@ export default function MatchPostLabel({ data, postIDX }: { data?: IMatchingPost
                   e.stopPropagation();
                   switch (data?.status) {
                     case 'N':
-                      const confirm = window.confirm(`게시글 모집을 취소하시겠습니까? 모집 취소시 게시글 리스트에서 해당 게시글이 사라집니다.`);
+                      const confirm = window.confirm(`게시글 모집을 취소하시겠습니까?`);
                       if (confirm) {
                         setIsStatusModalOpen(false);
                         // 게시글모집취소 mutate
