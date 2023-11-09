@@ -21,7 +21,7 @@ const settings = {
       style={{
         width: '100%',
         position: 'absolute',
-        top: '320px',
+        top: '310px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
@@ -34,21 +34,24 @@ const settings = {
   };
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({imgs}) => {
-  console.log(imgs)
   return (
     <s.ImageSliderContainer {...settings}>
-      {
-        imgs ?
-        imgs.map((img, idx) => {
-          return (
-            <img 
-              css={{width:'100%', height: 320}}
-              src={img}
-              alt={`image-${idx}`}
-            />
-          )
-        }) : null
-      }
+        {
+          imgs.length > 0 ?
+          imgs.map((img, idx) => {
+            return (
+              <img 
+                style={{
+                  width:'100%',
+                  height:'100%',
+                  objectFit:'fill',
+                }}
+                src={img}
+                alt={`img-${idx}`}
+              />
+            )
+          }) : null
+        }
     </s.ImageSliderContainer>
   )
 };

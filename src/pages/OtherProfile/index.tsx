@@ -37,12 +37,12 @@ const OtherProfile = () => {
 
   const [address, setAddress] = useState<string | undefined>(undefined);
   const [job, setJob] = useState<string | undefined>();
-  const [imgs, setImgs] = useState<string[]>([]);
-  
+  const [imgs, setImgs] = useState<string[]>(['https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/og.png']);
+  const [mainImg,setMainImg] = useState<string[]>(['https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/og.png']);
   // 타인 선택정보 공개 여부에 따른 조건부 렌더링
-  const [isAddressPrivate, setIsAddressPrivate] = useState(true);
-  const [isJobPrivate, setIsJobPrivate] = useState(true);
-  const [isImgPrivate, setIsImgPrivate] = useState(true);
+  const [isAddressOpen, setIsAddressOpen] = useState(true);
+  const [isJobOpen, setIsJobOpen] = useState(true);
+  const [isImgOpen, setIsImgOpen] = useState(true);
 
   useEffect(() => {
     if(!userID) {
@@ -50,6 +50,7 @@ const OtherProfile = () => {
       navigate(-1);
     }
     else {
+   
       OtherprofileAPI.getOtherProfile(Number(userID))
         .then((res) => {
           setNickname(res.nickname);
@@ -60,7 +61,7 @@ const OtherProfile = () => {
           else {
             setGender("여성");
           }
-
+          
           setAddress(`${res.addressCity} ${res.addressDistrict}`);
           setJob(res.job);
 
@@ -69,26 +70,31 @@ const OtherProfile = () => {
 
           setIntroduce(res.introduce);
 
-          if(res.jobVisibility === 0) {
-            setIsJobPrivate(true);
+          if(res.jobVisibility === 1) { //서버에서는 공개가 0 이고, 비공개가 1로 받아오는중
+            setIsJobOpen(true);
           } else {
-            setIsJobPrivate(false);
+            setIsJobOpen(false);
           }
 
-          if(res.addressVisibility === 0) {
-            setIsAddressPrivate(true);
+          if(res.addressVisibility === 1) {
+            setIsAddressOpen(true);
           } else {
-            setIsAddressPrivate(false);
+            setIsAddressOpen(false);
           }
 
-          if(res.subImgVisibility === 0) {
-            setIsImgPrivate(true);
+          if(res.subImgVisibility === 1) {
+            setIsImgOpen(true);
           } else {
-            setIsImgPrivate(false);
+            setIsImgOpen(false);
           }
-          if(res.subImg) {
-            const subImgs: string[] = res.subImg;
-            setImgs(subImgs);
+
+          if(res.subImg){ //공개
+              const subImgs: string[] = res.subImg;
+              setImgs(subImgs);
+            }
+          else{ //비공개
+            const mainImg: string = res.mainImg;
+            setImgs([mainImg])
           }
         })
         .catch((e) => {
@@ -96,9 +102,7 @@ const OtherProfile = () => {
           return;
         })
     }
-
   }, []);
-
   const LockStr1 = "저런, ";
   const LockStr2 = "추가 사진";
   const LockStr3 = "과 ";
@@ -125,7 +129,6 @@ const OtherProfile = () => {
     }
   }, [location]);
 
-  console.log(imgs,'테테테스트')
   return (
     <LayoutTemplate>
       <s.Wrapper>
@@ -172,18 +175,27 @@ const OtherProfile = () => {
                 <s.TopInfoContainer>
                   <s.CarouselWrapper>
                     <ImageCarousel imgs={imgs} />
-                    <s.CarouselZoomInBtn onClick={() => setImgToggler(!imgToggler)}>
-                      <img src={ZoomInIcon} alt="zoom-in" />
-                    </s.CarouselZoomInBtn>
+                    <div style={{position:'relative'}}>
+                      <s.CarouselZoomInBtn onClick={() => setImgToggler(!imgToggler)}>
+                        <img src={ZoomInIcon} alt="zoom-in" />
+                      </s.CarouselZoomInBtn>
+                    </div>
                   </s.CarouselWrapper>
-                  {
-                    isProfileRegistered && imgs && imgs.length > 0 ?
-                      <FsLightbox 
-                        toggler={imgToggler}
-                        sources={imgs}
-                      />
+                  { isProfileRegistered ? 
+                      imgs && imgs.length > 1?
+                        <FsLightbox 
+                          toggler={imgToggler}
+                          sources={
+                            imgs?.map((img, idx) => {
+                              return <img src={img} alt={`img-${idx}`}/>
+                            })
+                          }/>
+                        : 
+                        <FsLightbox 
+                          toggler={imgToggler}
+                          sources={ imgs }/>
                       :
-                      <div></div>
+                      null
                   }
                   <s.UserInfoContainer>
                     <s.Row1>
@@ -199,7 +211,7 @@ const OtherProfile = () => {
                     <s.Row2>
                       <s.Title>주소</s.Title>
                       {
-                        isAddressPrivate ?
+                        isAddressOpen ?
                         <s.Address>비공개</s.Address> :
                         <s.Address>{address} 거주</s.Address>
                       }
@@ -210,7 +222,7 @@ const OtherProfile = () => {
                     <s.Row3>
                       <s.Title>직업 혹은 학교</s.Title>
                       {
-                        isJobPrivate ?
+                        !isJobOpen ?
                         <s.Job>비공개</s.Job> :
                         <s.Job>{job}</s.Job>
                       }
@@ -225,7 +237,7 @@ const OtherProfile = () => {
                       <s.PersonalityGrid>
                         {
                           personalities.map((personality, idx) => 
-                            <s.PersonalityItem>{personality}</s.PersonalityItem>)
+                            <s.PersonalityItem key={idx}>{personality}</s.PersonalityItem>)
                         }
                       </s.PersonalityGrid>
                     </s.Row4>
