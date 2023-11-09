@@ -87,6 +87,7 @@ const OtherProfile = () => {
           } else {
             setIsImgOpen(false);
           }
+
           if(res.subImg){ //공개
               const subImgs: string[] = res.subImg;
               setImgs(subImgs);
@@ -102,10 +103,6 @@ const OtherProfile = () => {
         })
     }
   }, []);
-  console.log(imgs[0],'[imgs[0]]')
-  console.log(mainImg,'mainImg')
-  console.log(isImgOpen,'isImgOpen')
-  console.log(isProfileRegistered,'isProfile?')
   const LockStr1 = "저런, ";
   const LockStr2 = "추가 사진";
   const LockStr3 = "과 ";
