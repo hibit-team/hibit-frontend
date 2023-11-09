@@ -68,16 +68,17 @@ export const TopInfoContainer = styled.div`
 export const CarouselWrapper = styled.div`
   display: flex;
   width: 264px;
+  position:relative;
+  right:10px;
   height: 346px;
-  border: 1px solid;
   border-radius: 10px;
 `;
 
 export const CarouselZoomInBtn = styled.div`
   display: flex;
-  position: relative;
-  top: 288px;
-  right: 40px;
+  position: absolute;
+  top: 285px;
+  right:10%;
   width: 32px;
   height: 32px;
   justify-content: center;
