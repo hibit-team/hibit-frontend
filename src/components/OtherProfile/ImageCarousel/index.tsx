@@ -34,11 +34,10 @@ const settings = {
   };
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({imgs}) => {
-  console.log(imgs)
   return (
     <s.ImageSliderContainer {...settings}>
       {
-        imgs ?
+        imgs.length > 0 ?
         imgs.map((img, idx) => {
           return (
             <img 
