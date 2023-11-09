@@ -66,7 +66,7 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
       setIsInviteModalOpen(false);
     };
   }, []);
-
+  
   const ref = useRef<HTMLDivElement>(null);
   const handleClickOutside = useCallback(
     (e: MouseEvent) => {
@@ -336,7 +336,8 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
         </s.ArticleTextSection>
         <div css={{ width: 874, height: 1, background: COLORS.Gray2, margin: 'auto' }}></div>
         <div css={{ display: 'flex', justifyContent: 'center', padding: 32 }}>
-          {userIdxInfo === data?.writerIdx ? (
+          {userIdxInfo === data?.writerIdx &&  data?.status === 'N'? 
+          (
             <s.InviteBoxWrapper
               onClick={e => {
                 e.stopPropagation();
