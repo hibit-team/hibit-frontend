@@ -50,6 +50,7 @@ const OtherProfile = () => {
       navigate(-1);
     }
     else {
+   
       OtherprofileAPI.getOtherProfile(Number(userID))
         .then((res) => {
           setNickname(res.nickname);
@@ -69,30 +70,28 @@ const OtherProfile = () => {
 
           setIntroduce(res.introduce);
 
-          if(res.jobVisibility === 0) { //서버에서는 공개가 0 이고, 비공개가 1로 받아오는중
+          if(res.jobVisibility === 1) { //서버에서는 공개가 0 이고, 비공개가 1로 받아오는중
             setIsJobOpen(true);
           } else {
             setIsJobOpen(false);
           }
 
-          if(res.addressVisibility === 0) {
+          if(res.addressVisibility === 1) {
             setIsAddressOpen(true);
           } else {
             setIsAddressOpen(false);
           }
 
-          if(res.subImgVisibility === 0) {
+          if(res.subImgVisibility === 1) {
             setIsImgOpen(true);
           } else {
             setIsImgOpen(false);
           }
-          if(!res.subImg){ 
-              if(isImgOpen){
-                const subImgs: string[] = res.subImg;
-                setImgs(subImgs);
-              }
+          if(res.subImg){ //공개
+              const subImgs: string[] = res.subImg;
+              setImgs(subImgs);
             }
-          else{ //subImg null(비공개)
+          else{ //비공개
             const mainImg: string = res.mainImg;
             setImgs([mainImg])
           }
@@ -103,7 +102,10 @@ const OtherProfile = () => {
         })
     }
   }, []);
-  console.log(imgs,'[imgs]')
+  console.log(imgs[0],'[imgs[0]]')
+  console.log(mainImg,'mainImg')
+  console.log(isImgOpen,'isImgOpen')
+  console.log(isProfileRegistered,'isProfile?')
   const LockStr1 = "저런, ";
   const LockStr2 = "추가 사진";
   const LockStr3 = "과 ";
@@ -176,19 +178,27 @@ const OtherProfile = () => {
                 <s.TopInfoContainer>
                   <s.CarouselWrapper>
                     <ImageCarousel imgs={imgs} />
-                    <s.CarouselZoomInBtn onClick={() => setImgToggler(!imgToggler)}>
-                      <img src={ZoomInIcon} alt="zoom-in" />
-                    </s.CarouselZoomInBtn>
+                    <div style={{position:'relative'}}>
+                      <s.CarouselZoomInBtn onClick={() => setImgToggler(!imgToggler)}>
+                        <img src={ZoomInIcon} alt="zoom-in" />
+                      </s.CarouselZoomInBtn>
+                    </div>
                   </s.CarouselWrapper>
-                  { 
-                    <FsLightbox 
-                    toggler={imgToggler}
-                    sources={
-                      isProfileRegistered && isImgOpen ?                      
-                      imgs
-                      :['https://hibit2bucket.s3.ap-northeast-2.amazonaws.com/og.png']
-                    }
-                    />
+                  { isProfileRegistered ? 
+                      imgs && imgs.length > 1?
+                        <FsLightbox 
+                          toggler={imgToggler}
+                          sources={
+                            imgs?.map((img, idx) => {
+                              return <img src={img} alt={`img-${idx}`}/>
+                            })
+                          }/>
+                        : 
+                        <FsLightbox 
+                          toggler={imgToggler}
+                          sources={ imgs }/>
+                      :
+                      null
                   }
                   <s.UserInfoContainer>
                     <s.Row1>
@@ -204,7 +214,7 @@ const OtherProfile = () => {
                     <s.Row2>
                       <s.Title>주소</s.Title>
                       {
-                        !isAddressOpen ?
+                        isAddressOpen ?
                         <s.Address>비공개</s.Address> :
                         <s.Address>{address} 거주</s.Address>
                       }
@@ -230,7 +240,7 @@ const OtherProfile = () => {
                       <s.PersonalityGrid>
                         {
                           personalities.map((personality, idx) => 
-                            <s.PersonalityItem>{personality}</s.PersonalityItem>)
+                            <s.PersonalityItem key={idx}>{personality}</s.PersonalityItem>)
                         }
                       </s.PersonalityGrid>
                     </s.Row4>

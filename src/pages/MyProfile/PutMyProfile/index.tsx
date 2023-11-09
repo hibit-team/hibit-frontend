@@ -448,7 +448,7 @@ const PutMyProfile = () => {
           <s.OptionalInfoWrapper>
               <s.JobContainer>
                 {
-                  isJobChecked ?
+                  !isJobChecked ?
                   <s.CheckBox src={CheckIcon} alt="checked" onClick={onClickJobCheck} /> :
                   <s.CheckBox src={UnCheckIcon} alt="unchecked" onClick={onClickJobCheck} />
                 }
@@ -463,7 +463,7 @@ const PutMyProfile = () => {
 
               <s.AddressContainer>
                 { 
-                  isAddressChecked ? 
+                  !isAddressChecked ? 
                   <s.CheckBox src={CheckIcon} alt="checked" onClick={onClickAddressCheck} /> : 
                   <s.CheckBox src={UnCheckIcon} alt="unchecked" onClick={onClickAddressCheck} />
                 }
@@ -514,7 +514,7 @@ const PutMyProfile = () => {
 
               <s.ImageContainer>
                 {
-                  isImgChecked ?
+                  !isImgChecked ?
                   <s.CheckBox src={CheckIcon} alt="checked" onClick={onClickImgCheck}/> : 
                   <s.CheckBox src={UnCheckIcon} alt="unchecked" onClick={onClickImgCheck}/>
                 }

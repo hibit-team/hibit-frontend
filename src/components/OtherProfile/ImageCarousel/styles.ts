@@ -2,14 +2,16 @@ import styled from "@emotion/styled";
 import Slider from "react-slick";
 import COLORS from "../../../assets/color";
 export const ImageSliderContainer = styled(Slider)`
-box-sizing: border-box;
-left:20px;  
-// border: 1px solid ${COLORS.Gray2};
-width: 100%;
-overflow: hidden;
-// margin: auto;
-// height: 346px;
 border-radius: 10px;
+left:20px;
+box-sizing: border-box;
+border: 2px solid ${COLORS.Gray2};
+overflow: hidden;
+width:100%;
+height: 348px;
+top:8px;
+// display:flex;
+// align-items:center;
 `;
 
 export const ImageItem = styled.img`
