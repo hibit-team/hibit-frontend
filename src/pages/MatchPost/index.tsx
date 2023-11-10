@@ -12,6 +12,7 @@ import { PostIDXAtom } from '../../recoil/atom/PostIDXAtom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import useLoginInfo from '../../hooks/useLoginInfo';
 import { profileRegisteredState, userIdxState } from '../../recoil/atom/LoginInfoState';
+import GoogleTagManager from '../../components/TagManager';
 export interface ILikeUsers {
   idx: number;
   id: string;
@@ -86,6 +87,7 @@ export default function MatchingPostPage() {
   
   return (
     <div style={{ position: 'relative' }}>
+      <GoogleTagManager gtmId="GTM-5LL38ZTW" />
       <LayoutTemplate>
         <s.Wrapper>
           <MatchPostLabel postIDX={idx} data={data}></MatchPostLabel>

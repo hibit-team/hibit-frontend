@@ -10,7 +10,7 @@ import useLoginInfo from "../../hooks/useLoginInfo";
 import OtherprofileAPI from "../../api/OtherprofileAPI";
 import { useRecoilValue } from "recoil";
 import { profileRegisteredState } from "../../recoil/atom/LoginInfoState";
-
+import GoogleTagManager from "../../components/TagManager";
 const OtherProfile = () => {
   const idParams = useParams();
   const userID = Number(idParams.userID?.replace(":", ""));
@@ -131,6 +131,7 @@ const OtherProfile = () => {
 
   return (
     <LayoutTemplate>
+      <GoogleTagManager gtmId="GTM-5LL38ZTW" />
       <s.Wrapper>
         {
           isTabLeft ? (
