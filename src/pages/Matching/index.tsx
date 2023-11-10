@@ -6,6 +6,7 @@ import MatchingSlideBanner from '../../components/Matching/SlideBanner';
 import { AxiosError } from 'axios';
 import { useGetMatchingInfiniteQuery } from '../../hooks/MathchingMain/useGetMatchingInifiniteQuery';
 import LottiePageRouting from '../../components/LottieFiles/LottiePageRouting';
+import GoogleTagManager from '../../components/TagManager';
 export interface IPosts {
   idx: number; // 글 넘버 
   title: string; // 게시글 제목 
@@ -37,6 +38,7 @@ const MatchingPage = () => {
   }
   return (
     <div>
+      <GoogleTagManager gtmId="GTM-5LL38ZTW" />
       <LayoutTemplate>
         <MatchingSlideBanner></MatchingSlideBanner>
         <MatchingSearchBar></MatchingSearchBar>

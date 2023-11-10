@@ -12,7 +12,7 @@ import { ReportSelectOptionAtom } from '../../../recoil/atom/ReportSelectOptionA
 import { motion } from 'framer-motion';
 import { usePostReport } from '../../../hooks/MatchingPost/usePostReport';
 import HttpClient from '../../../services/HttpClient';
-
+import GoogleTagManager from '../../TagManager';
 export default function ReportModal() {
   const [userId,setUserId] = useState<string>('');
   const params = useParams();
@@ -74,6 +74,7 @@ export default function ReportModal() {
         background: COLORS.Gray1,
       }}
     >
+    <GoogleTagManager gtmId="GTM-5LL38ZTW" />
       <motion.div initial={{ x: -1000, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -1000, opacity: 0 }} transition={{ duration: 0.6 }}>
         <s.ReportModalWrapper>
           <s.ReportModalHeader>

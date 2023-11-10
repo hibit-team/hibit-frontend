@@ -18,6 +18,7 @@ import { IImage } from "../../../interfaces/IImage";
 import { IPosting } from "../../../interfaces/Posting/IPosting";
 import PostingAPI from "../../../api/PostingAPI";
 import calendarCloseBtn from "../../../images/components/Posting/calendarCloseBtn.svg";
+import GoogleTagManager from "../../../components/TagManager";
 
 const activityData_Imoji = [
   "맛집 가기😋", "카페 가기☕", "전시만 보기👓", "만나서 정해요!"
@@ -348,6 +349,7 @@ const PostPosting = () => {
 
   return (
     <LayoutTemplateGray>
+      <GoogleTagManager gtmId="GTM-5LL38ZTW" />
       <s.Wrapper>
         <s.Title>게시글 작성하기</s.Title>
         <s.InfoContainer>

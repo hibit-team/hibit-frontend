@@ -168,7 +168,6 @@ export default InviteModal;
 const InviteModalContent = React.memo(({ list }: { list?: IInvitationProps }) => {
   //post body에 userList담아서 요청
   const [userList, setUserList] = useRecoilState(InviteModalUserList);
-  console.log(userList);
   const [checkState, setCheckState] = useState(false);
   useEffect(() => {
     //언마운트시 리스트 클리어

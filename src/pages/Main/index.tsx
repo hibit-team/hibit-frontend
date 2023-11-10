@@ -14,6 +14,7 @@ import useLoginInfo from "../../hooks/useLoginInfo";
 import { isExpired } from "../../components/GlobalModal/expireTest";
 import { useRecoilValue } from "recoil";
 import { userIdxState } from "../../recoil/atom/LoginInfoState";
+import GoogleTagManager from "../../components/TagManager";
 const MainPage = () => {
   const [isExpire] = useState(()=>isExpired())
   const userIdx = useRecoilValue(userIdxState)
@@ -44,6 +45,7 @@ const MainPage = () => {
   
   return (
     <LayoutTemplate>
+      <GoogleTagManager gtmId="GTM-5LL38ZTW" />
       {isExpire ?
       (userIdx ? null : <GlobalModal/>)
       : null

@@ -17,6 +17,7 @@ import { IImage } from "../../../interfaces/IImage";
 import { useSetRecoilState } from "recoil";
 import { profileRegisteredState, userIdxState } from "../../../recoil/atom/LoginInfoState";
 import axios from "axios";
+import GoogleTagManager from "../../../components/TagManager";
 
 const PostMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(true);
@@ -330,6 +331,7 @@ const PostMyProfile = () => {
 
   return (
     <LayoutTemplateGray>
+      <GoogleTagManager gtmId="GTM-5LL38ZTW" />
       <s.Wrapper>
         <s.TopTitleWrpper>
           <s.Title>필수 노출 정보</s.Title>
