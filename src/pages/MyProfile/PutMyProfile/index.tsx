@@ -34,17 +34,14 @@ const PutMyProfile = () => {
   const setUserIdx = useSetRecoilState(userIdxState);
 
   if(accessToken !== null) {
-    // axiosInstance.defaults.headers.common['Authorization'] = `${accessToken}`;
-    // localStorage.setItem('accessToken', `${accessToken}`);
-    
     if(accessToken) {
-      HttpClient.get('/api/members/find')
+      axiosInstance.get('/api/members/find')
         .then((res) => {
-          const userIdx: number | null = res.idx;
-          const profileRegistered: boolean = res.isprofile;
+          const userIdx: number | null = res.data?.idx;
+          const profileRegistered: boolean = res.data?.isprofile;
           setUserIdx(userIdx);
           setIsProfileRegistered(profileRegistered);
-          if(!res.isprofile) {
+          if(!res.data?.isprofile) {
             console.log("프로필정보가 등록되어 있지 않아 post-profile로 이동");
             navigate("/post-profile");
           }

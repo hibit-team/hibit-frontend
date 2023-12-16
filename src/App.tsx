@@ -29,7 +29,7 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 function App() {
   const queryClient = new QueryClient();
-
+  // const accessToken: string | null = localStorage.getItem('accessToken');
   //atom setter
   const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
   const setUserIdx = useSetRecoilState(userIdxState);
@@ -39,19 +39,28 @@ function App() {
     // refresh가 정상으로 존재한다면?
     const accessToken: string | null = localStorage.getItem('accessToken');
     if(accessToken){
-      HttpClient.post(`/api/auth/token/access`)
+      // HttpClient.post(`/api/auth/token/access`)
+      axiosInstance.post(`/api/auth/token/access`)
       .then(res => {
-        const token = res?.accessToken;
-        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        localStorage.setItem('accessToken', `${token}`);
+        const token = res?.data?.accessToken;
+        if(!!token){
+          axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          localStorage.setItem('accessToken', `${token}`);
+        }
       })
       .catch((error: AxiosError) => {
-        if(error.code === '401'){
-          alert(error.message)
+        if(error?.response?.status === 401){
+          //유효하지않는 문자열 && 토큰 만료는 401에러고, 
+          console.error(error.message)
+          localStorage.removeItem('accessToken');
+          alert('유효하지 않은 토큰입니다. 다시 로그인 해주세요')
           return
         }
-        else if(error.code === '404'){
-          alert(error.message)
+        else if(error?.response?.status === 404){
+          //본인의 리프레시 토큰이 아닌 경우 404 
+          console.error(error.message)
+          localStorage.removeItem('accessToken');
+          alert('유효하지 않은 토큰입니다. 다시 로그인 해주세요')
           return
         }
         return;
@@ -60,30 +69,33 @@ function App() {
   },[])
 
   useEffect(() => {
-
-    const accessToken: string | null = localStorage.getItem('accessToken');
+    // const accessToken: string | null = localStorage.getItem('accessToken')
     axiosInstance.interceptors.request.use(
       async config => {
-        if (accessToken) {
+        // if (accessToken) {
           try {
             // 디코딩
-            const parsedToken = accessToken.slice(7);
-            const decodedToken = jwtDecode<JwtPayload>(parsedToken);
-            const currentTime = Date.now() / 1000; // ms -> seconds
-            // 유효성 검증 ( 만료 5분 전을 초과했다면 access 갱신 )
-            if (decodedToken.exp && decodedToken.exp < currentTime + 300) {
-              const data = await HttpClient.post('/api/auth/token/access'); // 유효한 refesh토큰이 헤더에 있다면 정상 동작
-              const token = data.accessToken;
-              config.headers.common['Authorization'] = `Bearer ${token}`; // 갱신된 값으로 설정
-              localStorage.setItem('accessToken', `${token}`); // 로컬스토리지 값도 갱신
+            const accessToken: string | null = localStorage.getItem('accessToken')
+            if (accessToken) {
+              const decodedToken = jwtDecode<JwtPayload>(accessToken);
+              const currentTime = Date.now() / 1000; // ms -> seconds
+              // 유효성 검증 ( 만료 5분 전을 초과했다면 access 갱신 )
+              if (decodedToken.exp && decodedToken.exp < currentTime + 300) {
+                //유효한 refesh토큰이 헤더에 있다면 정상 동작
+                const res = await axiosInstance.post('/api/auth/token/access'); 
+                const token = res?.data?.accessToken;
+                if(token){
+                  config.headers.common['Authorization'] = `Bearer ${token}`; // 갱신된 값으로 설정
+                  localStorage.setItem('accessToken', `${token}`); // 로컬스토리지 값도 갱신
+                }
+              }
             }
           } catch (error) {
             localStorage.removeItem('accessToken'); // refresh 토큰 만료시 로컬스토리지 accessToken 삭제
             alert('토큰이 만료되었습니다. 다시 로그인 해주세요.');
             throw error;
           }
-        }
-
+        // }
         return config;
       },
       (error: AxiosError) => {
@@ -93,17 +105,20 @@ function App() {
   }, []);
 
   useEffect(() => {
-    axios.get('/api/members/find')
+    const accessToken: string | null = localStorage.getItem('accessToken')
+    if(accessToken){
+      HttpClient.get('/api/members/find')
       .then(res => {
-        const userIdx: number | null = res.data.idx;
-        const profileRegistered: boolean = res.data.isprofile;
+        const userIdx: number | null = res.idx;
+        const profileRegistered: boolean = res.isprofile;
         setUserIdx(userIdx); 
         setIsProfileRegistered(profileRegistered); 
       })
       .catch((error: AxiosError) => {
         console.error(error.message);
-        // return
+        return
       });
+    }
   }, []);
 
   const isMobile = useIsMobile();

@@ -18,7 +18,7 @@ import { useSetRecoilState } from "recoil";
 import { profileRegisteredState, userIdxState } from "../../../recoil/atom/LoginInfoState";
 import axios from "axios";
 import GoogleTagManager from "../../../components/TagManager";
-import HttpClient from "../../../services/HttpClient";
+import HttpClient, { axiosInstance } from "../../../services/HttpClient";
 
 const PostMyProfile = () => {
   const [isEditMode, setIsEditMode] = useState<boolean>(true);
@@ -33,15 +33,15 @@ const PostMyProfile = () => {
 
   useEffect(() => {
     if(accessToken) {
-      HttpClient.get('/api/members/find')
+      axiosInstance.get('/api/members/find')
         .then((res) => {
           console.log({res});
-          const userIdx: number | null = res.idx;
-          const profileRegistered: boolean = res.isprofile;
+          const userIdx: number | null = res.data?.idx;
+          const profileRegistered: boolean = res.data?.isprofile;
           setUserIdx(userIdx);
           setIsProfileRegistered(profileRegistered);
 
-          console.log(res.isprofile)
+          console.log(res.data?.isprofile)
           if(res.data.isprofile) {
             console.log("프로필정보가 등록되어 있어 put-profile로 이동");
             navigate("/put-profile");

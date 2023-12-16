@@ -61,13 +61,13 @@ export default function MatchingPostPage() {
   }, [idx, setIdxAtom]);
 
   const getPostInfoFn = async () => {
-    // try {
+    try {
       const res = await HttpClient.get(`/post/${idx}`);
       return res;
-    // } catch (e) {
-      // console.error(`게시글 정보를 불러오지 못했습니다 : ${(e as AxiosError).message}`);
-      // return;
-    // }
+    } catch (e) {
+      console.error(`게시글 정보를 불러오지 못했습니다 : ${(e as AxiosError).message}`);
+      return;
+    }
   };
   const { data, isError, error, isLoading, isFetching, status } = useQuery<IMatchingPostPage, AxiosError>(['post-info'], getPostInfoFn);
 

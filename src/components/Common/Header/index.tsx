@@ -145,7 +145,8 @@ const Header = () => {
             onRequestClose={onClickAlarm}
           />
           <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
-        </s.RightContainer> :
+        </s.RightContainer> 
+        :
         <s.RightContainer >
           <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogin()}>회원가입</s.TextWrapper>
           <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogin()}>로그인</s.TextWrapper>
