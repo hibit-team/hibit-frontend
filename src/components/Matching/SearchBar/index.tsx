@@ -8,6 +8,7 @@ import { useSetRecoilState } from 'recoil';
 import { MatchingControllerState } from '../../../recoil/atom/MatchingControllerState';
 import HttpClient from '../../../services/HttpClient';
 import { useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 
 interface IUsersMe {
@@ -25,10 +26,16 @@ const CustomSearchBar = () => {
     return fetchedUserId
   },[])
 
-  const {data, isError} = useQuery<IUsersMe>(['nickname'],fetchUserId)
-  
-  if(isError){
-    console.error('nickname fetch failed')
+  const {data, isError, error} = useQuery<IUsersMe>(['nickname'],fetchUserId,{
+    refetchOnWindowFocus: false,
+    retry: 1,
+  })
+
+  if( isError && error instanceof AxiosError){
+    const status = error.response?.status;
+    if (status !== 401){ // not authorized 제외
+      console.error('nickname fetch failed')
+    }
   }
   
   const inputRef = useRef<HTMLInputElement>(null);

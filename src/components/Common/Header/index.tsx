@@ -1,3 +1,4 @@
+import * as s from "./styles";
 import { Suspense, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import HibitLogo from "../../../images/components/HibitLogo.svg";
@@ -6,14 +7,13 @@ import AlarmIcon from "../../../images/components/AlarmIcon.svg";
 import useIsMobile from '../../../hooks/useIsMobile';
 import LoginModal from '../../Login/LoginModal';
 import CustomModalAlarm from '../../Alarm';
-import * as s from "./styles";
-import { useRecoilValue, useRecoilState, useRecoilValueLoadable, useResetRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilState, useResetRecoilState } from 'recoil';
 import { accessTokenState, profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
-import useLoginInfo from '../../../hooks/useLoginInfo';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
 import { axiosInstance } from '../../../services/HttpClient';
 import { LoginModalState } from '../../../recoil/atom/LoginModalState';
 import { isLoginAtom } from '../../../recoil/atom/isLoginAtom';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -26,20 +26,18 @@ const Header = () => {
   const resetUserIdx = useResetRecoilState(userIdxState);
   const resetIsProfileRegistered = useResetRecoilState(profileRegisteredState);
   
-  // const [modalOpen, setModalOpen] = useState(false);
   const [modalOpen, setModalOpen] = useRecoilState(LoginModalState);
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
   
   const [isLogin, setIsLogin] = useRecoilState<boolean>(isLoginAtom);
   let isProfileRegistered: boolean = useRecoilValue(profileRegisteredState);
-  const accessToken: string | null = localStorage.getItem("accessToken");
-  
-  // useEffect(() => {
-  //   if(accessToken) {
-  //     setIsLogin(true);
-  //   }
-  // }, []);
+
+  const queryClient = useQueryClient();
+
+  const removeNicknameCache = () => {
+    queryClient.removeQueries(['nickname']);
+  };
 
   const onClickLogout = async () => {
     await axiosInstance.get(`/api/auth/logout`)
@@ -48,11 +46,10 @@ const Header = () => {
         resetUserIdx();
         resetIsProfileRegistered();
         clearTokenAndHeader();
-
         localStorage.removeItem('accessToken');
-
         setIsLogin(false);
-        // alert("로그아웃 했어요!");
+        alert("로그아웃 했어요!");
+        removeNicknameCache()
         return null;
       })
       .catch((e) => {
@@ -116,7 +113,7 @@ const Header = () => {
         <s.Category onClick={() => onClickIntro()}>서비스 소개</s.Category>
         <s.Category onClick={() => navigate("/matching")}>매칭</s.Category>
         <s.Category
-         onClick={() => {
+        onClick={() => {
           if (isLogin) {
             if (isProfileRegistered) {
               navigate("/put-profile");
