@@ -24,11 +24,16 @@ const GoogleRedirectHandler = () => {
       code: code,
       redirectUri: redirectUri
     }
-    axios.post(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/google/token`, body, {
+    // axios.post(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/google/token`, body, {
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   withCredentials: true 
+    // })
+    axiosInstance.post(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/google/token`, body, {
       headers: {
         "Content-Type": "application/json"
-      },
-      withCredentials: true 
+      }
     })
       .then((res) => {
         const accessToken: string | null = res.data.accessToken;
@@ -54,6 +59,7 @@ const GoogleRedirectHandler = () => {
       })
       .catch((err) => {
         console.error({err});
+        return
       });
 
     }, [location.search]);
