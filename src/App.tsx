@@ -26,7 +26,6 @@ import { useSetRecoilState } from 'recoil';
 import { profileRegisteredState, userIdxState } from './recoil/atom/LoginInfoState';
 import { AxiosError } from 'axios';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { isLoginAtom } from './recoil/atom/isLoginAtom';
 
 function App() {
   const queryClient = new QueryClient();
@@ -34,18 +33,16 @@ function App() {
   const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
   const setUserIdx = useSetRecoilState(userIdxState);
 
-  const setIsLoginAtom = useSetRecoilState(isLoginAtom);
   const [trigger, setTrigger] = useState(false);
 
   const refreshToken = () => {
     const accessToken: string | null = localStorage.getItem('accessToken');
     if (accessToken) {
-      setIsLoginAtom(true);
       axiosInstance
         .post(`/api/auth/token/access`)
         .then(res => {
           const token = res?.data?.accessToken;
-          if (!!token) {
+          if (token) {
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             localStorage.setItem('accessToken', `${token}`);
           }
@@ -55,7 +52,6 @@ function App() {
             //유효하지않은 문자열 && 토큰 만료 401
             //본인의 토큰이 아닌 경우 404
             localStorage.removeItem('accessToken');
-            setIsLoginAtom(false);
             alert('유효하지 않은 토큰입니다. 다시 로그인 해주세요');
             return;
           }
@@ -66,7 +62,7 @@ function App() {
 
   // 1. 유효성 검증 통과시 access token 갱신
   useEffect(() => {
-    refreshToken();
+    refreshToken() 
   }, [trigger]);
 
   // 2. interceptor 유효성 검사 

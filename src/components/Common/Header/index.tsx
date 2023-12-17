@@ -10,9 +10,8 @@ import CustomModalAlarm from '../../Alarm';
 import { useRecoilValue, useRecoilState, useResetRecoilState } from 'recoil';
 import { accessTokenState, profileRegisteredState, userIdxState } from '../../../recoil/atom/LoginInfoState';
 import { alarmCountState } from '../../../recoil/atom/AlarmCount';
-import { axiosInstance } from '../../../services/HttpClient';
+import HttpClient, { axiosInstance } from '../../../services/HttpClient';
 import { LoginModalState } from '../../../recoil/atom/LoginModalState';
-import { isLoginAtom } from '../../../recoil/atom/isLoginAtom';
 import { useQueryClient } from '@tanstack/react-query';
 
 const Header = () => {
@@ -30,40 +29,49 @@ const Header = () => {
   const closeModal = () => setModalOpen(false);
   const onClickLogin = () => setModalOpen(true);
   
-  const [isLogin, setIsLogin] = useRecoilState<boolean>(isLoginAtom);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
   let isProfileRegistered: boolean = useRecoilValue(profileRegisteredState);
 
   const queryClient = useQueryClient();
 
   const removeNicknameCache = () => {
     queryClient.removeQueries(['nickname']);
+    queryClient.invalidateQueries()
   };
 
+  useEffect(()=>{
+    const accessToken: string | null = localStorage.getItem("accessToken");
+    if(accessToken) setIsLogin(true)
+  },[])
+
   const onClickLogout = async () => {
-    await axiosInstance.get(`/api/auth/logout`)
+    await HttpClient.get(`/api/auth/logout`)
       .then((res) => {
         resetAccessToken();
         resetUserIdx();
         resetIsProfileRegistered();
+
         clearTokenAndHeader();
+
         localStorage.removeItem('accessToken');
         setIsLogin(false);
+
         alert("로그아웃 했어요!");
         removeNicknameCache()
         return null;
       })
       .catch((e) => {
         console.error({e});
-        alert("로그인에 문제가 생겼어요. 같은 상황이 반복된다면 문의 주세요 :)");
         resetAccessToken(); 
         resetUserIdx(); 
         resetIsProfileRegistered();
+        
+        alert("로그인에 문제가 생겼어요. 같은 상황이 반복된다면 문의 주세요 :)");
         clearTokenAndHeader();
 
         localStorage.removeItem('accessToken');
-
         setIsLogin(false);
-        navigate("/");
+
         return null;
       }) 
   };
@@ -143,7 +151,9 @@ const Header = () => {
             isOpen={isAlarmOpen}
             onRequestClose={onClickAlarm}
           />
-          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() => onClickLogout()}>로그아웃</s.TextWrapper>
+          <s.TextWrapper style={{ color: path === '/matching' ? 'white' : 'black'}} onClick={() =>{
+            onClickLogout()
+          }}>로그아웃</s.TextWrapper>
         </s.RightContainer> 
         :
         <s.RightContainer >
