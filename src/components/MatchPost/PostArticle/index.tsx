@@ -238,6 +238,7 @@ export default function MatchPostArticle({ userLoginInfo ,data, postIDX }: { use
               data.subimg.map((img) => {
                 return (
                   <div 
+                    key={img}
                     css={css`
                       width: 250px;
                       height: 320px;
@@ -608,7 +609,7 @@ export const FsLightboxWrapper = ({ data }: { data?: IMatchingPostPage }) => {
         toggler={toggler}
         sources={
           imgList?.map((img, idx) => {
-            return <img src={img} alt={`img-${idx}`}/>
+            return <img key={img} src={img} alt={`img-${idx}`}/>
           })
         }
       />

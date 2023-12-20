@@ -14,6 +14,7 @@ const GoogleRedirectHandler = () => {
   const setIsProfileRegistered = useSetRecoilState(profileRegisteredState);
   const setUserIdx = useSetRecoilState(userIdxState);
   
+  
   const navigate = useNavigate();
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -23,7 +24,13 @@ const GoogleRedirectHandler = () => {
       code: code,
       redirectUri: redirectUri
     }
-    axios.post(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/google/token`, body, {
+    // axios.post(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/google/token`, body, {
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   withCredentials: true 
+    // })
+    axiosInstance.post(`${process.env.REACT_APP_SERVER_BASE_HTTPS_URL}/api/auth/google/token`, body, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -44,14 +51,15 @@ const GoogleRedirectHandler = () => {
           setUserIdx(userIdx);
           setIsProfileRegistered(profileRegistered);
         }
-        console.log({res});
+
         axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-        localStorage.setItem('accessToken', `Bearer ${accessToken}`);
+        localStorage.setItem('accessToken', `${accessToken}`);
 
         navigate('/');
       })
       .catch((err) => {
         console.error({err});
+        return
       });
 
     }, [location.search]);

@@ -28,9 +28,6 @@ const MatchingPage = () => {
     fetchNextPage,
     isFetching,
     hasNextPage,
-    // isFetchingPreviousPage,
-    // fetchPreviousPage,
-    // hasPreviousPage,
   } = useGetMatchingInfiniteQuery();
 
   if (isError === true) {
