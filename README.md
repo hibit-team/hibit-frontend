@@ -53,7 +53,9 @@ https://github.com/hibit-team/hibit-frontend/assets/78556338/3fd8a5c4-8fed-490d-
 ### 🧷 기능 1: `소셜 로그인` - 간편하게 로그인할 수 있어요.
 
 - 자주 사용하는 소셜미디어 중 하나인 `구글` 계정으로 편리하게 로그인/회원가입을 할 수 있어요.
+
 <img width="1175" alt="hibit-login-page" src="https://github.com/hibit-team/hibit-frontend/assets/78556338/1d06fdf5-6aed-436c-a19b-f08a43a583ed">
+
 <br>
 
 ### 🧷 기능 2: `프로필` - 나만의 프로필을 작성하고, 상대방의 프로필 정보를 확인해 보세요.
@@ -62,7 +64,6 @@ https://github.com/hibit-team/hibit-frontend/assets/78556338/3fd8a5c4-8fed-490d-
 - 상대방에게 노출되기를 희망하는 프로필 정보만 `선택해서 공개`할 수 있어 부담이 덜해요.
 - 타인의 프로필을 탐색할 수 있어요
 
-
 <br>
 
 ### 🧷 기능 3: `매칭 모집글 탐색` - 참여하고 싶은 게시글을 탐색할 수 있어요
@@ -70,6 +71,7 @@ https://github.com/hibit-team/hibit-frontend/assets/78556338/3fd8a5c4-8fed-490d-
 - 이번주 출발 전시, 좋아요 많은 모집글만을 `필터링` 한 검색 결과를 확인할 수 있어요
 - 원하는 모집글을 찾을 때 까지 `더보기` 버튼으로 탐색할 수 있어요
 - 게시글 모집 상태 변경을 통해 모집을 취소,완료 시킬 수 있어요.
+
 <img width="1174" alt="hibit-board-page-only" src="https://github.com/hibit-team/hibit-frontend/assets/78556338/baa4cf4b-9943-4b93-8892-b1f461cdea64">
 
 <br>
@@ -78,6 +80,7 @@ https://github.com/hibit-team/hibit-frontend/assets/78556338/3fd8a5c4-8fed-490d-
 
 - 모집자 & 신청자로서 댓글(대댓글)을 작성/수정/삭제하면서 `쌍방향 소통`할 수 있어요.
 - 원하는 상대방의 게시글,댓글에 실시간으로 `좋아요`를 표시할 수 있어요.
+
 - 모집자로서 게시글을 작성하고
 , 댓글을 남긴 유저 중 함께 전시회를 가고 싶은 유저에게 `초대장`을 보낼 수 있어요.
 ![pc_other_profile_not_register_profile](https://github.com/hibit-team/hibit-frontend/assets/78556338/678f85ed-8538-4bd8-a82d-c7244e16abab)
@@ -87,6 +90,7 @@ https://github.com/hibit-team/hibit-frontend/assets/78556338/3fd8a5c4-8fed-490d-
 ### 🧷 기능 5: `알림` - 매칭 결과 및 댓글에 대한 답변을 받을 수 있어요.
 
 - 알림 목록에서 매칭 신청 결과, 좋아요한 유저 정보, 댓글/대댓글 메시지, `카카오톡 Open채팅 링크` 등의 알림을 수신할 수 있어요.
+
 <img width="819" alt="hibit-alarm-page" src="https://github.com/hibit-team/hibit-frontend/assets/78556338/25ae1d39-e809-408f-ba2f-f38c9c2541a3">
 
 <br>
@@ -95,6 +99,7 @@ https://github.com/hibit-team/hibit-frontend/assets/78556338/3fd8a5c4-8fed-490d-
 
 - 유저가 댓글/대댓글/게시글을 신고할 수 있어요.
 - 신고 페이지에서는, 신고 종류를 선택한다 (ex: 광고성, 불건전한 등등) + 세부적인 내용 작성이 가능해요.
+
 - 신고가 접수되면, 관리자가 해당
  신고 내용을 검토한다. 이후 신고내용이 타당하다면 회원 테이블(or 프로필 테이블)에 신고 횟수를 증가시켜줘요.
 <img width="1173" alt="hibit-declaration" src="https://github.com/hibit-team/hibit-frontend/assets/78556338/706cd3f2-6538-4167-8427-681f11e3708f">
