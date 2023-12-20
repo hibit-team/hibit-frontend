@@ -69,11 +69,7 @@ export default function MatchingPostPage() {
       return;
     }
   };
-  const { data, isError, error, isLoading, isFetching, status } = useQuery<IMatchingPostPage, AxiosError>(['post-info'], getPostInfoFn, {
-    staleTime: 1000,
-    retry: 1,
-    retryDelay: 2000,
-  },);
+  const { data, isError, error, isLoading, isFetching, status } = useQuery<IMatchingPostPage, AxiosError>(['post-info'], getPostInfoFn);
 
   useEffect(() => {
     window.scrollTo(0, 100); // x축은 0, y축은 0으로 설정하여 상단으로 스크롤

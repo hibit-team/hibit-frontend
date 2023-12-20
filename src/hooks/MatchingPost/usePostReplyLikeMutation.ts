@@ -8,7 +8,6 @@ export const usePostReplyLikeMutation = (replyIDX: number | undefined) => {
   const queryClient = useQueryClient();
   const isProfile = useRecoilValue<boolean>(profileRegisteredState)
   const replyLikeMutationFn = async (replyIDX: number | undefined) => {
-      if(!isProfile) throw Error
       const path = `/comment/like/${replyIDX}`;
       const res = await HttpClient.get(path);
       return res;
@@ -19,7 +18,6 @@ export const usePostReplyLikeMutation = (replyIDX: number | undefined) => {
     },
     onError: e => {
       console.error(`${replyIDX}번 댓글의 좋아요에 실패했습니다. error : ${(e as AxiosError).message}`);
-      alert('좋아요에 실패했습니다.')
     },
   });
 };
