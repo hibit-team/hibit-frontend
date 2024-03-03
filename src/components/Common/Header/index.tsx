@@ -18,7 +18,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const onClickIntro = () => {
-    window.location.href = "https://mellow-bard-bc8.notion.site/28a5202c60344d978caa0d2745921049?pvs=4";
+    window.location.href = "https://ycat01.notion.site/28a5202c60344d978caa0d2745921049?pvs=4";
   };
 
   const resetAccessToken = useResetRecoilState(accessTokenState);
